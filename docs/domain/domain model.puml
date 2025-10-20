@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Customer
+{
+email
+balance
+isAdmin
+}
+
+note right of Customer
+  Admin role determined by boolean isAdmin.
+
+  If isAdmin = true:
+  Can view all orders
+  Can edit and delete orders
+  Can update customers balances
+  Can manage products
+
+  If isAdmin = false:
+  Regular customer
+  Can only see own data
+end note
+
+class Order
+{
+totalPrice
+orderDateTime
+status
+}
+
+class OrderLine
+{
+quantity
+linePrice
+}
+
+class CupCakeBottom
+{
+name
+price
+}
+
+class CupCakeTopping
+{
+name
+price
+}
+
+Customer "1" -- "0..*" Order : places
+Order "1" -- "1..*" OrderLine : contains
+OrderLine "*" -- "1" CupCakeBottom : uses
+OrderLine "*" -- "1" CupCakeTopping : uses
+
+@enduml

@@ -1,0 +1,189 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Enum Role
+{
+CUSTOMER
+ADMIN
+}
+
+class User
+{
+- int userId
+- String firstName
+- String lastName
+- String email
+- String password
+- String phoneNumber
+- String street
+- String houseNumber
+- int zipCode
+- String city
+- double balance
+- Role role
+
++ boolean isAdmin()
++ boolean isCustomer()
++ void addToBalance(double amount)
++ boolean subtractFromBalance(double amount)
+}
+
+class CupCake
+{
+- Bottom bottom
+- Topping topping
+- double cupCakePrice
++ double getPrice()
+}
+
+class Bottom
+{
+- int bottomId
+- String name
+- double price
+}
+
+class Topping
+{
+- int toppingId
+- String name
+- double price
+}
+
+class Order
+{
+- int orderId
+- User user
+- LocalDateTime orderDate
+- String status
+- List<OrderLine> orderlines
+- double totalPrice
+
++ void addToOrder(OrderLine orderLine)
++ void removeFromOrder(OrderLine orderLine)
+}
+
+class OrderLine
+{
+- int orderLineId
+- CupCake cupCake
+- int quantity
+}
+
+class ShoppingCart
+{
+- List<Orderline> orderLines
++ void addToCart(CupCake cupCake, int quantity)
++ void removeFromCart(CupCake cupCake, int quantity)
++ double getTotalPrice()
++ List<OrderLine> orderLine getCartLines()
+}
+
+interface UserService
+interface ShoppingService
+interface OrderService
+
+class UserServiceImpl
+{
+- CustomerMapper customerMapper
++ User authenticate(email, password)
++ User register(User user)
++ void addBalance(int userId, double amount)
++ User getCustomerById(int userId)
+}
+
+class OrderServiceImpl
+{
+-OrderMapper orderMapper
+-CustomerService customerService
+ + Order createOrder(customer, orderLines)
+ + List<Order> getOrdersByCustomer(customerId):
+ + List<Order>getAllOrders()
+ + void deleteOrder(orderId)
+
+}
+
+class ShoppingServiceImpl
+{
+ - ShoppingCart cart
+ + ShoppingCart getCart()
+ + addToCart(int userID, Bottom bottom, Topping topping, int quantity)
+ + removeFromCart(int index)
+ + clearCart()
+}
+
+
+class UserMapper
+{
+-ConnectionPool connectionPool
++ User createUser(User user)
++ User getUserById(int userId)
++ User updateUser(User user)
++ boolean deleteUser(int userId)
+}
+
+class BottomMapper
+{
+- ConnectionPool connectionPool
++ List<Bottom> getAllBottoms()
++ Bottom getById(int bottomId)
++ Bottom createBottom(Bottom bottom)
++ boolean updateBottom(Bottom bottom)
++ boolean delete(bottomId)
+}
+
+class ToppingMapper
+{
+- ConnectionPool connectionPool
++ List<Topping> getAllToppings()
++ Topping getById(int bottomId)
++ Topping createTopping(Topping topping)
++ boolean updateTopping(Topping topping)
++ boolean delete(int bottomId)
+}
+
+class OrderMapper
+{
+- ConnectionPool connectionPool
++ Order createOrder(Order order)
++ Order getOrderById(int orderId)
++ List<Order> getOrderByUserId(customerId)
++ List<Order> getAllOrders()
++ boolean deleteOrder(int orderId)
+}
+
+
+class UserController
+class ShoppingController
+class OrderController
+class AdminController
+
+UserController --> UserService
+ShoppingController --> ShoppingService
+OrderController --> OrderService
+AdminController --> OrderService
+AdminController --> UserService
+
+UserService --> UserServiceImpl
+ShoppingService --> ShoppingServiceImpl
+OrderService --> OrderServiceImpl
+
+UserServiceImpl --> UserMapper
+ShoppingServiceImpl --> BottomMapper
+ShoppingServiceImpl --> ToppingMapper
+ShoppingServiceImpl --> ShoppingCart
+OrderServiceImpl -> OrderMapper
+
+UserMapper ..> User : creates
+OrderMapper ..> Order : creates
+BottomMapper ..> Bottom : creates
+ToppingMapper ..> Topping : creates
+
+User "1" -- "0..*" Order
+User --> Role
+Order "1" *-- "1..*" OrderLine
+CupCake "*" -- "1" Bottom
+CupCake "*" -- "1" Topping
+ShoppingCart "1" *-- "0..*" OrderLine
+OrderLine "1" --> "1" CupCake
+@enduml
