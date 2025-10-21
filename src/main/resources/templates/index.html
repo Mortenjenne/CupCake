@@ -10,7 +10,22 @@
 <body>
 
 <header>
-    <h1>This is a header</h1>
+    <nav>
+        <a href="index.html" th:href="@{/}">
+            <img src="/public/images/logo-w.svg"
+                 alt="Cupcake Logo"
+                 th:src="@{/images/logo-w.svg}">
+        </a>
+    </nav>
+
+    <div class="account-info">
+        <p><a href="login.html" th:href="@{/login}">Login / Opret konto</a> </p>
+        <a href="checkout.html" th:href="@{/checkout}">
+            <img src="/public/images/basket-w.svg"
+                 alt="Cupcake Logo"
+                 th:src="@{/images/basket-w-svg}">
+        </a>
+    </div>
 </header>
 
 <main>
@@ -23,13 +38,13 @@
   <address>
       <p>Olsker Cupcakes</p>
       <p>Østre Ringvej 2A, 3700 Rønne</p>
-      <a href="mailto:Admin@fakemail.dk">kontakt@olskercupcakes.dk</a>
+      <a href="mailto:kontakt@olskercupcakes.dk">kontakt@olskercupcakes.dk</a>
       <a href="tel:+4512345678">+45 1234 5678</a>
   </address>
 
-  <section class="about">
-      <a href="About.html" th:href="@{/about}">Om os</a>
-  </section>
+  <nav class="about">
+      <a href="about.html" th:href="@{/about}">Om os</a>
+  </nav>
 
   <section class="opening-hours">
       <p class="title">Åbningstider</p>
