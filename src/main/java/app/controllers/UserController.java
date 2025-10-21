@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.services.UserService;
 import io.javalin.Javalin;
@@ -26,6 +27,18 @@ public class UserController
 
     private void handleUserLogin(Context ctx)
     {
+        String email = ctx.formParam("email");
+        String password = ctx.formParam("password");
+
+        try
+        {
+            User user = userService.authenticate(email, password);
+            ctx.sessionAttribute("currentUser",user);
+            ctx.render("/index");
+        } catch (DatabaseException e) {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.render("login");
+        }
     }
 
     private void handleCreateUser(Context ctx)
@@ -39,6 +52,8 @@ public class UserController
         String city       = ctx.formParam("city");
         String zipStr     = ctx.formParam("zipCode");
         String phone      = ctx.formParam("phone");
+        int zipCode = Integer.parseInt(zipStr);
+        int phoneNumber = Integer.parseInt(phone);
 
         if (!password1.equals(password2))
         {
@@ -50,7 +65,11 @@ public class UserController
 
         try
         {
+            userService.registerUser(email, password1, firstName,
+                    lastName, street, city, zipCode, phoneNumber);
 
+            ctx.attribute("succesLabel","Du har oprettet en bruger! Log på med email og password");
+            ctx.redirect("/login");
         } catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
@@ -64,7 +83,9 @@ public class UserController
     private void showLoginPage(Context ctx)
     { ctx.render("/login"); }
 
-    private void keepFormValues(Context ctx, String email, String firstName, String lastName, String street, String zipCode, String city, String phone)
+    private void keepFormValues(Context ctx, String email, String firstName,
+                                String lastName, String street,
+                                String zipCode, String city, String phone)
     {
         ctx.attribute("email", email);
         ctx.attribute("firstName", firstName);
@@ -74,5 +95,4 @@ public class UserController
         ctx.attribute("city", city);
         ctx.attribute("phone", phone);
     }
-
 }
