@@ -1,14 +1,14 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-class Customer
+class User
 {
 email
 balance
 isAdmin
 }
 
-note right of Customer
+note right of User
   Admin role determined by boolean isAdmin.
 
   If isAdmin = true:
@@ -47,7 +47,7 @@ name
 price
 }
 
-Customer "1" -- "0..*" Order : places
+User "1" -- "0..*" Order : places
 Order "1" -- "1..*" OrderLine : contains
 OrderLine "*" -- "1" CupCakeBottom : uses
 OrderLine "*" -- "1" CupCakeTopping : uses

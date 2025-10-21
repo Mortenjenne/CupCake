@@ -85,21 +85,21 @@ interface OrderService
 
 class UserServiceImpl
 {
-- CustomerMapper customerMapper
+- UserMapper userMapper
 + User authenticate(email, password)
 + User register(User user)
 + void addBalance(int userId, double amount)
-+ User getCustomerById(int userId)
++ User getUserById(int userId)
 }
 
 class OrderServiceImpl
 {
 -OrderMapper orderMapper
--CustomerService customerService
- + Order createOrder(customer, orderLines)
- + List<Order> getOrdersByCustomer(customerId):
+-UserService userService
+ + Order createOrder(User user,OrderLine orderLines)
+ + List<Order> getOrdersByUser(int userId):
  + List<Order>getAllOrders()
- + void deleteOrder(orderId)
+ + void deleteOrder(int orderId)
 
 }
 
