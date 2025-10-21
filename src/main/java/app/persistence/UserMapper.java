@@ -49,6 +49,8 @@ public class UserMapper
         return null;
     }
 
+    public User getUserByEmail(String email) {return null; }
+
     public User updateUser(User user) {
         return null;
     }
@@ -56,6 +58,8 @@ public class UserMapper
     public boolean deleteUser(int userId) {
         return false;
     }
+
+    public void updateUserBalance(int userId, double amount){}
 
     public User login(String email, String password) throws DatabaseException
     {
@@ -121,4 +125,5 @@ public class UserMapper
             throw new DatabaseException("Kunne ikke indsætte zip_code/city");
         }
     }
+
 }
