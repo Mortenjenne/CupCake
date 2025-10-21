@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.users
     address character varying,
     zipcode integer,
     balance double precision NOT NULL DEFAULT 0,
-    isadmin boolean DEFAULT false,
+    admin boolean DEFAULT false,
     CONSTRAINT users_pkey PRIMARY KEY (user_id),
     CONSTRAINT email_unique UNIQUE (email)
     );
