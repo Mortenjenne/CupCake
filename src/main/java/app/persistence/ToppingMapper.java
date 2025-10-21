@@ -42,13 +42,13 @@ public class ToppingMapper
         return toppingList;
     }
 
-    public Topping getToppingById(int bottomId) throws DatabaseException
+    public Topping getToppingById(int toppingId) throws DatabaseException
     {
         String sql = "SELECT * FROM toppings WHERE topping_id = ?";
         try(Connection connection = connectionPool.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setInt(1, bottomId);
+            ps.setInt(1, toppingId);
             try(ResultSet rs = ps.executeQuery())
             {
                 if(rs.next())
