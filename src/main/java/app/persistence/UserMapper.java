@@ -168,9 +168,27 @@ public class UserMapper
         }
     }
 
-    public boolean deleteUser(int userId)
+    public boolean deleteUser(int userId) throws DatabaseException
     {
-        return false;
+        String sql = "DELETE FROM users WHERE user_id = ?";
+        boolean result = false;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userId);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                result = true;
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af bruger med id: " + userId);
+        }
+        return result;
     }
 
     // TODO where do we calculate new balance?
