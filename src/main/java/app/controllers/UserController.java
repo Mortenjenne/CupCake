@@ -53,7 +53,8 @@ public class UserController
 
         } catch (DatabaseException | IllegalArgumentException e)
         {
-
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.render("create-user.html");
         }
     }
 
