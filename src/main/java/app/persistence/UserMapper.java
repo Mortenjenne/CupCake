@@ -121,9 +121,51 @@ public class UserMapper
         }
     }
 
-    public User updateUser(User user)
+    // TODO Should we add admin to updateUser() ?
+    // TODO How do we access 'city' when returning new User?
+    public User updateUser(User user) throws DatabaseException
     {
-        return null;
+        String sql = "UPDATE users SET firstname = ?, lastname = ?, email = ?, password = ?, phonenumber = ?, address = ?, zip_code = ?, balance = ? WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPassword());
+            ps.setString(5, user.getPhoneNumber());
+            ps.setString(6, user.getAddress());
+            ps.setInt(7, user.getZipCode());
+            ps.setDouble(8, user.getBalance());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("phonenumber"),
+                        rs.getString("address"),
+                        rs.getInt("zip_code"),
+                        rs.getString("city"),
+                        rs.getDouble("balance"),
+                        rs.getBoolean("admin")
+                );
+            }
+            else
+            {
+                throw new DatabaseException("Brugeren blev ikke opdateret - id: " + user.getUserId());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af bruger: " + e.getMessage());
+        }
     }
 
     public boolean deleteUser(int userId)
@@ -132,7 +174,7 @@ public class UserMapper
     }
 
     // TODO where do we calculate new balance?
-    // Amount is set, not added in this method - we might need to refactor
+// Amount is set, not added in this method - we might need to refactor
     public void updateUserBalance(int userId, double amount) throws DatabaseException
     {
         String sql = "UPDATE users SET balance = ? WHERE user_id = ?";
@@ -219,5 +261,4 @@ public class UserMapper
             throw new DatabaseException("Kunne ikke indsætte zip_code/city");
         }
     }
-
 }
