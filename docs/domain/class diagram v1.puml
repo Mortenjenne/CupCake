@@ -126,7 +126,7 @@ class BottomMapper
 {
 - ConnectionPool connectionPool
 + List<Bottom> getAllBottoms()
-+ Bottom getById(int bottomId)
++ Bottom getBottomById(int bottomId)
 + Bottom createBottom(Bottom bottom)
 + boolean updateBottom(Bottom bottom)
 + boolean delete(bottomId)
@@ -136,7 +136,7 @@ class ToppingMapper
 {
 - ConnectionPool connectionPool
 + List<Topping> getAllToppings()
-+ Topping getById(int bottomId)
++ Topping getToppingById(int bottomId)
 + Topping createTopping(Topping topping)
 + boolean updateTopping(Topping topping)
 + boolean delete(int bottomId)
@@ -146,8 +146,8 @@ class OrderMapper
 {
 - ConnectionPool connectionPool
 + Order createOrder(Order order)
-+ Order getOrderById(int orderId)
-+ List<Order> getOrderByUserId(customerId)
++ Order getOrderById(int orderId, int userId)
++ List<Order> getOrderByUserId(int userId)
 + List<Order> getAllOrders()
 + boolean deleteOrder(int orderId)
 }
