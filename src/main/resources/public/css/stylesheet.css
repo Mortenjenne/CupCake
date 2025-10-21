@@ -59,9 +59,6 @@ p {
     font-size: var(--font-xsmall);
 }
 
-
-
-
 html, body {
     height: 100%;
 }
@@ -72,6 +69,7 @@ body {
     font-size: var(--font-base);
 }
 
+/*------ HEADER CSS ------*/
 header {
     background: var(--header-purple);
     position: fixed;
@@ -95,8 +93,15 @@ header nav, .account-info {
     align-items: center;
 }
 
+header a {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 header img {
-   max-height: 6.5vh;
+   max-height: 90%;
 }
 
 .account-info {
@@ -108,6 +113,10 @@ header img {
     color: var(--color-text-light);
 }
 
+
+
+
+/*------ MAIN CSS ------*/
 main {
     background: var(--body-purple);
     padding: 8vh 5vw 1vh;
@@ -119,8 +128,13 @@ main h2{
     font-size: 100px;
 }
 
+
+
+
+/*------ FOOTER CSS ------*/
 footer {
     background: var(--footer-purple);
+    min-height: 60px;
     height: 10vh;
     width: 100%;
 
@@ -149,7 +163,9 @@ address {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     height: 100%;
+    width: 15%;
 }
 
 .opening-hours {
@@ -159,13 +175,13 @@ address {
     gap: 5px;
     width: 15%;
     height: 100%;
-
 }
 
-.opening-hours .title{
+.title{
     text-align: center;
 }
-.opening-hours .row {
+
+.row {
     display: flex;
     justify-content: space-between;
 }
