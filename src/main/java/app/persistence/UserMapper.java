@@ -49,7 +49,7 @@ public class UserMapper
 
     public User getUserById(int userId) throws DatabaseException
     {
-        String sql = "SELECT * FROM users WHERE user_id = ?";
+        String sql = "SELECT * FROM users JOIN zipcodes ON users.zipcode = zipcodes.zipcode WHERE user_id = 1";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -86,7 +86,7 @@ public class UserMapper
 
     public User getUserByEmail(String email) throws DatabaseException
     {
-        String sql = "SELECT * FROM users WHERE email = ?";
+        String sql = "SELECT * FROM users JOIN zipcodes ON users.zipcode = zipcodes.zipcode WHERE email = ?";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
