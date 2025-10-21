@@ -2,6 +2,7 @@ package app.persistence;
 
 import app.entities.User;
 import app.exceptions.DatabaseException;
+
 import java.sql.*;
 
 public class UserMapper
@@ -26,7 +27,7 @@ public class UserMapper
             ps.setString(2, user.getLastName());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
-            ps.setString(5,user.getPhoneNumber());
+            ps.setString(5, user.getPhoneNumber());
             ps.setString(6, user.getAddress());
             ps.setInt(7, user.getZipCode());
 
@@ -38,29 +39,36 @@ public class UserMapper
                 newUser = user;
                 newUser.setUserId(userId);
             }
-        }
-        catch (SQLException e)
+        } catch (SQLException e)
         {
             throw new DatabaseException("Kunne ikke oprette bruger, email findes allerede i systemet");
         }
         return newUser;
     }
 
-    public User getUserById(int userId) {
+    public User getUserById(int userId)
+    {
         return null;
     }
 
-    public User getUserByEmail(String email) {return null; }
-
-    public User updateUser(User user) {
+    public User getUserByEmail(String email)
+    {
         return null;
     }
 
-    public boolean deleteUser(int userId) {
+    public User updateUser(User user)
+    {
+        return null;
+    }
+
+    public boolean deleteUser(int userId)
+    {
         return false;
     }
 
-    public void updateUserBalance(int userId, double amount){}
+    public void updateUserBalance(int userId, double amount)
+    {
+    }
 
     public User login(String email, String password) throws DatabaseException
     {
@@ -78,7 +86,8 @@ public class UserMapper
 
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
+            if (rs.next())
+            {
                 return new User(
                         rs.getInt("user_id"),
                         rs.getString("firstname"),
@@ -92,13 +101,11 @@ public class UserMapper
                         rs.getDouble("balance"),
                         rs.getBoolean("admin")
                 );
-            }
-            else
+            } else
             {
                 throw new DatabaseException("Forkert email eller password");
             }
-        }
-        catch(SQLException e)
+        } catch (SQLException e)
         {
             throw new DatabaseException("Login-fejl: " + e.getMessage());
         }
@@ -113,7 +120,8 @@ public class UserMapper
         {
             ps.setInt(1, zipCode);
             ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
+            if (!rs.next())
+            {
                 String insertSql = "INSERT INTO zip_codes (zip_code, city) VALUES (?, ?)";
                 try (PreparedStatement insertPs = connection.prepareStatement(insertSql))
                 {
