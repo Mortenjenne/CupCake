@@ -2,7 +2,11 @@ package app;
 
 import app.config.ThymeleafConfig;
 
+import app.controllers.UserController;
 import app.persistence.ConnectionPool;
+import app.persistence.UserMapper;
+import app.services.UserService;
+import app.services.UserServiceImpl;
 import io.javalin.Javalin;//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 import io.javalin.rendering.template.JavalinThymeleaf;
 
@@ -33,6 +37,11 @@ public class Main {
         app.get("/", ctx -> {
             ctx.render("index.html");
         });
+
+        UserMapper userMapper = new UserMapper(connectionPool);
+        UserService userService = new UserServiceImpl(userMapper);
+        UserController userController = new UserController(userService);
+        userController.registerRoutes(app);
 
     }
 }
