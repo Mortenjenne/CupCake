@@ -41,8 +41,8 @@ public class UserServiceImpl implements UserService
 
         try
         {
-            zipCode = Integer.parseInt(createUserRequestDTO.getZipCode());
-            phoneNumber = Integer.parseInt(createUserRequestDTO.getPhoneNumber());
+            zipCode = Integer.parseInt(createUserRequestDTO.getZipCode().trim());
+            phoneNumber = Integer.parseInt(createUserRequestDTO.getPhoneNumber().trim());
         } catch (NumberFormatException e)
         {
             throw new IllegalArgumentException("Postnummer og telefon skal være gyldige tal");

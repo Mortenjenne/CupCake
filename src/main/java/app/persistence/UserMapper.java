@@ -8,7 +8,8 @@ public class UserMapper
 {
     private ConnectionPool connectionPool;
 
-    public UserMapper(ConnectionPool connectionPool) {
+    public UserMapper(ConnectionPool connectionPool)
+    {
         this.connectionPool = connectionPool;
     }
 
@@ -121,7 +122,8 @@ public class UserMapper
                     insertPs.executeUpdate();
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             throw new DatabaseException("Kunne ikke indsætte zip_code/city");
         }
     }
