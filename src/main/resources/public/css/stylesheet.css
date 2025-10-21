@@ -129,6 +129,11 @@ main h2{
 }
 
 
+/*------ INDEX BODY CSS ------*/
+.create-cupcake-wrapper {
+    display: flex;
+}
+
 
 
 /*------ FOOTER CSS ------*/
