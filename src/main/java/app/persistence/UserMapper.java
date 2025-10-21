@@ -39,16 +39,49 @@ public class UserMapper
                 newUser = user;
                 newUser.setUserId(userId);
             }
-        } catch (SQLException e)
+        }
+        catch (SQLException e)
         {
             throw new DatabaseException("Kunne ikke oprette bruger, email findes allerede i systemet");
         }
         return newUser;
     }
 
-    public User getUserById(int userId)
+    public User getUserById(int userId) throws DatabaseException
     {
-        return null;
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("phonenumber"),
+                        rs.getString("address"),
+                        rs.getInt("zip_code"),
+                        rs.getString("city"),
+                        rs.getDouble("balance"),
+                        rs.getBoolean("admin")
+                );
+            }
+            else
+            {
+                throw new DatabaseException("Der blev ikke fundet en bruger med id: " + userId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af bruger: " + e.getMessage());
+        }
     }
 
     public User getUserByEmail(String email)
@@ -101,11 +134,13 @@ public class UserMapper
                         rs.getDouble("balance"),
                         rs.getBoolean("admin")
                 );
-            } else
+            }
+            else
             {
                 throw new DatabaseException("Forkert email eller password");
             }
-        } catch (SQLException e)
+        }
+        catch (SQLException e)
         {
             throw new DatabaseException("Login-fejl: " + e.getMessage());
         }
@@ -130,7 +165,8 @@ public class UserMapper
                     insertPs.executeUpdate();
                 }
             }
-        } catch (SQLException e)
+        }
+        catch (SQLException e)
         {
             throw new DatabaseException("Kunne ikke indsætte zip_code/city");
         }
