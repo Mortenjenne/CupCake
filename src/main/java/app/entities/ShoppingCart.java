@@ -10,6 +10,8 @@ public class ShoppingCart
 {
 private List<OrderLine> orderLines;
 
+public ShoppingCart(){}
+
 public void addToCart(Cupcake cupcake, int quantity)
 {
     if(cupcake != null && quantity > 0)
