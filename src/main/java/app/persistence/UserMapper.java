@@ -198,7 +198,7 @@ public class UserMapper
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setDouble(1, amount);
+            ps.setDouble(1, calculateNewUserBalance(userId, amount));
             ps.setInt(2, userId);
 
             ResultSet rs = ps.executeQuery();
@@ -293,6 +293,31 @@ public class UserMapper
         catch (SQLException e)
         {
             throw new DatabaseException("Kunne ikke indsætte zip_code/city");
+        }
+    }
+
+    private double calculateNewUserBalance(int userId, double amount) throws DatabaseException
+    {
+        String sql = "SELECT balance FROM users WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                return amount + rs.getDouble("balance");
+            }
+            else
+            {
+                throw new DatabaseException("Der blev ikke fundet en bruger med id: " + userId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af brugers balance: " + e.getMessage());
         }
     }
 }
