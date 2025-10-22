@@ -16,6 +16,7 @@ continuation_indent_size = 8
 ij_java_class_brace_style = next_line
 ij_java_method_brace_style = next_line
 ij_java_brace_style = next_line
+ij_java_control_statement_brace_style = next_line
 ij_java_lambda_brace_style = next_line
 
 # Control structures on new lines
