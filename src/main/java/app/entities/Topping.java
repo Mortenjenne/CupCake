@@ -11,4 +11,12 @@ public class Topping
     private String name;
     private double price;
 
+    public String getSlug() {
+        if (name == null) return "";
+        return name
+                .toLowerCase()
+                .replaceAll("[\\s/]+", "")   // fjern mellemrum og /
+                .replaceAll("[^a-z0-9]", ""); // fjern alt andet sjovt
+    }
+
 }
