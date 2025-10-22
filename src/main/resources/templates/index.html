@@ -13,9 +13,50 @@
 
 <main>
 
-    <div class="create-cupcake-wrapper">
+    <section class="index-body">
+        <section class="welcome">
+            <h1>Velkommen til Olsker Cupcakes</h1>
+            <h2>Øens bedste cupcakes</h2>
+        </section>
 
-    </div>
+        <section class="cupcake-box">
+                <img src="/public/images/cupcakes/toppings/topping_strawberry.png"
+                     th:src="@{/images/cupcakes/toppings/topping_strawberry.png}"
+                     alt="cupcake Topping"/>
+                <img src="/public/images/cupcakes/bottoms/bottom_chocolate.png"
+                     th:src="@{/images/cupcakes/bottoms/bottom_chocolate.png}"
+                     alt="Cupcake Bottom"/>
+        </section>
+
+        <section class="cupcake-creator">
+            <h4>Vælg og bestil her</h4>
+
+            <form method="post" th:action="@{/cart/add}">
+                <select name="bottomId" required>
+                    <option value="">Vælg Bund</option>
+                    <option th:each="b : ${bottoms}"
+                            th:value="${b.bottomId}"
+                            th:text="${b.name + ' + ' + b.price + 'kr'}">
+                    </option>
+                </select>
+                <select name="toppingId" required>
+                    <option value="">Vælg Topping</option>
+                        <option th:each="t : ${toppings}"
+                                th:value="${t.toppingId}"
+                                th:text="${t.name + ' + ' + t.price + 'kr'}"
+                                >
+                        </option>
+                </select>
+                <span th:text="${cupcakeprice}"></span>
+                <input type="number" name="quantity" min="1" value="1" required>
+
+                <button type="submit">Tilføj til kurv</button>
+
+            </form>
+        </section>
+
+
+    </section>
 
 </main>
 

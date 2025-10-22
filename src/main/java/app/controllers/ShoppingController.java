@@ -26,11 +26,17 @@ public class ShoppingController
 
     private void showIndex(Context ctx) throws DatabaseException
     {
+        var bottoms = shoppingService.getAllBottoms();
+        var toppings = shoppingService.getAllToppings();
         var model = new HashMap<String, Object>();
+
+        System.out.println(bottoms);
+        System.out.println(toppings);
+
         model.put("bottoms", shoppingService.getAllBottoms());
         model.put("toppings", shoppingService.getAllToppings());
         model.put("cart", getOrCreateCart(ctx));
-        ctx.render("index.html");
+        ctx.render("index.html", model);
     }
 
     private ShoppingCart getOrCreateCart(Context ctx)
