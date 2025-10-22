@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS public.users
     email character varying NOT NULL,
     password character varying NOT NULL,
     phonenumber integer,
-    address character varying,
-    zipcode integer,
+    street character varying,
+    zip_code integer,
     balance double precision NOT NULL DEFAULT 0,
     admin boolean DEFAULT false,
     CONSTRAINT users_pkey PRIMARY KEY (user_id),
@@ -29,9 +29,9 @@ CREATE TABLE IF NOT EXISTS public.users
 
 CREATE TABLE IF NOT EXISTS public.zipcodes
 (
-    zipcode integer NOT NULL,
+    zip_code integer NOT NULL,
     city character varying NOT NULL,
-    PRIMARY KEY (zipcode)
+    PRIMARY KEY (zipcodes)
     );
 
 CREATE TABLE IF NOT EXISTS public.orders

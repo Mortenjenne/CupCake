@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService
 
         String hashedPassword = BCrypt.hashpw(createUserRequestDTO.getPassword1(), BCrypt.gensalt());
 
-        return null;
+        return userMapper.createUser(createUserRequestDTO.getFirstName(), createUserRequestDTO.getLastName(), createUserRequestDTO.getEmail(), hashedPassword, phoneNumber, createUserRequestDTO.getStreet(), zipCode, createUserRequestDTO.getCity());
     }
 
     @Override
