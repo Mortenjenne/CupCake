@@ -2,6 +2,7 @@ package app.persistence;
 
 import app.entities.Topping;
 import app.exceptions.DatabaseException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,21 +23,19 @@ public class ToppingMapper
     {
         List<Topping> toppingList = new ArrayList<>();
         String sql = "SELECT * FROM toppings";
-        try(Connection connection = connectionPool.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery())
-        {
-            while(rs.next())
-            {
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
                 Topping t = new Topping(
-                rs.getInt("topping_id"),
-                rs.getString("flavour"),
-                rs.getDouble("price")
+                        rs.getInt("topping_id"),
+                        rs.getString("flavour"),
+                        rs.getDouble("price")
                 );
                 toppingList.add(t);
             }
-        } catch (SQLException e)
-        {
+        }
+        catch (SQLException e) {
             throw new DatabaseException("Database error while fetching toppings: " + e);
         }
         return toppingList;
@@ -45,22 +44,19 @@ public class ToppingMapper
     public Topping getToppingById(int toppingId) throws DatabaseException
     {
         String sql = "SELECT * FROM toppings WHERE topping_id = ?";
-        try(Connection connection = connectionPool.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql))
-        {
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, toppingId);
-            try(ResultSet rs = ps.executeQuery())
-            {
-                if(rs.next())
-                {
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     return new Topping(rs.getInt("topping_id"),
                             rs.getString("flavour"),
                             rs.getDouble("price"));
                 }
                 return null;
             }
-        } catch (SQLException e)
-        {
+        }
+        catch (SQLException e) {
             throw new DatabaseException("Database error while fetching toppings: " + e);
         }
     }
