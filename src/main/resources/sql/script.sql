@@ -17,19 +17,19 @@ CREATE TABLE IF NOT EXISTS public.users
     email character varying NOT NULL,
     password character varying NOT NULL,
     phonenumber integer,
-    address character varying,
-    zipcode integer,
+    street character varying,
+    zip_code integer,
     balance double precision NOT NULL DEFAULT 0,
-    isadmin boolean,
+    admin boolean,
     CONSTRAINT zip PRIMARY KEY (user_id),
     CONSTRAINT email_unique UNIQUE (email)
     );
 
-CREATE TABLE IF NOT EXISTS public.zipcodes
+CREATE TABLE IF NOT EXISTS public.zip_codes
 (
-    zipcode integer NOT NULL,
+    zip_code integer NOT NULL,
     city character varying NOT NULL,
-    PRIMARY KEY (zipcode)
+    PRIMARY KEY (zip_code)
     );
 
 CREATE TABLE IF NOT EXISTS public.orders
@@ -79,8 +79,8 @@ CREATE TABLE IF NOT EXISTS public.users_orders
 -- =========================================================
 
 ALTER TABLE IF EXISTS public.users
-    ADD CONSTRAINT zipcode_fk FOREIGN KEY (zipcode)
-    REFERENCES public.zipcodes (zipcode) MATCH SIMPLE
+    ADD CONSTRAINT zip_code_fk FOREIGN KEY (zip_code)
+    REFERENCES public.zip_codes (zip_code) MATCH SIMPLE
     ON UPDATE NO ACTION
        ON DELETE NO ACTION
     NOT VALID;
@@ -125,13 +125,22 @@ ALTER TABLE IF EXISTS public.users_orders
 -- =========================================================
 
 -- ---------------------------------------------
--- Zipcodes
+-- Zip_codes
 -- ---------------------------------------------
-INSERT INTO public.zipcodes (zipcode, city) VALUES
-                                                (1000, 'Copenhagen'),
+INSERT INTO public.zip_codes (zip_code, city) VALUES
+                                                (1000, 'København'),
                                                 (2000, 'Frederiksberg'),
                                                 (8000, 'Aarhus'),
-                                                (5000, 'Odense')
+                                                (5000, 'Odense'),
+                                                (3700, 'Rønne'),
+                                                (3720, 'Aakirkeby'),
+                                                (3730, 'Nexø'),
+                                                (3740, 'Svaneke'),
+                                                (3751, 'Østermarie'),
+                                                (3760, 'Gudhjem'),
+                                                (3770, 'Allinge'),
+                                                (3782, 'Klemensker'),
+                                                (3790, 'Hasle')
     ON CONFLICT DO NOTHING;
 
 -- ---------------------------------------------
@@ -165,11 +174,11 @@ INSERT INTO public.toppings (flavour, price) VALUES
 -- ---------------------------------------------
 INSERT INTO public.users (
     firstname, lastname, email, password,
-    phonenumber, address, zipcode, balance, isadmin
+    phonenumber, street, zip_code, balance, admin
 ) VALUES
       ('System', 'Administrator', 'Admin@mail.dk', '1234', NULL, 'Head Office', 1000, 0, TRUE),
-      ('John', 'Doe', 'john.doe@mail.dk', 'pass123', 11223344, 'Main Street 5', 2000, 150.50, FALSE),
-      ('Jane', 'Smith', 'jane.smith@mail.dk', 'secret', 99887766, 'Baker Street 10', 8000, 75.00, FALSE)
+      ('Poul', 'Hansen', 'poul.hansen@mail.dk', 'bornholm123', 20481234, 'Snellemark 14', 3700, 250.75, FALSE),
+      ('Maja', 'Christiansen', 'maja.christiansen@mail.dk', 'solskinsø', 30487766, 'Søndergade 8', 3740, 180.00, FALSE)
     ON CONFLICT (email) DO NOTHING;
 
 -- ---------------------------------------------
@@ -208,8 +217,14 @@ VALUES
 -- ---------------------------------------------
 INSERT INTO public.users_orders (users_user_id, orders_order_id)
 VALUES
-    (2, 1),  -- John Doe made Order 1
-    (3, 2),  -- Jane Smith made Order 2
-    (3, 3);  -- Jane Smith made Order 3
+    (2, 1),  -- Poul Hansen made Order 1
+    (3, 2),  -- Maja Christiansen made Order 2
+    (3, 3);  -- Maja Smith Christiansen made Order 3
+
+-- ==============================================
+-- CREATE TEST SCHEMA (for integration/unit tests)
+-- ==============================================
+CREATE SCHEMA IF NOT EXISTS test;
+
 
 COMMIT;

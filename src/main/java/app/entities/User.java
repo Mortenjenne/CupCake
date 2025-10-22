@@ -14,8 +14,8 @@ public class User
     private String lastName;
     private String email;
     private String password;
-    private String phoneNumber;
-    private String address;
+    private int phoneNumber;
+    private String street;
     private int zipCode;
     private String city;
     private double balance;
