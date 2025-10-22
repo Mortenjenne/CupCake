@@ -11,10 +11,9 @@ public class UserDTO
     private String firstName;
     private String lastName;
     private String email;
-    private String phoneNumber;
+    private int phoneNumber;
     private String address;
     private int zipCode;
     private String city;
     private double balance;
-    private boolean isAdmin;
 }

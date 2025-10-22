@@ -1,66 +1,161 @@
 package app.persistence;
 
+import app.dto.UserDTO;
 import app.entities.Order;
+import app.entities.OrderLine;
 import app.exceptions.DatabaseException;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderMapper
 {
     private ConnectionPool connectionPool;
+    private OrderLineMapper orderLineMapper;
 
-    public OrderMapper(ConnectionPool connectionPool)
+    public OrderMapper(ConnectionPool connectionPool, OrderLineMapper orderLineMapper)
     {
         this.connectionPool = connectionPool;
+        this.orderLineMapper = orderLineMapper;
     }
 
-    public Order createOrder(LocalDateTime orderDate, LocalDateTime pickUpDate, boolean paid, double totalPrice) throws DatabaseException
+    public Order createOrder(Order order) throws DatabaseException
     {
-        Order order = null;
-        String sql = "INSERT INTO orders (order_date, pickup_date, paid, price_total) VALUES (?, ?, ?, ?)";
+        Connection connection = null;
+        try
+        {
+            connection = connectionPool.getConnection();
+            connection.setAutoCommit(false);
+
+            int orderId = insertOrder(connection, order);
+            linkUserToOrder(connection, order.getUserDTO().getUserId(), orderId);
+            orderLineMapper.insertOrderLines(connection, orderId, order.getOrderlines());
+
+            connection.commit();
+
+            order.setOrderId(orderId);
+            return order;
+        }
+        catch (SQLException e)
+        {
+            if (connection != null)
+            {
+                try
+                {
+                    connection.rollback();
+                }
+                catch (SQLException rollbackException)
+                {
+                }
+            }
+            throw new DatabaseException("Kunne ikke oprette ordren i databasen: " + e.getMessage());
+        }
+        finally
+        {
+            if (connection != null)
+            {
+                try
+                {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+                catch (SQLException e)
+                {
+                }
+            }
+        }
+    }
+
+    public Order getOrderByOrderId(int orderId, int userId) throws DatabaseException
+    {
+        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total, u.user_id, u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, z.city FROM orders o JOIN users_orders uo ON o.order_id = uo.orders_order_id JOIN users u ON uo.users_user_id = u.user_id JOIN zip_codes z ON u.zip_code = z.zip_code WHERE o.order_id = ? AND u.user_id = ?";
 
         try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
+             PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setTimestamp(1, Timestamp.valueOf(orderDate));
-            ps.setTimestamp(2, Timestamp.valueOf(pickUpDate));
-            ps.setBoolean(3, paid);
-            ps.setDouble(4, totalPrice);
+            ps.setInt(1, orderId);
+            ps.setInt(2, userId);
 
-            int rowsAffected = ps.executeUpdate();
-
-            if (rowsAffected == 1)
+            try (ResultSet rs = ps.executeQuery())
             {
-                try (ResultSet rs = ps.getGeneratedKeys())
+                if (rs.next())
                 {
-                    if (rs.next())
-                    {
-                        int orderId = rs.getInt(1);
-                        order = new Order(orderId, null, orderDate, pickUpDate, paid, null, totalPrice);
-                    }
+                    UserDTO user = new UserDTO(
+                            rs.getInt("user_id"),
+                            rs.getString("firstname"),
+                            rs.getString("lastname"),
+                            rs.getString("email"),
+                            rs.getInt("phonenumber"),
+                            rs.getString("street"),
+                            rs.getInt("zip_code"),
+                            rs.getString("city"),
+                            rs.getDouble("balance")
+                    );
+
+                    List<OrderLine> orderLines = orderLineMapper.getOrderLinesByOrderId(orderId);
+
+                    Order order = new Order(
+                            rs.getInt("order_id"),
+                            user,
+                            rs.getTimestamp("order_date").toLocalDateTime(),
+                            rs.getTimestamp("pickup_date").toLocalDateTime(),
+                            rs.getBoolean("paid"),
+                            orderLines,
+                            rs.getDouble("price_total")
+                    );
+                    return order;
+                }
+                else
+                {
+                    throw new DatabaseException("Ordre ikke fundet");
                 }
             }
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke oprette ordren i databasen: " + e.getMessage());
+            throw new DatabaseException("Kunne ikke hente ordre: " + e.getMessage());
         }
-
-        return order;
     }
 
-    public Order getOrderByOrderId(int orderId)
+    public List<Order> getOrdersByUserId(UserDTO userDTO) throws DatabaseException
     {
-        Order order = null;
-        return order;
-    }
+        List<Order> orders = new ArrayList<>();
 
-    public List<Order> getOrderByUserId(int userId)
-    {
-        List<Order> orders = null;
-        return orders;
+        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total FROM orders o JOIN users_orders uo ON o.order_id = uo.orders_order_id WHERE uo.users_user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userDTO.getUserId());
+
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
+                    int orderId = rs.getInt("order_id");
+
+                    List<OrderLine> orderLines = orderLineMapper.getOrderLinesByOrderId(orderId);
+
+                    Order order = new Order(
+                            orderId,
+                            userDTO,
+                            rs.getTimestamp("order_date").toLocalDateTime(),
+                            rs.getTimestamp("pickup_date").toLocalDateTime(),
+                            rs.getBoolean("paid"),
+                            orderLines,
+                            rs.getDouble("price_total")
+                    );
+                    orders.add(order);
+                }
+            }
+            return orders;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Kunne ikke hente ordrer: " + e.getMessage());
+        }
     }
 
     public List<Order> getAllOrders()
@@ -79,6 +174,42 @@ public class OrderMapper
     {
         return false;
     }
+
+    private int insertOrder(Connection connection, Order order) throws SQLException
+    {
+        String sql = "INSERT INTO orders (order_date, pickup_date, paid, price_total) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
+        {
+            ps.setTimestamp(1, Timestamp.valueOf(order.getOrderDate()));
+            ps.setTimestamp(2, Timestamp.valueOf(order.getPickUpDate()));
+            ps.setBoolean(3, order.isPaid());
+            ps.setDouble(4, order.getTotalPrice());
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next())
+            {
+                return rs.getInt(1);
+            }
+            throw new SQLException("Ingen ordre id oprettet");
+        }
+    }
+
+    private void linkUserToOrder(Connection connection, int userId, int orderId) throws SQLException
+    {
+        String sql = "INSERT INTO users_orders (users_user_id, orders_order_id) VALUES (?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userId);
+            ps.setInt(2, orderId);
+            ps.executeUpdate();
+        }
+    }
+
+
+
 
 
 }
