@@ -60,7 +60,7 @@ public class UserController
         try
         {
             userService.registerUser(createUserRequestDTO);
-            ctx.sessionAttribute("succesLabel","Du har oprettet en bruger! Log på med email og password");
+            ctx.sessionAttribute("succesMessage","Du har oprettet en bruger! Log på med email og password");
             ctx.redirect("/login");
         } catch (DatabaseException | IllegalArgumentException e)
         {
