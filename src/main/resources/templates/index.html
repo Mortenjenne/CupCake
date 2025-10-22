@@ -20,10 +20,10 @@
         </section>
 
         <section class="cupcake-box">
-                <img src="/public/images/cupcakes/toppings/topping_strawberry.png"
+                <img class="topping-img" src="/public/images/cupcakes/toppings/topping_strawberry.png"
                      th:src="@{/images/cupcakes/toppings/topping_strawberry.png}"
                      alt="cupcake Topping"/>
-                <img src="/public/images/cupcakes/bottoms/bottom_chocolate.png"
+                <img class="bottom-img" src="/public/images/cupcakes/bottoms/bottom_chocolate.png"
                      th:src="@{/images/cupcakes/bottoms/bottom_chocolate.png}"
                      alt="Cupcake Bottom"/>
         </section>
@@ -32,20 +32,24 @@
             <h4>Vælg og bestil her</h4>
 
             <form method="post" th:action="@{/cart/add}">
-                <select name="bottomId" required>
+                <select name="bottomId" id="bottomSelect" required>
                     <option value="">Vælg Bund</option>
                     <option th:each="b : ${bottoms}"
                             th:value="${b.bottomId}"
-                            th:text="${b.name + ' + ' + b.price + 'kr'}">
+                            th:text="${b.name + ' + ' + b.price + 'kr'}"
+                            th:attr="data-img=@{/images/cupcakes/bottoms/bottom_{slug}.png(
+                            slug=${#strings.toLowerCase( (b.name != null ? b.name.replaceAll('\\W+', '') : '') )})}">
                     </option>
                 </select>
-                <select name="toppingId" required>
+                <select name="toppingId" id="toppingSelect" required>
                     <option value="">Vælg Topping</option>
-                        <option th:each="t : ${toppings}"
-                                th:value="${t.toppingId}"
-                                th:text="${t.name + ' + ' + t.price + 'kr'}"
-                                >
-                        </option>
+                    <option th:each="t : ${toppings}"
+                            th:value="${t.toppingId}"
+                            th:text="${t.name + ' + ' + t.price + 'kr'}"
+                            th:attr="data-img=@{/images/cupcakes/toppings/topping_{slug}.png(slug=${t.slug})}"
+                    >
+                    </option>
+
                 </select>
 
 
@@ -65,6 +69,28 @@
 </main>
 
 <div th:replace="fragments :: footerFragment"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const bottomSelect  = document.getElementById("bottomSelect");
+        const toppingSelect = document.getElementById("toppingSelect");
+        const bottomImg     = document.querySelector(".bottom-img");
+        const toppingImg    = document.querySelector(".topping-img");
+
+        function updateImage(selectEl, imgEl, fallbackSrc) {
+            const selected = selectEl.selectedOptions[0];
+            const imgUrl = selected ? selected.dataset.img : null;
+            if (imgUrl) {
+                imgEl.src = imgUrl;
+            } else if (fallbackSrc) {
+                imgEl.src = fallbackSrc;
+            }
+        }
+
+        bottomSelect.addEventListener("change", () => updateImage(bottomSelect, bottomImg));
+        toppingSelect.addEventListener("change", () => updateImage(toppingSelect, toppingImg));
+    });
+</script>
 
 </body>
 </html>
