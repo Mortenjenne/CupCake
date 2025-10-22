@@ -43,7 +43,7 @@ public class BottomMapper
 
     public Bottom getBottomById(int bottomId) throws DatabaseException
     {
-        String sql = "SELECT * FROM toppings WHERE bottom_id = ?";
+        String sql = "SELECT * FROM bottoms WHERE bottom_id = ?";
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, bottomId);

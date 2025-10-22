@@ -2,9 +2,14 @@ package app;
 
 import app.config.ThymeleafConfig;
 
+import app.controllers.ShoppingController;
 import app.controllers.UserController;
+import app.persistence.BottomMapper;
 import app.persistence.ConnectionPool;
+import app.persistence.ToppingMapper;
 import app.persistence.UserMapper;
+import app.services.ShoppingService;
+import app.services.ShoppingServiceImpl;
 import app.services.UserService;
 import app.services.UserServiceImpl;
 import io.javalin.Javalin;//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -34,13 +39,16 @@ public class Main {
 
         // Routing
 
-        app.get("/", ctx -> {
-            ctx.render("index.html");
-        });
-
         UserMapper userMapper = new UserMapper(connectionPool);
         UserService userService = new UserServiceImpl(userMapper);
         UserController userController = new UserController(userService);
+
+        BottomMapper bottomMapper = new BottomMapper(connectionPool);
+        ToppingMapper toppingMapper = new ToppingMapper(connectionPool);
+        ShoppingService shoppingService = new ShoppingServiceImpl(bottomMapper,toppingMapper);
+        ShoppingController shoppingController = new ShoppingController(shoppingService);
+
+        shoppingController.addRoutes(app);
         userController.registerRoutes(app);
 
     }
