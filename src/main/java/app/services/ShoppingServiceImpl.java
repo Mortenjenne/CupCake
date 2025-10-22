@@ -6,21 +6,17 @@ import app.entities.ShoppingCart;
 import app.entities.Topping;
 import app.exceptions.DatabaseException;
 import app.persistence.BottomMapper;
-import app.persistence.ConnectionPool;
 import app.persistence.ToppingMapper;
 
 import java.util.List;
 
 public class ShoppingServiceImpl implements ShoppingService
 {
-
-    private ConnectionPool connectionPool;
     private ToppingMapper toppingMapper;
     private BottomMapper bottomMapper;
 
-    public ShoppingServiceImpl(ConnectionPool connectionPool, BottomMapper bottomMapper, ToppingMapper toppingMapper)
+    public ShoppingServiceImpl(BottomMapper bottomMapper, ToppingMapper toppingMapper)
     {
-        this.connectionPool = connectionPool;
         this.bottomMapper = bottomMapper;
         this.toppingMapper = toppingMapper;
     }

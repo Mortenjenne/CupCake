@@ -47,10 +47,14 @@
                                 >
                         </option>
                 </select>
-                <span th:text="${cupcakeprice}"></span>
-                <input type="number" name="quantity" min="1" value="1" required>
+
+
+
+                <input type="number" name="cupcakeQuantity" min="1" placeholder="1" th:value="${cupcakeQuantity}" required>
 
                 <button type="submit">Tilføj til kurv</button>
+                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
+                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
 
             </form>
         </section>

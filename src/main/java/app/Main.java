@@ -45,11 +45,11 @@ public class Main {
 
         BottomMapper bottomMapper = new BottomMapper(connectionPool);
         ToppingMapper toppingMapper = new ToppingMapper(connectionPool);
-        ShoppingService shoppingService = new ShoppingServiceImpl(connectionPool,bottomMapper,toppingMapper);
+        ShoppingService shoppingService = new ShoppingServiceImpl(bottomMapper,toppingMapper);
         ShoppingController shoppingController = new ShoppingController(shoppingService);
 
-        userController.registerRoutes(app);
         shoppingController.addRoutes(app);
+        userController.registerRoutes(app);
 
     }
 }
