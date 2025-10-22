@@ -2,6 +2,7 @@ package app.persistence;
 
 import app.entities.User;
 import app.exceptions.DatabaseException;
+
 import java.sql.*;
 
 public class UserMapper
@@ -16,7 +17,8 @@ public class UserMapper
     public User createUser(String firstname, String lastname, String email, String password, int phonenumber, String street, int zipcode, String city) throws DatabaseException
     {
         User newUser = null;
-        String sql = "INSERT INTO users (firstname, lastname, email, password, phonenumber, street, zip_code) values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         ensureZipExists(zipcode, city);
 
         try (Connection connection = connectionPool.getConnection();
@@ -29,41 +31,53 @@ public class UserMapper
             ps.setInt(5, phonenumber);
             ps.setString(6, street);
             ps.setInt(7, zipcode);
+            ps.setDouble(8, 0.0);       // default balance
+            ps.setBoolean(9, false);    // default admin-status
 
             int rowsAffected = ps.executeUpdate();
 
-            if (rowsAffected == 1)
+            if (rowsAffected != 1)
             {
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next())
-                {
-                    int userId = rs.getInt(1);
-                    newUser = new User(
-                            userId,
-                            firstname,
-                            lastname,
-                            email,
-                            password,
-                            phonenumber,
-                            street,
-                            zipcode,
-                            city,
-                            0,
-                            false
-                    );
-                }
+                throw new DatabaseException("Uventet fejl");
             }
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next())
+            {
+                int userId = rs.getInt(1);
+                newUser = new User(
+                        userId,
+                        firstname,
+                        lastname,
+                        email,
+                        password,
+                        phonenumber,
+                        street,
+                        zipcode,
+                        city,
+                        0,
+                        false
+                );
+            }
+
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke oprette bruger, email findes allerede i systemet");
+            if (e.getMessage().toLowerCase().contains("duplicate") || e.getMessage().toLowerCase().contains("email_unique"))
+            {
+                throw new DatabaseException("Email findes allerede, vælg en anden eller log ind");
+            }
+            else
+            {
+                throw new DatabaseException("Databasefejl ved oprettelse af bruger: " + e.getMessage());
+            }
         }
         return newUser;
     }
 
     public User getUserById(int userId) throws DatabaseException
     {
-        String sql = "SELECT * FROM users u JOIN zipcodes z ON u.zip_code = z.zip_code WHERE user_id = ?";
+        String sql = "SELECT * FROM users u JOIN zip_codes z ON u.zip_code = z.zip_code WHERE user_id = ?";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -100,7 +114,7 @@ public class UserMapper
 
     public User getUserByEmail(String email) throws DatabaseException
     {
-        String sql = "SELECT * FROM users u JOIN zipcodes z ON u.zip_code = z.zip_code WHERE email = ?";
+        String sql = "SELECT * FROM users u JOIN zip_codes z ON u.zip_code = z.zip_code WHERE email = ?";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -153,6 +167,7 @@ public class UserMapper
             ps.setBoolean(7, user.isAdmin());
             ps.setInt(8, user.getZipCode());
             ps.setDouble(9, user.getBalance());
+            ps.setInt(10, user.getUserId());
 
             int rowsAffected = ps.executeUpdate();
 

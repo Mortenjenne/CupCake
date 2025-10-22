@@ -1,8 +1,6 @@
 -- =========================================================
---  CUPCAKE DATABASE INITIALIZATION SCRIPT
---  Generated from ERD (pgAdmin 4) + Data Population
---  (phonenumber reverted to integer, users_orders reverted
---   to serial columns with no primary key per request)
+--  CUPCAKE DATABASE INITIALIZATION & TEST DATA SCRIPT
+--  (Matches original ERD structure and includes sample data)
 -- =========================================================
 
 BEGIN;
@@ -19,19 +17,19 @@ CREATE TABLE IF NOT EXISTS public.users
     email character varying NOT NULL,
     password character varying NOT NULL,
     phonenumber integer,
-    street character varying,
-    zip_code integer,
+    address character varying,
+    zipcode integer,
     balance double precision NOT NULL DEFAULT 0,
-    admin boolean DEFAULT false,
-    CONSTRAINT users_pkey PRIMARY KEY (user_id),
+    isadmin boolean,
+    CONSTRAINT zip PRIMARY KEY (user_id),
     CONSTRAINT email_unique UNIQUE (email)
     );
 
 CREATE TABLE IF NOT EXISTS public.zipcodes
 (
-    zip_code integer NOT NULL,
+    zipcode integer NOT NULL,
     city character varying NOT NULL,
-    PRIMARY KEY (zipcodes)
+    PRIMARY KEY (zip_code)
     );
 
 CREATE TABLE IF NOT EXISTS public.orders
@@ -39,7 +37,7 @@ CREATE TABLE IF NOT EXISTS public.orders
     order_id serial NOT NULL,
     order_date timestamp with time zone NOT NULL DEFAULT now(),
     pickup_date timestamp with time zone,
-                              paid boolean NOT NULL DEFAULT false,
+                              paid boolean NOT NULL,
                               price_total double precision,
                               PRIMARY KEY (order_id)
     );
@@ -81,8 +79,8 @@ CREATE TABLE IF NOT EXISTS public.users_orders
 -- =========================================================
 
 ALTER TABLE IF EXISTS public.users
-    ADD CONSTRAINT zipcode_fk FOREIGN KEY (zipcode)
-    REFERENCES public.zipcodes (zipcode) MATCH SIMPLE
+    ADD CONSTRAINT zip_code_fk FOREIGN KEY (zip_code)
+    REFERENCES public.zip_codes (zip_code) MATCH SIMPLE
     ON UPDATE NO ACTION
        ON DELETE NO ACTION
     NOT VALID;
@@ -129,8 +127,11 @@ ALTER TABLE IF EXISTS public.users_orders
 -- ---------------------------------------------
 -- Zipcodes
 -- ---------------------------------------------
-INSERT INTO public.zipcodes (zipcode, city)
-VALUES (1000, 'Copenhagen')
+INSERT INTO public.zip_codes (zip_code, city) VALUES
+                                                (1000, 'Copenhagen'),
+                                                (2000, 'Frederiksberg'),
+                                                (8000, 'Aarhus'),
+                                                (5000, 'Odense')
     ON CONFLICT DO NOTHING;
 
 -- ---------------------------------------------
@@ -160,29 +161,55 @@ INSERT INTO public.toppings (flavour, price) VALUES
     ON CONFLICT DO NOTHING;
 
 -- ---------------------------------------------
--- Admin User
+-- Users (Admin + 2 Customers)
 -- ---------------------------------------------
 INSERT INTO public.users (
-    firstname,
-    lastname,
-    email,
-    password,
-    phonenumber,
-    address,
-    zipcode,
-    balance,
-    isadmin
-) VALUES (
-             'System',
-             'Administrator',
-             'Admin@mail.dk',
-             '1234',        -- ⚠️ In production, store hashed password instead
-             NULL,
-             'Head Office',
-             1000,
-             0,
-             TRUE
-         )
+    firstname, lastname, email, password,
+    phonenumber, address, zipcode, balance, isadmin
+) VALUES
+      ('System', 'Administrator', 'Admin@mail.dk', '1234', NULL, 'Head Office', 1000, 0, TRUE),
+      ('John', 'Doe', 'john.doe@mail.dk', 'pass123', 11223344, 'Main Street 5', 2000, 150.50, FALSE),
+      ('Jane', 'Smith', 'jane.smith@mail.dk', 'secret', 99887766, 'Baker Street 10', 8000, 75.00, FALSE)
     ON CONFLICT (email) DO NOTHING;
+
+-- ---------------------------------------------
+-- Orders
+-- ---------------------------------------------
+INSERT INTO public.orders (order_date, pickup_date, paid, price_total)
+VALUES
+    (now(), now() + interval '2 day', TRUE, 22.00),
+    (now(), now() + interval '3 day', FALSE, 12.00),
+    (now(), now() + interval '1 day', TRUE, 27.00)
+    ON CONFLICT DO NOTHING;
+
+-- ---------------------------------------------
+-- Orderlines
+-- ---------------------------------------------
+-- Order 1 (2 cupcakes, different combos)
+INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity)
+VALUES
+    (1, 1, 1, 1),  -- Chocolate topping + Chocolate bottom
+    (1, 2, 2, 1);  -- Blueberry topping + Vanilla bottom
+
+-- Order 2 (1 cupcake)
+INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity)
+VALUES
+    (2, 5, 4, 2);  -- Strawberry topping + Pistacio bottom x2
+
+-- Order 3 (3 cupcakes)
+INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity)
+VALUES
+    (3, 6, 5, 1),  -- Rum/Raisin + Almond
+    (3, 3, 1, 1),  -- Raspberry + Chocolate
+    (3, 9, 2, 1);  -- Blue cheese + Vanilla
+
+-- ---------------------------------------------
+-- Users_Orders Mapping
+-- ---------------------------------------------
+INSERT INTO public.users_orders (users_user_id, orders_order_id)
+VALUES
+    (2, 1),  -- John Doe made Order 1
+    (3, 2),  -- Jane Smith made Order 2
+    (3, 3);  -- Jane Smith made Order 3
 
 COMMIT;
