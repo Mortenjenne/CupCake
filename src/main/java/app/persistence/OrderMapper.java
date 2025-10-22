@@ -75,5 +75,10 @@ public class OrderMapper
         return result;
     }
 
+    public boolean updateOrder(int orderId)
+    {
+        return false;
+    }
+
 
 }
