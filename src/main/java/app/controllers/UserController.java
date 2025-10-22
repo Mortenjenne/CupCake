@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.dto.CreateUserRequestDTO;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.services.UserService;
@@ -35,7 +36,8 @@ public class UserController
             User user = userService.authenticate(email, password);
             ctx.sessionAttribute("currentUser",user);
             ctx.render("/index");
-        } catch (DatabaseException e) {
+        } catch (DatabaseException e)
+        {
             ctx.attribute("errorMessage", e.getMessage());
             ctx.render("login");
         }
@@ -43,37 +45,37 @@ public class UserController
 
     private void handleCreateUser(Context ctx)
     {
-        String email      = ctx.formParam("email");
-        String password1  = ctx.formParam("password1");
-        String password2  = ctx.formParam("password2");
-        String firstName  = ctx.formParam("firstName");
-        String lastName   = ctx.formParam("lastName");
-        String street     = ctx.formParam("street");
-        String city       = ctx.formParam("city");
-        String zipStr     = ctx.formParam("zipCode");
-        String phone      = ctx.formParam("phone");
-        int zipCode = Integer.parseInt(zipStr);
-        int phoneNumber = Integer.parseInt(phone);
-
-        if (!password1.equals(password2))
-        {
-            ctx.attribute("errorMessage", "Passwords er ikke ens");
-            keepFormValues(ctx, email, firstName, lastName, street, zipStr, city, phone);
-            ctx.render("createuser.html");
-            return;
-        }
+        CreateUserRequestDTO createUserRequestDTO = new CreateUserRequestDTO(
+                ctx.formParam("email"),
+                ctx.formParam("password1"),
+                ctx.formParam("password2"),
+                ctx.formParam("firstName"),
+                ctx.formParam("lastName"),
+                ctx.formParam("street"),
+                ctx.formParam("city"),
+                ctx.formParam("zipCode"),
+                ctx.formParam("phone")
+        );
 
         try
         {
-            userService.registerUser(email, password1, firstName,
-                    lastName, street, city, zipCode, phoneNumber);
-
-            ctx.attribute("succesLabel","Du har oprettet en bruger! Log på med email og password");
+            userService.registerUser(createUserRequestDTO);
+            ctx.sessionAttribute("succesLabel","Du har oprettet en bruger! Log på med email og password");
             ctx.redirect("/login");
         } catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
-            ctx.render("create-user.html");
+            keepFormValues(
+                    ctx,
+                    createUserRequestDTO.getEmail(),
+                    createUserRequestDTO.getFirstName(),
+                    createUserRequestDTO.getLastName(),
+                    createUserRequestDTO.getStreet(),
+                    createUserRequestDTO.getZipCode(),
+                    createUserRequestDTO.getCity(),
+                    createUserRequestDTO.getPhoneNumber()
+            );
+            ctx.render("createuser.html");
         }
     }
 
@@ -83,9 +85,7 @@ public class UserController
     private void showLoginPage(Context ctx)
     { ctx.render("/login"); }
 
-    private void keepFormValues(Context ctx, String email, String firstName,
-                                String lastName, String street,
-                                String zipCode, String city, String phone)
+    private void keepFormValues(Context ctx, String email, String firstName, String lastName, String street, String zipCode, String city, String phone)
     {
         ctx.attribute("email", email);
         ctx.attribute("firstName", firstName);
