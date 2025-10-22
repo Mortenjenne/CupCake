@@ -37,8 +37,7 @@
                     <option th:each="b : ${bottoms}"
                             th:value="${b.bottomId}"
                             th:text="${b.name + ' + ' + b.price + 'kr'}"
-                            th:attr="data-img=@{/images/cupcakes/bottoms/bottom_{slug}.png(
-                            slug=${#strings.toLowerCase( (b.name != null ? b.name.replaceAll('\\W+', '') : '') )})}">
+                            th:attr="data-img=@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${b.slug})}">
                     </option>
                 </select>
                 <select name="toppingId" id="toppingSelect" required>
@@ -46,8 +45,7 @@
                     <option th:each="t : ${toppings}"
                             th:value="${t.toppingId}"
                             th:text="${t.name + ' + ' + t.price + 'kr'}"
-                            th:attr="data-img=@{/images/cupcakes/toppings/topping_{slug}.png(slug=${t.slug})}"
-                    >
+                            th:attr="data-img=@{/images/cupcakes/toppings/topping_{slug}.png(slug=${t.slug})}">
                     </option>
 
                 </select>
@@ -86,7 +84,6 @@
                 imgEl.src = fallbackSrc;
             }
         }
-
         bottomSelect.addEventListener("change", () => updateImage(bottomSelect, bottomImg));
         toppingSelect.addEventListener("change", () => updateImage(toppingSelect, toppingImg));
     });

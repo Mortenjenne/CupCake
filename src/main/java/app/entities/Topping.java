@@ -15,8 +15,8 @@ public class Topping
         if (name == null) return "";
         return name
                 .toLowerCase()
-                .replaceAll("[\\s/]+", "")   // fjern mellemrum og /
-                .replaceAll("[^a-z0-9]", ""); // fjern alt andet sjovt
+                .replaceAll("[\\s/]+", "")
+                .replaceAll("[^a-z0-9]", "");
     }
 
 }

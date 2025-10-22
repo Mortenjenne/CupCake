@@ -11,4 +11,11 @@ public class Bottom
     private String name;
     private double price;
 
+    public String getSlug() {
+        if (name == null) return "";
+        return name
+                .toLowerCase()
+                .replaceAll("[\\s/]+", "")
+                .replaceAll("[^a-z0-9]", "");
+    }
 }
