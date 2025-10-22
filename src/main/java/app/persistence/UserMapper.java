@@ -2,13 +2,15 @@ package app.persistence;
 
 import app.entities.User;
 import app.exceptions.DatabaseException;
+
 import java.sql.*;
 
 public class UserMapper
 {
     private ConnectionPool connectionPool;
 
-    public UserMapper(ConnectionPool connectionPool) {
+    public UserMapper(ConnectionPool connectionPool)
+    {
         this.connectionPool = connectionPool;
     }
 
@@ -25,7 +27,7 @@ public class UserMapper
             ps.setString(2, user.getLastName());
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
-            ps.setString(5,user.getPhoneNumber());
+            ps.setString(5, user.getPhoneNumber());
             ps.setString(6, user.getAddress());
             ps.setInt(7, user.getZipCode());
 
@@ -45,16 +47,168 @@ public class UserMapper
         return newUser;
     }
 
-    public User getUserById(int userId) {
-        return null;
+    public User getUserById(int userId) throws DatabaseException
+    {
+        String sql = "SELECT * FROM users u JOIN zipcodes z ON u.zipcode = z.zipcode WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("phonenumber"),
+                        rs.getString("address"),
+                        rs.getInt("zip_code"),
+                        rs.getString("city"),
+                        rs.getDouble("balance"),
+                        rs.getBoolean("admin")
+                );
+            }
+            else
+            {
+                throw new DatabaseException("Der blev ikke fundet en bruger med id: " + userId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af bruger: " + e.getMessage());
+        }
     }
 
-    public User updateUser(User user) {
-        return null;
+    public User getUserByEmail(String email) throws DatabaseException
+    {
+        String sql = "SELECT * FROM users u JOIN zipcodes z ON u.zipcode = z.zipcode WHERE email = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("phonenumber"),
+                        rs.getString("address"),
+                        rs.getInt("zip_code"),
+                        rs.getString("city"),
+                        rs.getDouble("balance"),
+                        rs.getBoolean("admin")
+                );
+            }
+            else
+            {
+                throw new DatabaseException("Der blev ikke fundet en bruger med email: " + email);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af bruger: " + e.getMessage());
+        }
     }
 
-    public boolean deleteUser(int userId) {
-        return false;
+    // TODO Should we add admin to updateUser() ?
+    // TODO How do we access 'city' when returning new User?
+    public User updateUser(User user) throws DatabaseException
+    {
+        String sql = "UPDATE users SET firstname = ?, lastname = ?, email = ?, password = ?, phonenumber = ?, address = ?, zip_code = ?, balance = ? WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPassword());
+            ps.setString(5, user.getPhoneNumber());
+            ps.setString(6, user.getAddress());
+            ps.setInt(7, user.getZipCode());
+            ps.setDouble(8, user.getBalance());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("phonenumber"),
+                        rs.getString("address"),
+                        rs.getInt("zip_code"),
+                        rs.getString("city"),
+                        rs.getDouble("balance"),
+                        rs.getBoolean("admin")
+                );
+            }
+            else
+            {
+                throw new DatabaseException("Brugeren blev ikke opdateret - id: " + user.getUserId());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af bruger: " + e.getMessage());
+        }
+    }
+
+    public boolean deleteUser(int userId) throws DatabaseException
+    {
+        String sql = "DELETE FROM users WHERE user_id = ?";
+        boolean result = false;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userId);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                result = true;
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af bruger med id: " + userId);
+        }
+        return result;
+    }
+
+    // TODO where do we calculate new balance?
+// Amount is set, not added in this method - we might need to refactor
+    public void updateUserBalance(int userId, double amount) throws DatabaseException
+    {
+        String sql = "UPDATE users SET balance = ? WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setDouble(1, amount);
+            ps.setInt(2, userId);
+
+            ResultSet rs = ps.executeQuery();
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Beløbet " + amount + ",- blev ikke tilføjet til bruger med id: " + userId);
+        }
     }
 
     public User login(String email, String password) throws DatabaseException
@@ -73,7 +227,8 @@ public class UserMapper
 
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
+            if (rs.next())
+            {
                 return new User(
                         rs.getInt("user_id"),
                         rs.getString("firstname"),
@@ -93,7 +248,7 @@ public class UserMapper
                 throw new DatabaseException("Forkert email eller password");
             }
         }
-        catch(SQLException e)
+        catch (SQLException e)
         {
             throw new DatabaseException("Login-fejl: " + e.getMessage());
         }
@@ -108,7 +263,8 @@ public class UserMapper
         {
             ps.setInt(1, zipCode);
             ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
+            if (!rs.next())
+            {
                 String insertSql = "INSERT INTO zip_codes (zip_code, city) VALUES (?, ?)";
                 try (PreparedStatement insertPs = connection.prepareStatement(insertSql))
                 {
@@ -117,7 +273,9 @@ public class UserMapper
                     insertPs.executeUpdate();
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new DatabaseException("Kunne ikke indsætte zip_code/city");
         }
     }

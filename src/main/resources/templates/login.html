@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Olsker Cupcakes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<div th:replace="fragments :: headerFragment"></div>
+
+<main>
+    <div class="login-container"></div>
+    <h1>Log ind på din konto, eller opret en</h1>
+    <form th:action="@{/login}" method="post">
+
+        <div class="login-container">
+        <label for="email">Indtast email</label>
+        <input type="text" placeholder="Indtast email" id="email" name="email">
+        </div>
+
+        <div class="login-container">
+        <label for="password">Indtast password</label>
+        <input type="password" placeholder="Indtast password" id="password" name="password">
+        </div>
+        <button type="submit">Log in</button>
+    </form>
+    <div class="error-succes-label">
+    <p id="error-message" class="error"
+       th:if="${errorMessage != null}"
+       th:text="${errorMessage}">
+    </p>
+    </div>
+    <div class="error-succes-label">
+    <p class="success" th:if="${session.successMessage}"
+       th:text="${session.successMessage}"></p>
+    </div>
+
+    <div class="createaccount-link">
+        <label for="createuser">No account? Create user below</label>
+        <a th:href="@{/create-user}" id="createuser">Create user</a>
+    </div>
+
+
+</main>
+
+<div th:replace="fragments :: footerFragment"></div>
+
+</body>
+</html>

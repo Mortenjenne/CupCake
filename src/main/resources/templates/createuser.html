@@ -12,7 +12,54 @@
 <div th:replace="fragments :: headerFragment"></div>
 
 <main>
+    <div class="createuser-container">
+        <h1>Opret bruger</h1>
 
+        <h2>Udfyld venligst:</h2>
+
+        <form th:action="@{/create-user}" method="post">
+
+            <div class="create-group">
+                <label for="email">Indtast email</label>
+                <input type="email" th:value="${email}" id="email" name="email" placeholder="Indtast email" required>
+            </div>
+            <div class="create-group">
+                <label for="password1">Password:</label>
+                <input type="password" id="password1" name="password1" placeholder="Indtast password" required>
+                <input type="password" id="password2" name="password2" placeholder="Indtast password igen" required>
+            </div>
+            <hr>
+            <div class="create-group">
+                <label for="firstname">Fornavn:</label>
+                <input type="text" th:value="${firstName}" id="firstname" name="firstName" placeholder="Indtast fornavn" required>
+            </div>
+            <div class="create-group">
+                <label for="lastname">Efternavn:</label>
+                <input type="text" th:value="${lastName}" id="lastname" name="lastName" placeholder="Indtast efternavn" required>
+            </div>
+            <div class="create-group">
+                <label for="street">Gade:</label>
+                <input type="text" th:value="${street}" id="street" name="street" placeholder="Indtast gade" required>
+            </div>
+            <div class="create-group">
+                <label for="zipcode">Postnr:</label>
+                <input type="text" th:value="${zipCode}" id="zipcode" name="zipcode" placeholder="Indtast postnummer" required>
+            </div>
+            <div class="create-group">
+                <label for="city">By:</label>
+                <input type="text" id="city" th:value="${city}" name="city" placeholder="Indtast by" required>
+            </div>
+            <div class="create-group">
+                <label for="phone">Indtast telefon nummer</label>
+                <input type="text" th:value="${phone}" id="phone" name="phone" placeholder="Indtast telefon nummer" required>
+            </div>
+            <p id="error-message" class="error"
+               th:if="${errorMessage != null}"
+               th:text="${errorMessage}">
+            </p>
+            <button type="submit">Opret Bruger</button>
+        </form>
+    </div>
 
 </main>
 
