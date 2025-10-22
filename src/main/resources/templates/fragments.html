@@ -11,12 +11,27 @@
         </nav>
 
         <div class="account-info">
-            <p><a href="login.html" th:href="@{/login}">Login / Opret konto</a></p>
+            <div th:if="${session.currentUser != null}">
+                <span class="username" th:text="${session.currentUser.getEmail}">Username</span>
+                <a th:href="@{/my-page}">
+                    <img th:src="@{/images/profile.svg}" alt="profil">
+                </a>
             <a href="checkout.html" th:href="@{/checkout}">
                 <img src="/public/images/basket-w.svg"
                      alt="Cupcake Logo"
                      th:src="@{/images/basket-w.svg}">
             </a>
+            </div>
+            <div th:if="${session.currentUser == null}">
+                <p>
+                    <a href="login.html" th:href="@{/login}">Login</a>
+                </p>
+                <a href="checkout.html" th:href="@{/checkout}">
+                    <img src="/public/images/basket-w.svg"
+                         alt="Cupcake Logo"
+                         th:src="@{/images/basket-w.svg}">
+                </a>
+            </div>
         </div>
     </header>
 </div>
