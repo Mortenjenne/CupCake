@@ -191,9 +191,25 @@ public class UserMapper
         return result;
     }
 
-    // TODO where do we calculate new balance?
-// Amount is set, not added in this method - we might need to refactor
     public void updateUserBalance(int userId, double amount) throws DatabaseException
+    {
+        String sql = "UPDATE users SET balance = ? WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setDouble(1, amount);
+            ps.setInt(2, userId);
+
+            ResultSet rs = ps.executeQuery();
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Beløbet " + amount + ",- blev ikke tilføjet til bruger med id: " + userId);
+        }
+    }
+
+    public void setUserBalance(int userId, double amount) throws DatabaseException
     {
         String sql = "UPDATE users SET balance = ? WHERE user_id = ?";
 
