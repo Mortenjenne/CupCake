@@ -26,39 +26,64 @@ public class ShoppingServiceImpl implements ShoppingService
     }
 
     @Override
-    public List<Bottom> getAllBottoms() throws DatabaseException {
+    public List<Bottom> getAllBottoms() throws DatabaseException
+    {
         return bottomMapper.getAllBottoms();
     }
 
     @Override
-    public List<Topping> getAllToppings() throws DatabaseException {
+    public List<Topping> getAllToppings() throws DatabaseException
+    {
         return toppingMapper.getAllToppings();
     }
 
     @Override
-    public Bottom getBottomById(int id) throws DatabaseException {
+    public Bottom getBottomById(int id) throws DatabaseException
+    {
         return bottomMapper.getBottomById(id);
     }
 
     @Override
-    public Topping getToppingById(int id) throws DatabaseException {
+    public Topping getToppingById(int id) throws DatabaseException
+    {
         return toppingMapper.getToppingById(id);
     }
 
     @Override
-    public void addToCart(ShoppingCart cart, Bottom bottom, Topping topping, int qty) {
+    public void addOrderLineToCart(ShoppingCart cart, Bottom bottom, Topping topping, int qty)
+    {
         double price = bottom.getPrice() + topping.getPrice();
         Cupcake cupcake = new Cupcake(bottom, topping, price);
-        cart.addToCart(cupcake,qty);
+        cart.addOrderLineToCart(cupcake, qty);
     }
 
     @Override
-    public void removeFromCart(ShoppingCart cart, int index) {
-
+    public void removeOrderLineFromCart(ShoppingCart cart, int index)
+    {
+        cart.removeOrderLineFromCart(cart.getShoppingCart().get(index));
     }
 
     @Override
-    public void clearCart(ShoppingCart cart) {
+    public void removeOneFromCupcakeQuantity(ShoppingCart cart, int index)
+    {
+        cart.removeOneFromCupcakeQuantity(cart.getShoppingCart().get(index));
+    }
 
+    @Override
+    public void addOneToCupcakeQuantity(ShoppingCart cart, int index)
+    {
+        cart.addOneToCupcakeQuantity(cart.getShoppingCart().get(index));
+    }
+
+    @Override
+    public double getTotalOrderPrice(ShoppingCart cart)
+    {
+        return cart.getTotalOrderPrice();
+    }
+
+    @Override
+    public void clearCart(ShoppingCart cart)
+    {
+        cart.clearShoppingCart();
     }
 }
