@@ -46,7 +46,10 @@ public class ShoppingController
 
     private void showBasket(Context ctx)
     {
-        ctx.render("basket.html");
+        var model = new HashMap<String, Object>();
+        model.put("cart", getOrCreateCart(ctx).getShoppingCart());
+
+        ctx.render("basket.html", model);
     }
 
     private ShoppingCart getOrCreateCart(Context ctx)

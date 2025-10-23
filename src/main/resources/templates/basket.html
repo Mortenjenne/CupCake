@@ -12,10 +12,37 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <section class="index-body">
+    <form class="basket-body">
+            <div class="cupcake-card" th:each="o : ${cart}">
+                <div class="cupcake-box">
+                    <img class="bottom-img"
+                         th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${o.cupcake.bottom.slug})}"
+                         alt="bottom">
+                    <img class="topping-img"
+                         th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${o.cupcake.topping.slug})}"
+                         alt="topping">
+                </div>
+                <div class="cupcake-card-info">
+                    <div class="row">
+                        <p>Bund:</p>
+                        <p th:text="${o.cupcake.bottom.name}"></p>
+                    </div>
+                    <div class="row">
+                        <p >Topping:</p>
+                        <p th:text="${o.cupcake.topping.name}"></p>
+                    </div>
+                    <div class="row">
+                        <p>Mængde:</p>
+                        <p th:text="${o.quantity}"></p>
+                    </div>
+                    <div class="row">
+                        <p>Pris:</p>
+                        <p th:text="${o.cupcake.cupcakePrice * o.quantity}"></p>
+                    </div>
+                </div>
 
-    </section>
-
+            </div>
+    </form>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>

@@ -172,6 +172,45 @@ main {
 
 
 
+/*------ Basket BODY CSS ------*/
+.basket-body {
+    width: 50%;
+    max-width: 1000px;
+    margin-top: 1vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+}
+
+.cupcake-card{
+    display: flex;
+    flex-direction: column;
+    background: var(--footer-purple);
+    border: 2px solid var(--header-purple);
+    border-radius: 20px;
+    max-width: 30%;
+    max-height: 30%;
+    margin: 2%;
+
+}
+
+.cupcake-card .cupcake-box{
+    width: 100%;
+    height: 60%;
+}
+
+.cupcake-card-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+
+
+
+
 /*------ FOOTER CSS ------*/
 footer {
     background: var(--footer-purple);
