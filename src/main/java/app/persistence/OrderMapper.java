@@ -70,7 +70,7 @@ public class OrderMapper
 
     public Order getOrderByOrderId(int orderId, int userId) throws DatabaseException
     {
-        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total, u.user_id, u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, z.city FROM orders o JOIN users_orders uo ON o.order_id = uo.orders_order_id JOIN users u ON uo.users_user_id = u.user_id JOIN zip_codes z ON u.zip_code = z.zip_code WHERE o.order_id = ? AND u.user_id = ?";
+        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total, u.user_id, u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, z.city FROM orders o JOIN users_orders uo ON o.order_id = uo.order_id JOIN users u ON uo.user_id = u.user_id JOIN zip_codes z ON u.zip_code = z.zip_code WHERE o.order_id = ? AND u.user_id = ?";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -123,7 +123,7 @@ public class OrderMapper
     {
         List<Order> orders = new ArrayList<>();
 
-        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total FROM orders o JOIN users_orders uo ON o.order_id = uo.orders_order_id WHERE uo.users_user_id = ?";
+        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total, u.user_id, u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, z.city FROM orders o JOIN users_orders uo ON o.order_id = uo.order_id JOIN users u ON uo.user_id = u.user_id JOIN zip_codes z ON u.zip_code = z.zip_code WHERE u.user_id = ?";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -158,10 +158,54 @@ public class OrderMapper
         }
     }
 
-    public List<Order> getAllOrders()
+    public List<Order> getAllOrders() throws DatabaseException
     {
-        List<Order> orders = null;
-        return orders;
+        List<Order> orders = new ArrayList<>();
+
+        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total, u.user_id, u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, z.city FROM orders o JOIN users_orders uo ON o.order_id = uo.order_id JOIN users u ON uo.user_id = u.user_id JOIN zip_codes z ON u.zip_code = z.zip_code";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
+                    int orderId = rs.getInt("order_id");
+
+                    UserDTO userDTO = new UserDTO(
+                            rs.getInt("user_id"),
+                            rs.getString("firstname"),
+                            rs.getString("lastname"),
+                            rs.getString("email"),
+                            rs.getInt("phonenumber"),
+                            rs.getString("street"),
+                            rs.getInt("zip_code"),
+                            rs.getString("city"),
+                            rs.getDouble("balance")
+                    );
+
+                    List<OrderLine> orderLines = orderLineMapper.getOrderLinesByOrderId(orderId);
+
+                    Order order = new Order(
+                            orderId,
+                            userDTO,
+                            rs.getTimestamp("order_date").toLocalDateTime(),
+                            rs.getTimestamp("pickup_date").toLocalDateTime(),
+                            rs.getBoolean("paid"),
+                            orderLines,
+                            rs.getDouble("price_total")
+                    );
+                    orders.add(order);
+                }
+            }
+            return orders;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Kunne ikke hente ordrer: " + e.getMessage());
+        }
     }
 
     public boolean deleteOrder(int orderId)
@@ -207,9 +251,4 @@ public class OrderMapper
             ps.executeUpdate();
         }
     }
-
-
-
-
-
 }

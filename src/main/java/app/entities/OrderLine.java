@@ -7,13 +7,15 @@ import lombok.Data;
 @AllArgsConstructor
 public class OrderLine
 {
-private int orderLineId;
-private Cupcake cupcake;
-private int quantity;
+    private int orderLineId;
+    private Cupcake cupcake;
+    private int quantity;
+    private double orderLinePrice;
 
-public OrderLine(Cupcake cupcake, int quantity){
-    this.cupcake = cupcake;
-    this.quantity = quantity;
-}
-
+    public OrderLine(Cupcake cupcake, int quantity)
+    {
+        this.cupcake = cupcake;
+        this.quantity = quantity;
+        this.orderLinePrice = cupcake.getCupcakePrice() * quantity;
+    }
 }

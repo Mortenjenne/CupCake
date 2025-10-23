@@ -46,27 +46,28 @@ CREATE TABLE IF NOT EXISTS public.orders
 CREATE TABLE IF NOT EXISTS public.bottoms
 (
     bottom_id serial NOT NULL,
-    flavour character varying NOT NULL,
-    price double precision NOT NULL,
+    bottom_flavour character varying NOT NULL,
+    bottom_price double precision NOT NULL,
     PRIMARY KEY (bottom_id)
     );
 
 CREATE TABLE IF NOT EXISTS public.toppings
 (
     topping_id serial NOT NULL,
-    flavour character varying NOT NULL,
-    price double precision NOT NULL,
+    topping_flavour character varying NOT NULL,
+    topping_price double precision NOT NULL,
     PRIMARY KEY (topping_id)
     );
 
 CREATE TABLE IF NOT EXISTS public.orderlines
 (
-    order_line_id serial NOT NULL,
+    orderline_id serial NOT NULL,
     order_id integer NOT NULL,
     topping_id integer NOT NULL,
     bottom_id integer NOT NULL,
     quantity integer NOT NULL,
-    PRIMARY KEY (order_line_id),
+    orderline_price double precision NOT NULL,
+    PRIMARY KEY (orderline_id),
     FOREIGN KEY (order_id) REFERENCES orders(order_id)
     ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (topping_id) REFERENCES toppings(topping_id)
@@ -106,24 +107,24 @@ INSERT INTO public.zip_codes (zip_code, city) VALUES
                                                   (3790, 'Hasle')
     ON CONFLICT DO NOTHING;
 
-INSERT INTO public.bottoms (flavour, price) VALUES
-                                                ('Chocolate', 5.00),
-                                                ('Vanilla', 5.00),
-                                                ('Nutmeg', 5.00),
-                                                ('Pistacio', 6.00),
-                                                ('Almond', 7.00)
+INSERT INTO public.bottoms (bottom_flavour, bottom_price) VALUES
+                                                              ('Chocolate', 5.00),
+                                                              ('Vanilla', 5.00),
+                                                              ('Nutmeg', 5.00),
+                                                              ('Pistacio', 6.00),
+                                                              ('Almond', 7.00)
     ON CONFLICT DO NOTHING;
 
-INSERT INTO public.toppings (flavour, price) VALUES
-                                                 ('Chocolate', 5.00),
-                                                 ('Blueberry', 5.00),
-                                                 ('Raspberry', 5.00),
-                                                 ('Crispy', 6.00),
-                                                 ('Strawberry', 6.00),
-                                                 ('Rum/Raisin', 7.00),
-                                                 ('Orange', 8.00),
-                                                 ('Lemon', 8.00),
-                                                 ('Blue cheese', 9.00)
+INSERT INTO public.toppings (topping_flavour, topping_price) VALUES
+                                                                 ('Chocolate', 5.00),
+                                                                 ('Blueberry', 5.00),
+                                                                 ('Raspberry', 5.00),
+                                                                 ('Crispy', 6.00),
+                                                                 ('Strawberry', 6.00),
+                                                                 ('Rum/Raisin', 7.00),
+                                                                 ('Orange', 8.00),
+                                                                 ('Lemon', 8.00),
+                                                                 ('Blue cheese', 9.00)
     ON CONFLICT DO NOTHING;
 
 INSERT INTO public.users (firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) VALUES
@@ -137,13 +138,13 @@ INSERT INTO public.orders (order_date, pickup_date, paid, price_total) VALUES
                                                                            (now(), now() + interval '3 day', FALSE, 12.00),
                                                                            (now(), now() + interval '1 day', TRUE, 27.00);
 
-INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity) VALUES
-                                                                              (1, 1, 1, 1),
-                                                                              (1, 2, 2, 1),
-                                                                              (2, 5, 4, 2),
-                                                                              (3, 6, 5, 1),
-                                                                              (3, 3, 1, 1),
-                                                                              (3, 9, 2, 1);
+INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity, orderline_price) VALUES
+                                                                              (1, 1, 1, 1, 10.00),
+                                                                              (1, 2, 2, 1, 10.00),
+                                                                              (2, 5, 4, 2, 24.00),
+                                                                              (3, 6, 5, 1, 14.00),
+                                                                              (3, 3, 1, 1, 10.00),
+                                                                              (3, 9, 2, 1, 14.00);
 
 INSERT INTO public.users_orders (user_id, order_id) VALUES
                                                         (2, 1),

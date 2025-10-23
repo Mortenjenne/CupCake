@@ -12,7 +12,7 @@ public class UserDTO
     private String lastName;
     private String email;
     private int phoneNumber;
-    private String address;
+    private String street;
     private int zipCode;
     private String city;
     private double balance;
