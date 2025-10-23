@@ -33,7 +33,7 @@ class UserMapperTest
             {
                 try (Statement stmt = testConnection.createStatement())
                 {
-                    // DROP tables in correct order (respecting FKs)
+                    // Drop tables in correct order (respecting foreign keys)
                     stmt.execute("DROP TABLE IF EXISTS test.users_orders CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orderlines CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orders CASCADE");
@@ -42,84 +42,43 @@ class UserMapperTest
                     stmt.execute("DROP TABLE IF EXISTS test.bottoms CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.toppings CASCADE");
 
-                    // CREATE tables with structure AND constraints
-                    stmt.execute("""
-                    CREATE TABLE test.zip_codes (
-                        zip_code integer PRIMARY KEY,
-                        city varchar NOT NULL
-                    )
-                """);
+                    // Drop sequences
+                    stmt.execute("DROP SEQUENCE IF EXISTS test.users_user_id_seq CASCADE");
+                    stmt.execute("DROP SEQUENCE IF EXISTS test.orders_order_id_seq CASCADE");
+                    stmt.execute("DROP SEQUENCE IF EXISTS test.orderlines_orderline_id_seq CASCADE");
+                    stmt.execute("DROP SEQUENCE IF EXISTS test.bottoms_bottom_id_seq CASCADE");
+                    stmt.execute("DROP SEQUENCE IF EXISTS test.toppings_topping_id_seq CASCADE");
 
-                    stmt.execute("""
-                    CREATE TABLE test.users (
-                        user_id serial PRIMARY KEY,
-                        firstname varchar,
-                        lastname varchar,
-                        email varchar NOT NULL UNIQUE,
-                        password varchar NOT NULL,
-                        phonenumber varchar(20),
-                        street varchar,
-                        zip_code integer,
-                        balance double precision NOT NULL DEFAULT 0,
-                        admin boolean,
-                        FOREIGN KEY (zip_code) REFERENCES test.zip_codes(zip_code)
-                    )
-                """);
+                    // Create tables with structure from public schema
+                    stmt.execute("CREATE TABLE test.zip_codes AS (SELECT * FROM public.zip_codes) WITH NO DATA");
+                    stmt.execute("CREATE TABLE test.users AS (SELECT * FROM public.users) WITH NO DATA");
+                    stmt.execute("CREATE TABLE test.orders AS (SELECT * FROM public.orders) WITH NO DATA");
+                    stmt.execute("CREATE TABLE test.bottoms AS (SELECT * FROM public.bottoms) WITH NO DATA");
+                    stmt.execute("CREATE TABLE test.toppings AS (SELECT * FROM public.toppings) WITH NO DATA");
+                    stmt.execute("CREATE TABLE test.orderlines AS (SELECT * FROM public.orderlines) WITH NO DATA");
+                    stmt.execute("CREATE TABLE test.users_orders AS (SELECT * FROM public.users_orders) WITH NO DATA");
 
-                    stmt.execute("""
-                    CREATE TABLE test.orders (
-                        order_id serial PRIMARY KEY,
-                        order_date timestamp with time zone NOT NULL DEFAULT now(),
-                        pickup_date timestamp with time zone,
-                        paid boolean NOT NULL,
-                        price_total double precision
-                    )
-                """);
+                    // Create and assign sequences
+                    stmt.execute("CREATE SEQUENCE test.users_user_id_seq");
+                    stmt.execute("ALTER TABLE test.users ALTER COLUMN user_id SET DEFAULT nextval('test.users_user_id_seq')");
 
-                    stmt.execute("""
-                    CREATE TABLE test.bottoms (
-                        bottom_id serial PRIMARY KEY,
-                        flavour varchar NOT NULL,
-                        price double precision NOT NULL
-                    )
-                """);
+                    stmt.execute("CREATE SEQUENCE test.orders_order_id_seq");
+                    stmt.execute("ALTER TABLE test.orders ALTER COLUMN order_id SET DEFAULT nextval('test.orders_order_id_seq')");
 
-                    stmt.execute("""
-                    CREATE TABLE test.toppings (
-                        topping_id serial PRIMARY KEY,
-                        flavour varchar NOT NULL,
-                        price double precision NOT NULL
-                    )
-                """);
+                    stmt.execute("CREATE SEQUENCE test.orderlines_orderline_id_seq");
+                    stmt.execute("ALTER TABLE test.orderlines ALTER COLUMN orderline_id SET DEFAULT nextval('test.orderlines_orderline_id_seq')");
 
-                    stmt.execute("""
-                    CREATE TABLE test.orderlines (
-                        order_line_id serial PRIMARY KEY,
-                        order_id integer NOT NULL,
-                        topping_id integer NOT NULL,
-                        bottom_id integer NOT NULL,
-                        quantity integer NOT NULL,
-                        FOREIGN KEY (order_id) REFERENCES test.orders(order_id) ON DELETE CASCADE,
-                        FOREIGN KEY (topping_id) REFERENCES test.toppings(topping_id),
-                        FOREIGN KEY (bottom_id) REFERENCES test.bottoms(bottom_id)
-                    )
-                """);
+                    stmt.execute("CREATE SEQUENCE test.bottoms_bottom_id_seq");
+                    stmt.execute("ALTER TABLE test.bottoms ALTER COLUMN bottom_id SET DEFAULT nextval('test.bottoms_bottom_id_seq')");
 
-                    stmt.execute("""
-                    CREATE TABLE test.users_orders (
-                        user_id integer NOT NULL,
-                        order_id integer NOT NULL,
-                        PRIMARY KEY (user_id, order_id),
-                        FOREIGN KEY (user_id) REFERENCES test.users(user_id) ON DELETE CASCADE,
-                        FOREIGN KEY (order_id) REFERENCES test.orders(order_id) ON DELETE CASCADE
-                    )
-                """);
+                    stmt.execute("CREATE SEQUENCE test.toppings_topping_id_seq");
+                    stmt.execute("ALTER TABLE test.toppings ALTER COLUMN topping_id SET DEFAULT nextval('test.toppings_topping_id_seq')");
                 }
             }
             catch (SQLException e)
             {
-                e.printStackTrace();
-                fail("Database connection failed: " + e.getMessage());
+                System.out.println(e.getMessage());
+                fail("Database connection failed");
             }
         }
         catch (Exception e)
@@ -136,7 +95,7 @@ class UserMapperTest
         {
             try (Statement stmt = testConnection.createStatement())
             {
-                // Delete in correct order (respecting FKs)
+                // Clear all data
                 stmt.execute("DELETE FROM test.users_orders");
                 stmt.execute("DELETE FROM test.orderlines");
                 stmt.execute("DELETE FROM test.orders");
@@ -146,36 +105,32 @@ class UserMapperTest
                 stmt.execute("DELETE FROM test.toppings");
 
                 // Reset sequences
-                stmt.execute("ALTER SEQUENCE test.users_user_id_seq RESTART WITH 1");
-                stmt.execute("ALTER SEQUENCE test.orders_order_id_seq RESTART WITH 1");
-                stmt.execute("ALTER SEQUENCE test.orderlines_order_line_id_seq RESTART WITH 1");
-                stmt.execute("ALTER SEQUENCE test.bottoms_bottom_id_seq RESTART WITH 1");
-                stmt.execute("ALTER SEQUENCE test.toppings_topping_id_seq RESTART WITH 1");
+                stmt.execute("SELECT setval('test.users_user_id_seq', 1)");
+                stmt.execute("SELECT setval('test.orders_order_id_seq', 1)");
+                stmt.execute("SELECT setval('test.orderlines_orderline_id_seq', 1)");
+                stmt.execute("SELECT setval('test.bottoms_bottom_id_seq', 1)");
+                stmt.execute("SELECT setval('test.toppings_topping_id_seq', 1)");
 
                 // Insert test data
-                stmt.execute("""
-                INSERT INTO test.zip_codes (zip_code, city) VALUES
-                    (1000, 'Copenhagen'),
-                    (2000, 'Frederiksberg'),
-                    (2100, 'København Ø'),
-                    (8000, 'Aarhus C')
-            """);
+                stmt.execute("INSERT INTO test.zip_codes (zip_code, city) VALUES " +
+                        "(1000, 'Copenhagen'), " +
+                        "(2000, 'Frederiksberg'), " +
+                        "(2100, 'København Ø'), " +
+                        "(8000, 'Aarhus C')");
 
-                stmt.execute("""
-                INSERT INTO test.users (user_id, firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) VALUES
-                    (1, 'Hans', 'Hansen', 'hans@test.dk', 'password123', '12345678', 'Testvej 1', 2000, 100.0, false),
-                    (2, 'Jens', 'Jensen', 'jens@test.dk', 'password456', '87654321', 'Prøvevej 2', 2100, 200.0, false),
-                    (3, 'Admin', 'Adminson', 'admin@test.dk', 'admin123', '11111111', 'Adminvej 3', 8000, 0.0, true)
-            """);
+                stmt.execute("INSERT INTO test.users (user_id, firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) VALUES " +
+                        "(1, 'Hans', 'Hansen', 'hans@test.dk', 'password123', 12345678, 'Testvej 1', 2000, 100.0, false), " +
+                        "(2, 'Jens', 'Jensen', 'jens@test.dk', 'password456', 87654321, 'Prøvevej 2', 2100, 200.0, false), " +
+                        "(3, 'Admin', 'Adminson', 'admin@test.dk', 'admin123', 11111111, 'Adminvej 3', 8000, 0.0, true)");
 
-                // Sync sequence after manual inserts
-                stmt.execute("SELECT setval('test.users_user_id_seq', (SELECT MAX(user_id) FROM test.users))");
+                // Set sequence to continue after inserted data
+                stmt.execute("SELECT setval('test.users_user_id_seq', COALESCE((SELECT MAX(user_id)+1 FROM test.users), 1), false)");
             }
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
-            fail("Database setup failed: " + e.getMessage());
+            System.out.println(e.getMessage());
+            fail("Database setup failed");
         }
     }
 
