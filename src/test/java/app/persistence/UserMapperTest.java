@@ -33,7 +33,6 @@ class UserMapperTest
             {
                 try (Statement stmt = testConnection.createStatement())
                 {
-                    // Drop tables in correct order (respecting foreign keys)
                     stmt.execute("DROP TABLE IF EXISTS test.users_orders CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orderlines CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orders CASCADE");
@@ -42,14 +41,12 @@ class UserMapperTest
                     stmt.execute("DROP TABLE IF EXISTS test.bottoms CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.toppings CASCADE");
 
-                    // Drop sequences
                     stmt.execute("DROP SEQUENCE IF EXISTS test.users_user_id_seq CASCADE");
                     stmt.execute("DROP SEQUENCE IF EXISTS test.orders_order_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.orderlines_orderline_id_seq CASCADE");
+                    stmt.execute("DROP SEQUENCE IF EXISTS test.orderlines_order_line_id_seq CASCADE");
                     stmt.execute("DROP SEQUENCE IF EXISTS test.bottoms_bottom_id_seq CASCADE");
                     stmt.execute("DROP SEQUENCE IF EXISTS test.toppings_topping_id_seq CASCADE");
-
-                    // Create tables with structure from public schema
+                    
                     stmt.execute("CREATE TABLE test.zip_codes AS (SELECT * FROM public.zip_codes) WITH NO DATA");
                     stmt.execute("CREATE TABLE test.users AS (SELECT * FROM public.users) WITH NO DATA");
                     stmt.execute("CREATE TABLE test.orders AS (SELECT * FROM public.orders) WITH NO DATA");
@@ -58,15 +55,31 @@ class UserMapperTest
                     stmt.execute("CREATE TABLE test.orderlines AS (SELECT * FROM public.orderlines) WITH NO DATA");
                     stmt.execute("CREATE TABLE test.users_orders AS (SELECT * FROM public.users_orders) WITH NO DATA");
 
-                    // Create and assign sequences
+                    stmt.execute("ALTER TABLE test.zip_codes ADD PRIMARY KEY (zip_code)");
+                    stmt.execute("ALTER TABLE test.users ADD PRIMARY KEY (user_id)");
+                    stmt.execute("ALTER TABLE test.orders ADD PRIMARY KEY (order_id)");
+                    stmt.execute("ALTER TABLE test.bottoms ADD PRIMARY KEY (bottom_id)");
+                    stmt.execute("ALTER TABLE test.toppings ADD PRIMARY KEY (topping_id)");
+                    stmt.execute("ALTER TABLE test.orderlines ADD PRIMARY KEY (orderline_id)");
+                    stmt.execute("ALTER TABLE test.users_orders ADD PRIMARY KEY (user_id, order_id)");
+
+                    stmt.execute("ALTER TABLE test.users ADD CONSTRAINT email_unique UNIQUE (email)");
+
+                    stmt.execute("ALTER TABLE test.users ADD CONSTRAINT zip_code_fk FOREIGN KEY (zip_code) REFERENCES test.zip_codes(zip_code)");
+                    stmt.execute("ALTER TABLE test.orderlines ADD CONSTRAINT order_fk FOREIGN KEY (order_id) REFERENCES test.orders(order_id) ON DELETE CASCADE");
+                    stmt.execute("ALTER TABLE test.orderlines ADD CONSTRAINT topping_fk FOREIGN KEY (topping_id) REFERENCES test.toppings(topping_id)");
+                    stmt.execute("ALTER TABLE test.orderlines ADD CONSTRAINT bottom_fk FOREIGN KEY (bottom_id) REFERENCES test.bottoms(bottom_id)");
+                    stmt.execute("ALTER TABLE test.users_orders ADD CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES test.users(user_id) ON DELETE CASCADE");
+                    stmt.execute("ALTER TABLE test.users_orders ADD CONSTRAINT order_fk2 FOREIGN KEY (order_id) REFERENCES test.orders(order_id) ON DELETE CASCADE");
+
                     stmt.execute("CREATE SEQUENCE test.users_user_id_seq");
                     stmt.execute("ALTER TABLE test.users ALTER COLUMN user_id SET DEFAULT nextval('test.users_user_id_seq')");
 
                     stmt.execute("CREATE SEQUENCE test.orders_order_id_seq");
                     stmt.execute("ALTER TABLE test.orders ALTER COLUMN order_id SET DEFAULT nextval('test.orders_order_id_seq')");
 
-                    stmt.execute("CREATE SEQUENCE test.orderlines_orderline_id_seq");
-                    stmt.execute("ALTER TABLE test.orderlines ALTER COLUMN orderline_id SET DEFAULT nextval('test.orderlines_orderline_id_seq')");
+                    stmt.execute("CREATE SEQUENCE test.orderlines_order_line_id_seq");
+                    stmt.execute("ALTER TABLE test.orderlines ALTER COLUMN orderline_id SET DEFAULT nextval('test.orderlines_order_line_id_seq')");
 
                     stmt.execute("CREATE SEQUENCE test.bottoms_bottom_id_seq");
                     stmt.execute("ALTER TABLE test.bottoms ALTER COLUMN bottom_id SET DEFAULT nextval('test.bottoms_bottom_id_seq')");
