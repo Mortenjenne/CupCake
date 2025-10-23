@@ -9,6 +9,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class ShoppingController
 {
@@ -44,8 +45,11 @@ public class ShoppingController
         ctx.render("index.html", model);
     }
 
-    private void showBasket(Context ctx)
+    private void showBasket(Context ctx) throws DatabaseException
     {
+        // FOR TESTING DESIGN
+        populateTestCart(ctx);
+
         var model = new HashMap<String, Object>();
         model.put("cart", getOrCreateCart(ctx).getShoppingCart());
 
@@ -96,5 +100,28 @@ public class ShoppingController
     {
 
     }
+
+
+    //FOR DESIGN TESTING IN BASKET.HTML
+    private void populateTestCart(Context ctx) throws DatabaseException {
+        ShoppingCart cart = getOrCreateCart(ctx);
+
+        // Get all bottoms and toppings
+        List<Bottom> bottoms = shoppingService.getAllBottoms();
+        List<Topping> toppings = shoppingService.getAllToppings();
+
+        // Add 12 different combinations
+        for (int i = 0; i < 12; i++) {
+            Bottom bottom = bottoms.get(i % bottoms.size());
+            Topping topping = toppings.get(i % toppings.size());
+            int quantity = (i % 5) + 1; // quantities from 1-5
+
+            shoppingService.addOrderLineToCart(cart, bottom, topping, quantity);
+        }
+
+        ctx.sessionAttribute("CART", cart);
+    }
+
+
 
 }
