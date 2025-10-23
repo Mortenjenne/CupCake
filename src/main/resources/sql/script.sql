@@ -160,7 +160,7 @@ INSERT INTO public.bottoms (flavour, price) VALUES
 INSERT INTO public.toppings (flavour, price) VALUES
                                                  ('Chocolate', 5.00),
                                                  ('Blueberry', 5.00),
-                                                 ('Rasberry', 5.00),
+                                                 ('Raspberry', 5.00),
                                                  ('Crispy', 6.00),
                                                  ('Strawberry', 6.00),
                                                  ('Rum/Raisin', 7.00),
