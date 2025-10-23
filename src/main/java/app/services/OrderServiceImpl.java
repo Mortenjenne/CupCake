@@ -10,6 +10,8 @@ import app.persistence.OrderMapper;
 import app.persistence.UserMapper;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,9 +61,9 @@ public class OrderServiceImpl implements OrderService
     public List<Order> getAllUserOrders(UserDTO userDTO) throws DatabaseException
     {
         List<Order> userOrders = orderMapper.getOrdersByUserId(userDTO);
-        if(userOrders == null || userOrders.isEmpty())
+        if (userOrders == null)
         {
-            throw new DatabaseException("Ingen ordre oprette nu!");
+            return new ArrayList<>();
         }
 
         return userOrders.stream()
@@ -76,7 +78,7 @@ public class OrderServiceImpl implements OrderService
 
         if(refundUser)
         {
-            refundUser(orderId);
+            refundUserTotalOrderPrice(orderId);
         }
         return orderMapper.deleteOrder(orderId);
     }
@@ -89,30 +91,104 @@ public class OrderServiceImpl implements OrderService
     }
 
     @Override
-    public List<Order> getAllOrdersByStatusPaid() throws DatabaseException
+    public List<Order> getAllOrdersByStatusPaid(int adminId) throws DatabaseException
     {
-        return List.of();
+        validateUserIsAdmin(adminId);
+        return getAllOrdersByStatus(true);
     }
 
     @Override
-    public List<Order> getAllOrdersByStatusNotPaid() throws DatabaseException
+    public List<Order> getAllOrdersByStatusNotPaid(int adminId) throws DatabaseException
     {
-        return List.of();
+        validateUserIsAdmin(adminId);
+        return getAllOrdersByStatus(false);
     }
 
     @Override
     public List<Order> getAllOrders(int adminId) throws DatabaseException
     {
-        return List.of();
+        validateUserIsAdmin(adminId);
+        List<Order> orders = orderMapper.getAllOrders();
+
+        if (orders == null)
+        {
+            return new ArrayList<>();
+        }
+        return orderMapper.getAllOrders().stream()
+                .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                .collect(Collectors.toList());
     }
 
     @Override
     public double getTotalRevenue(int adminId) throws DatabaseException
     {
-        return 0;
+        validateUserIsAdmin(adminId);
+        List<Order> orders = orderMapper.getAllOrders();
+
+        if (orders == null)
+        {
+            return 0.0;
+        }
+        return orders.stream()
+                .filter(Order::isPaid)
+                .mapToDouble(Order::getTotalPrice)
+                .sum();
     }
 
-    private void refundUser(int orderId) throws DatabaseException
+    @Override
+    public double getMonthlyRevenue(int adminId, YearMonth month) throws DatabaseException
+    {
+        validateUserIsAdmin(adminId);
+        List<Order> orders = orderMapper.getAllOrders();
+
+        if (orders == null)
+        {
+            return 0.0;
+        }
+
+        return orders.stream()
+                .filter(Order::isPaid)
+                .filter(order -> YearMonth.from(order.getOrderDate()).equals(month))
+                .mapToDouble(Order::getTotalPrice)
+                .sum();
+    }
+
+    @Override
+    public double getAverageOrderValue(int adminId) throws DatabaseException
+    {
+        validateUserIsAdmin(adminId);
+        List<Order> orders = orderMapper.getAllOrders();
+
+        if (orders == null || orders.isEmpty())
+        {
+            return 0.0;
+        }
+
+        List<Order> paidOrders = orders.stream()
+                .filter(Order::isPaid)
+                .collect(Collectors.toList());
+
+        if (paidOrders.isEmpty())
+        {
+            return 0.0;
+        }
+
+        double totalRevenue = paidOrders.stream()
+                .mapToDouble(Order::getTotalPrice)
+                .sum();
+
+        return totalRevenue / paidOrders.size();
+    }
+
+    private List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.isPaid() == paid)
+                .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                .collect(Collectors.toList());
+    }
+
+    private void refundUserTotalOrderPrice(int orderId) throws DatabaseException
     {
         List<Order> allOrders = orderMapper.getAllOrders();
         Order orderToCancel = allOrders.stream()
@@ -155,14 +231,12 @@ public class OrderServiceImpl implements OrderService
                 .sum();
     }
 
-
-
     private UserDTO buildUserDTO(User user)
     {
         return new UserDTO(
                 user.getUserId(),
                 user.getFirstName(),
-                user.getFirstName(),
+                user.getLastName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
                 user.getStreet(),
