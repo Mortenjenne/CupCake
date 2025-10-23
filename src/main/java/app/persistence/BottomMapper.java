@@ -29,8 +29,8 @@ public class BottomMapper
             while (rs.next()) {
                 Bottom b = new Bottom(
                         rs.getInt("bottom_id"),
-                        rs.getString("flavour"),
-                        rs.getDouble("price")
+                        rs.getString("bottom_flavour"),
+                        rs.getDouble("bottom_price")
                 );
                 bottomList.add(b);
             }
@@ -51,8 +51,8 @@ public class BottomMapper
                 if (rs.next()) {
                     return new Bottom(
                             rs.getInt("bottom_id"),
-                            rs.getString("flavour"),
-                            rs.getDouble("price"));
+                            rs.getString("bottom_flavour"),
+                            rs.getDouble("bottom_price"));
                 }
                 return null;
             }
