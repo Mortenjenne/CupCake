@@ -33,7 +33,7 @@ class UserMapperTest
             {
                 try (Statement stmt = testConnection.createStatement())
                 {
-
+                    // Drop tables in correct order (respecting foreign keys)
                     stmt.execute("DROP TABLE IF EXISTS test.users_orders CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orderlines CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orders CASCADE");
@@ -42,12 +42,14 @@ class UserMapperTest
                     stmt.execute("DROP TABLE IF EXISTS test.bottoms CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.toppings CASCADE");
 
+                    // Drop sequences
                     stmt.execute("DROP SEQUENCE IF EXISTS test.users_user_id_seq CASCADE");
                     stmt.execute("DROP SEQUENCE IF EXISTS test.orders_order_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.orderlines_order_line_id_seq CASCADE");
+                    stmt.execute("DROP SEQUENCE IF EXISTS test.orderlines_orderline_id_seq CASCADE");
                     stmt.execute("DROP SEQUENCE IF EXISTS test.bottoms_bottom_id_seq CASCADE");
                     stmt.execute("DROP SEQUENCE IF EXISTS test.toppings_topping_id_seq CASCADE");
 
+                    // Create tables with structure from public schema
                     stmt.execute("CREATE TABLE test.zip_codes AS (SELECT * FROM public.zip_codes) WITH NO DATA");
                     stmt.execute("CREATE TABLE test.users AS (SELECT * FROM public.users) WITH NO DATA");
                     stmt.execute("CREATE TABLE test.orders AS (SELECT * FROM public.orders) WITH NO DATA");
@@ -56,14 +58,15 @@ class UserMapperTest
                     stmt.execute("CREATE TABLE test.orderlines AS (SELECT * FROM public.orderlines) WITH NO DATA");
                     stmt.execute("CREATE TABLE test.users_orders AS (SELECT * FROM public.users_orders) WITH NO DATA");
 
+                    // Create and assign sequences
                     stmt.execute("CREATE SEQUENCE test.users_user_id_seq");
                     stmt.execute("ALTER TABLE test.users ALTER COLUMN user_id SET DEFAULT nextval('test.users_user_id_seq')");
 
                     stmt.execute("CREATE SEQUENCE test.orders_order_id_seq");
                     stmt.execute("ALTER TABLE test.orders ALTER COLUMN order_id SET DEFAULT nextval('test.orders_order_id_seq')");
 
-                    stmt.execute("CREATE SEQUENCE test.orderlines_order_line_id_seq");
-                    stmt.execute("ALTER TABLE test.orderlines ALTER COLUMN order_line_id SET DEFAULT nextval('test.orderlines_order_line_id_seq')");
+                    stmt.execute("CREATE SEQUENCE test.orderlines_orderline_id_seq");
+                    stmt.execute("ALTER TABLE test.orderlines ALTER COLUMN orderline_id SET DEFAULT nextval('test.orderlines_orderline_id_seq')");
 
                     stmt.execute("CREATE SEQUENCE test.bottoms_bottom_id_seq");
                     stmt.execute("ALTER TABLE test.bottoms ALTER COLUMN bottom_id SET DEFAULT nextval('test.bottoms_bottom_id_seq')");
@@ -92,7 +95,7 @@ class UserMapperTest
         {
             try (Statement stmt = testConnection.createStatement())
             {
-
+                // Clear all data
                 stmt.execute("DELETE FROM test.users_orders");
                 stmt.execute("DELETE FROM test.orderlines");
                 stmt.execute("DELETE FROM test.orders");
@@ -101,20 +104,26 @@ class UserMapperTest
                 stmt.execute("DELETE FROM test.bottoms");
                 stmt.execute("DELETE FROM test.toppings");
 
+                // Reset sequences
                 stmt.execute("SELECT setval('test.users_user_id_seq', 1)");
+                stmt.execute("SELECT setval('test.orders_order_id_seq', 1)");
+                stmt.execute("SELECT setval('test.orderlines_orderline_id_seq', 1)");
+                stmt.execute("SELECT setval('test.bottoms_bottom_id_seq', 1)");
+                stmt.execute("SELECT setval('test.toppings_topping_id_seq', 1)");
 
+                // Insert test data
                 stmt.execute("INSERT INTO test.zip_codes (zip_code, city) VALUES " +
                         "(1000, 'Copenhagen'), " +
                         "(2000, 'Frederiksberg'), " +
                         "(2100, 'København Ø'), " +
                         "(8000, 'Aarhus C')");
 
-
                 stmt.execute("INSERT INTO test.users (user_id, firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) VALUES " +
                         "(1, 'Hans', 'Hansen', 'hans@test.dk', 'password123', 12345678, 'Testvej 1', 2000, 100.0, false), " +
                         "(2, 'Jens', 'Jensen', 'jens@test.dk', 'password456', 87654321, 'Prøvevej 2', 2100, 200.0, false), " +
                         "(3, 'Admin', 'Adminson', 'admin@test.dk', 'admin123', 11111111, 'Adminvej 3', 8000, 0.0, true)");
 
+                // Set sequence to continue after inserted data
                 stmt.execute("SELECT setval('test.users_user_id_seq', COALESCE((SELECT MAX(user_id)+1 FROM test.users), 1), false)");
             }
         }
@@ -285,7 +294,7 @@ class UserMapperTest
     @Test
     void testCreateUserWithEmailThatAlreadyExist()
     {
-        assertThrows(DatabaseException.class,
+        DatabaseException exception = assertThrows(DatabaseException.class,
                 () -> userMapper.createUser(
                         "Duplicate",
                         "User",

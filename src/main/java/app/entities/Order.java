@@ -1,5 +1,6 @@
 package app.entities;
 
+import app.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ import java.util.List;
 public class Order
 {
 private int orderId;
-private User user;
+private UserDTO userDTO;
 private LocalDateTime orderDate;
 private LocalDateTime pickUpDate;
 private boolean paid;
