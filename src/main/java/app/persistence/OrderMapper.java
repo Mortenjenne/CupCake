@@ -237,8 +237,8 @@ public class OrderMapper
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setDouble(1, orderId);
-            ps.setBoolean(2, paid);
+            ps.setBoolean(1, paid);
+            ps.setInt(2, orderId);
 
             int rowsAffected = ps.executeUpdate();
 
@@ -249,7 +249,7 @@ public class OrderMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke opdatere ordre status");
+            throw new DatabaseException("Kunne ikke opdatere ordre status" + e.getMessage());
         }
         return result;
     }
@@ -277,7 +277,7 @@ public class OrderMapper
 
     private void linkUserToOrder(Connection connection, int userId, int orderId) throws SQLException
     {
-        String sql = "INSERT INTO users_orders (users_user_id, orders_order_id) VALUES (?, ?)";
+        String sql = "INSERT INTO users_orders (user_id, order_id) VALUES (?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql))
         {

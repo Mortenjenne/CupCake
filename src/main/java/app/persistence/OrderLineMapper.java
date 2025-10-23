@@ -64,7 +64,7 @@ public class OrderLineMapper
 
                 Cupcake cupcake = new Cupcake(bottom, topping);
                 int orderLineId = rs.getInt("orderline_id");
-                int quantity = rs.getInt("ol.quantity");
+                int quantity = rs.getInt("quantity");
                 double orderLinePrice = rs.getDouble("orderline_price");
 
                 orderLines.add(
@@ -77,7 +77,7 @@ public class OrderLineMapper
             }
         }
         catch (SQLException e) {
-            throw new DatabaseException("Fejl ved hentning af ordrelinjer");
+            throw new DatabaseException("Fejl ved hentning af ordrelinjer" + e.getMessage());
         }
         return orderLines;
     }
