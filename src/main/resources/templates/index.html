@@ -20,10 +20,10 @@
         </section>
 
         <section class="cupcake-box">
-                <img src="/public/images/cupcakes/toppings/topping_strawberry.png"
+                <img class="topping-img" src="/public/images/cupcakes/toppings/topping_strawberry.png"
                      th:src="@{/images/cupcakes/toppings/topping_strawberry.png}"
                      alt="cupcake Topping"/>
-                <img src="/public/images/cupcakes/bottoms/bottom_chocolate.png"
+                <img class="bottom-img" src="/public/images/cupcakes/bottoms/bottom_chocolate.png"
                      th:src="@{/images/cupcakes/bottoms/bottom_chocolate.png}"
                      alt="Cupcake Bottom"/>
         </section>
@@ -32,20 +32,22 @@
             <h4>Vælg og bestil her</h4>
 
             <form method="post" th:action="@{/cart/add}">
-                <select name="bottomId" required>
+                <select name="bottomId" id="bottomSelect" required>
                     <option value="">Vælg Bund</option>
                     <option th:each="b : ${bottoms}"
                             th:value="${b.bottomId}"
-                            th:text="${b.name + ' + ' + b.price + 'kr'}">
+                            th:text="${b.name + ' + ' + b.price + 'kr'}"
+                            th:attr="data-img=@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${b.slug})}">
                     </option>
                 </select>
-                <select name="toppingId" required>
+                <select name="toppingId" id="toppingSelect" required>
                     <option value="">Vælg Topping</option>
-                        <option th:each="t : ${toppings}"
-                                th:value="${t.toppingId}"
-                                th:text="${t.name + ' + ' + t.price + 'kr'}"
-                                >
-                        </option>
+                    <option th:each="t : ${toppings}"
+                            th:value="${t.toppingId}"
+                            th:text="${t.name + ' + ' + t.price + 'kr'}"
+                            th:attr="data-img=@{/images/cupcakes/toppings/topping_{slug}.png(slug=${t.slug})}">
+                    </option>
+
                 </select>
 
 
@@ -65,6 +67,8 @@
 </main>
 
 <div th:replace="fragments :: footerFragment"></div>
+
+<script src="/public/js/cupcake-script.js" th:src="@{/js/cupcake-image-script.js}"></script>
 
 </body>
 </html>
