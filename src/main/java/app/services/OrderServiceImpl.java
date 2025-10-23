@@ -20,13 +20,11 @@ public class OrderServiceImpl implements OrderService
 {
     private OrderMapper orderMapper;
     private UserMapper userMapper;
-    private OrderLineMapper orderLineMapper;
 
-    public OrderServiceImpl(OrderMapper orderMapper, UserMapper userMapper, OrderLineMapper orderLineMapper)
+    public OrderServiceImpl(OrderMapper orderMapper, UserMapper userMapper)
     {
         this.orderMapper = orderMapper;
         this.userMapper = userMapper;
-        this.orderLineMapper = orderLineMapper;
     }
 
     @Override
