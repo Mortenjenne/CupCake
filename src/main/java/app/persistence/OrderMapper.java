@@ -6,7 +6,6 @@ import app.entities.OrderLine;
 import app.exceptions.DatabaseException;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,15 +207,51 @@ public class OrderMapper
         }
     }
 
-    public boolean deleteOrder(int orderId)
+    public boolean deleteOrder(int orderId) throws DatabaseException
     {
         boolean result = false;
+        String sql = "DELETE FROM orders WHERE order_id = ?";
+
+        try(Connection connection = connectionPool.getConnection();
+        PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, orderId);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                result = true;
+            }
+        } catch (SQLException e)
+        {
+            throw new DatabaseException("Kunne ikke slette en ordre");
+        }
         return result;
     }
 
-    public boolean updateOrder(int orderId)
+    public boolean updateOrderStatus(int orderId, boolean paid) throws DatabaseException
     {
-        return false;
+        String sql = "UPDATE orders SET paid = ? WHERE order_id = ?";
+        boolean result = false;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setDouble(1, orderId);
+            ps.setBoolean(2, paid);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                result = true;
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Kunne ikke opdatere ordre status");
+        }
+        return result;
     }
 
     private int insertOrder(Connection connection, Order order) throws SQLException

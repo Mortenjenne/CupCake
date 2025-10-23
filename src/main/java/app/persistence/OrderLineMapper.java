@@ -81,4 +81,27 @@ public class OrderLineMapper
         }
         return orderLines;
     }
+
+    public boolean deleteOrderline(int orderlineId) throws DatabaseException
+    {
+        String sql = "DELETE FROM orderlines WHERE orderline_id = ?";
+        boolean result = false;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, orderlineId);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                result = true;
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af ordrelinje med id: " + orderlineId);
+        }
+        return result;
+    }
 }
