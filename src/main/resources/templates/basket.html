@@ -38,13 +38,15 @@
                 </div>
                 <div class="row">
                     <p>Mængde:</p>
+                    <button type="submit" name="decreaseQuantity "th:value="${iterStat.index}">➖</button>
                     <p th:text="${o.quantity + ' stk.'}"></p>
+                    <button type="submit" name="increaseQuantity" th:value="${iterStat.index}">➕</button>
                 </div>
                 <div class="row">
                     <p>Pris:</p>
                     <p th:text="${o.cupcake.cupcakePrice * o.quantity + '.' + '-'}"></p>
                 </div>
-                    <button type="submit" name="deleteIndex" th:value="${iterStat.index}">🗑️</button>
+                    <button type="submit" name="index" th:value="${iterStat.index}">🗑️</button>
             </div>
         </div>
     </form>

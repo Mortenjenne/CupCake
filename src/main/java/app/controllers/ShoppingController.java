@@ -38,8 +38,7 @@ public class ShoppingController
         model.put("cart", getOrCreateCart(ctx));
 
         String label = ctx.sessionAttribute("succesLabel");
-        if (label != null)
-        {
+        if (label != null) {
             model.put("succesLabel", label);
             ctx.sessionAttribute("succesLabel", null);
         }
@@ -51,7 +50,7 @@ public class ShoppingController
 
         ShoppingCart cart = getOrCreateCart(ctx);
         // FOR TESTING DESIGN
-        if(cart.getShoppingCart().isEmpty()){
+        if (cart.getShoppingCart().isEmpty()) {
             populateTestCart(ctx);
         }
 
@@ -64,8 +63,7 @@ public class ShoppingController
     private ShoppingCart getOrCreateCart(Context ctx)
     {
         ShoppingCart cart = ctx.sessionAttribute("CART");
-        if (cart == null)
-        {
+        if (cart == null) {
             cart = new ShoppingCart();
             ctx.sessionAttribute("CART", cart);
         }
@@ -103,26 +101,48 @@ public class ShoppingController
 
     private void basketActions(Context ctx)
     {
-        String deleteIndexParam = ctx.formParam("deleteIndex");
+        String deleteIndexParam = ctx.formParam("index");
+        String increaseQuantity = ctx.formParam("increaseQuantity");
+        String decreaseQuantity = ctx.formParam("decreaseQuantity");
 
-        if(deleteIndexParam != null)
-        {
+        if (deleteIndexParam != null) {
             removeFromCart(ctx);
+        }
 
+        if (increaseQuantity != null) {
+            increaseCupcakeQuantity(ctx);
+        }
+
+        if (decreaseQuantity != null) {
+            decreaseCupcakeQuantity(ctx);
         }
     }
 
+
     private void removeFromCart(Context ctx)
     {
-        int index = Integer.parseInt(ctx.formParam("deleteIndex"));
-        shoppingService.removeOrderLineFromCart(getOrCreateCart(ctx),index);
+        int index = Integer.parseInt(ctx.formParam("index"));
+        shoppingService.removeOrderLineFromCart(getOrCreateCart(ctx), index);
         ctx.sessionAttribute("CART", getOrCreateCart(ctx));
         ctx.redirect("/basket");
     }
 
+    private void increaseCupcakeQuantity(Context ctx)
+    {
+        int index = Integer.parseInt(ctx.formParam("decreaseQuantity"));
+        shoppingService.addOneToCupcakeQuantity(getOrCreateCart(ctx),index);
+    }
+
+    private void decreaseCupcakeQuantity(Context ctx)
+    {
+        int index = Integer.parseInt(ctx.formParam("increaseQuantity"));
+        shoppingService.removeOneFromCupcakeQuantity(getOrCreateCart(ctx),index);
+    }
+
 
     //FOR DESIGN TESTING IN BASKET.HTML
-    private void populateTestCart(Context ctx) throws DatabaseException {
+    private void populateTestCart(Context ctx) throws DatabaseException
+    {
         ShoppingCart cart = getOrCreateCart(ctx);
 
         // Get all bottoms and toppings
@@ -140,7 +160,6 @@ public class ShoppingController
 
         ctx.sessionAttribute("CART", cart);
     }
-
 
 
 }
