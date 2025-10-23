@@ -38,6 +38,11 @@
     --color-teal: #007A72; /* Links */
     --color-text-light: #FFFFFF;
     --color-text-dark: #000000;
+
+    --header-test: #5D4532;
+    --footer-test: #775940;
+    --button-test: #926D4F;
+    --button-hover-test: #B08B6D;
 }
 
 
@@ -71,7 +76,7 @@ body {
 
 /*------ HEADER CSS ------*/
 header {
-    background: var(--header-purple);
+    background: var(--header-test);
     position: fixed;
     top: 0;
     height: 8vh;
@@ -124,6 +129,18 @@ main {
     flex: 1;
     display: flex;
     justify-content: center;
+}
+
+.test-background{
+    padding: 8vh 5vw 1vh;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+
+    background-image: url("/images/backgroundtest.jpg");
+    background-size: cover;         /* Scales to fill element while maintaining aspect ratio */
+    background-repeat: no-repeat;   /* Prevents tiling */
+    background-position: center;    /* Centers the image */
 }
 
 
@@ -194,8 +211,8 @@ main {
 }
 
 .cupcake-card {
-    background: var(--footer-purple);
-    border: 2px solid var(--header-purple);
+    background: var(--footer-test);
+    border: 2px solid var(--header-test);
     border-radius: 20px;
 
     display: flex;
@@ -248,7 +265,7 @@ main {
 
 /*------ FOOTER CSS ------*/
 footer {
-    background: var(--footer-purple);
+    background: var(--footer-test);
     min-height: 60px;
     height: 10vh;
     width: 100%;
