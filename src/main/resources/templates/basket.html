@@ -13,12 +13,12 @@
 
 <main>
 
-    <form class="basket-body">
+    <form method="post" action="/basket/action" class="basket-body">
         <div class="basket-title-box">
             <h1>Din Kurv</h1>
             <h2>Verificer din bestilling</h2>
         </div>
-        <div class="cupcake-card" th:each="o : ${cart}">
+        <div class="cupcake-card" th:each="o, iterStat : ${cart.shoppingCart}">
             <div class="cupcake-box-basket">
                 <img class="bottom-img"
                      th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${o.cupcake.bottom.slug})}"
@@ -44,12 +44,11 @@
                     <p>Pris:</p>
                     <p th:text="${o.cupcake.cupcakePrice * o.quantity + '.' + '-'}"></p>
                 </div>
-            </div>
-            <div>
-
+                    <button type="submit" name="deleteIndex" th:value="${iterStat.index}">🗑️</button>
             </div>
         </div>
     </form>
+
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>

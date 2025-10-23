@@ -25,6 +25,7 @@ public class ShoppingController
         app.get("/", this::showIndex);
         app.post("/cart/add", this::addToCart);
         app.get("/basket", this::showBasket);
+        app.post("/basket/action", this::basketActions);
         //TODO: post på remove line og clear cart?
     }
 
@@ -47,11 +48,15 @@ public class ShoppingController
 
     private void showBasket(Context ctx) throws DatabaseException
     {
+
+        ShoppingCart cart = getOrCreateCart(ctx);
         // FOR TESTING DESIGN
-        populateTestCart(ctx);
+        if(cart.getShoppingCart().isEmpty()){
+            populateTestCart(ctx);
+        }
 
         var model = new HashMap<String, Object>();
-        model.put("cart", getOrCreateCart(ctx).getShoppingCart());
+        model.put("cart", cart);
 
         ctx.render("basket.html", model);
     }
@@ -96,9 +101,23 @@ public class ShoppingController
         }
     }
 
+    private void basketActions(Context ctx)
+    {
+        String deleteIndexParam = ctx.formParam("deleteIndex");
+
+        if(deleteIndexParam != null)
+        {
+            removeFromCart(ctx);
+
+        }
+    }
+
     private void removeFromCart(Context ctx)
     {
-
+        int index = Integer.parseInt(ctx.formParam("deleteIndex"));
+        shoppingService.removeOrderLineFromCart(getOrCreateCart(ctx),index);
+        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        ctx.redirect("/basket");
     }
 
 
