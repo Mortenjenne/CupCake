@@ -23,6 +23,7 @@ public class ShoppingController
     {
         app.get("/", this::showIndex);
         app.post("/cart/add", this::addToCart);
+        app.get("/basket", this::showBasket);
         //TODO: post på remove line og clear cart?
     }
 
@@ -41,6 +42,11 @@ public class ShoppingController
             ctx.sessionAttribute("succesLabel", null);
         }
         ctx.render("index.html", model);
+    }
+
+    private void showBasket(Context ctx)
+    {
+        ctx.render("basket.html");
     }
 
     private ShoppingCart getOrCreateCart(Context ctx)
