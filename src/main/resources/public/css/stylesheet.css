@@ -178,69 +178,71 @@ main {
 .basket-body {
     width: 50%;
     max-width: 1000px;
+    min-width: 600px;
     margin-top: 1vh;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
 
 }
 
-.basket-title-box{
+.basket-title-box {
     width: 100%;
     text-align: center;
 }
 
-.cupcake-card{
+.cupcake-card {
     background: var(--footer-purple);
     border: 2px solid var(--header-purple);
     border-radius: 20px;
 
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    flex: 1 1 300px;
-    min-height: 300px;
+    flex: 0 0 31%;
+    min-height: 360px;
     max-width: 30%;
-    max-height: 30%;
     margin: 1%;
     overflow: hidden;
-
+    position: relative;
 }
 
-.cupcake-box-basket{
+.cupcake-box-basket {
     display: grid;
     place-items: center;
-    width: min(320px, 50vw);
+    width: 100%;
     aspect-ratio: 1 / 1;
+    flex-shrink: 0;
 }
 
-.cupcake-box-basket img{
+.cupcake-box-basket img {
     grid-area: 1 / 1;
-    width: 100%;
+    width: 65%;
     height: auto;
     object-fit: contain;
-    margin-top: 3.5rem;
-    margin-bottom: 3.5rem;
 }
 
-.cupcake-card .cupcake-box-basket{
-    width: 100%;
-    max-height: 60%;
-}
-
-.cupcake-card-info{
+.cupcake-card-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    flex: 1;
+    flex: 1 1 auto;
     margin: 0 2%;
+    padding: 0 8% 5% 8%;
+
 }
 
-.cupcake-card-info .row{
-    padding-bottom: 2%;
+.cupcake-card-info .row {
+    padding-bottom: 5%;
 }
 
-
+.rowQuantity {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+}
 
 
 

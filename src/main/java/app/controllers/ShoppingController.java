@@ -129,14 +129,18 @@ public class ShoppingController
 
     private void increaseCupcakeQuantity(Context ctx)
     {
-        int index = Integer.parseInt(ctx.formParam("decreaseQuantity"));
+        int index = Integer.parseInt(ctx.formParam("increaseQuantity"));
         shoppingService.addOneToCupcakeQuantity(getOrCreateCart(ctx),index);
+        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        ctx.redirect("/basket");
     }
 
     private void decreaseCupcakeQuantity(Context ctx)
     {
-        int index = Integer.parseInt(ctx.formParam("increaseQuantity"));
+        int index = Integer.parseInt(ctx.formParam("decreaseQuantity"));
         shoppingService.removeOneFromCupcakeQuantity(getOrCreateCart(ctx),index);
+        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        ctx.redirect("/basket");
     }
 
 
@@ -150,7 +154,7 @@ public class ShoppingController
         List<Topping> toppings = shoppingService.getAllToppings();
 
         // Add 12 different combinations
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 6; i++) {
             Bottom bottom = bottoms.get(i % bottoms.size());
             Topping topping = toppings.get(i % toppings.size());
             int quantity = (i % 5) + 1; // quantities from 1-5
