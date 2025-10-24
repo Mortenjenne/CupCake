@@ -42,7 +42,8 @@ public class ShoppingCart
     {
         if (orderLine.getQuantity() == 1) {
             removeOrderLineFromCart(orderLine);
-        }else{
+        }
+        else {
             orderLine.setQuantity((orderLine.getQuantity() - 1));
         }
     }

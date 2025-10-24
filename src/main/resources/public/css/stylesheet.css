@@ -29,29 +29,42 @@
     --fw-bold: 700;
 
     /* Colors */
-    --header-purple: #A06EC4; /* Header */
-    --footer-purple: #CBA9EF; /* Footer */
-    --body-purple: #EBE0F5; /* Body */
-    --button-rose: #B8336A; /* Button */
-    --button-hover: #E378A8; /* Button effects */
+    --header-color: #5D4532; /* Header */
+    --footer-color: #775940; /* Footer */
+    --button-color: #926D4F; /* Button */
+    --button-hover: #B08B6D; /* Button effects */
     --color-rose-light: #F8B5D2; /* Input & Dropdown fields */
     --color-teal: #007A72; /* Links */
     --color-text-light: #FFFFFF;
     --color-text-dark: #000000;
 
-    --header-test: #5D4532;
-    --footer-test: #775940;
-    --button-test: #926D4F;
-    --button-hover-test: #B08B6D;
+    --font-text-base: palegoldenrod;
 }
 
 
-h1 { font-size: var(--font-h1); }
-h2 { font-size: var(--font-h2); }
-h3 { font-size: var(--font-h3); }
-h4 { font-size: var(--font-h4); }
-h5 { font-size: var(--font-h5); }
-h6 { font-size: var(--font-h6); }
+h1 {
+    font-size: var(--font-h1);
+}
+
+h2 {
+    font-size: var(--font-h2);
+}
+
+h3 {
+    font-size: var(--font-h3);
+}
+
+h4 {
+    font-size: var(--font-h4);
+}
+
+h5 {
+    font-size: var(--font-h5);
+}
+
+h6 {
+    font-size: var(--font-h6);
+}
 
 p {
     font-size: var(--font-base);
@@ -60,6 +73,7 @@ p {
 .small {
     font-size: var(--font-small);
 }
+
 .xsmall {
     font-size: var(--font-xsmall);
 }
@@ -72,17 +86,26 @@ body {
     display: flex;
     flex-direction: column;
     font-size: var(--font-base);
+
+    color: var(--font-text-base);
+    font-weight: bold;
 }
+
+
+body a:link, body a:visited, body a:visited {
+    color: var(--font-text-base);
+    text-decoration: none;
+}
+
 
 /*------ HEADER CSS ------*/
 header {
-    background: var(--header-test);
+    background: var(--header-color);
     position: fixed;
     top: 0;
     height: 8vh;
     min-height: 50px;
     width: 100%;
-
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -107,72 +130,67 @@ header a {
 }
 
 header img {
-   max-height: 90%;
+    max-height: 90%;
+}
+
+.header-icon {
+    max-height: 90%;
+    color: palegoldenrod;
 }
 
 .account-info {
     gap: 2vw;
 }
 
-.account-info a, a:visited{
-    text-decoration: none;
-    color: var(--color-text-light);
-}
-
-
-
 
 /*------ MAIN CSS ------*/
 main {
-    background: var(--body-purple);
     padding: 8vh 5vw 1vh;
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
 
-.test-background{
-    padding: 8vh 5vw 1vh;
+    /*DONT TOUCH THESE*/
     flex: 1;
     display: flex;
     justify-content: center;
 
     background-image: url("/images/backgroundtest.jpg");
-    background-size: cover;         /* Scales to fill element while maintaining aspect ratio */
-    background-repeat: no-repeat;   /* Prevents tiling */
-    background-position: center;    /* Centers the image */
+    background-size: cover; /* Scales to fill element while maintaining aspect ratio */
+    background-repeat: no-repeat; /* Prevents tiling */
+    background-position: center; /* Centers the image */
 }
 
-.test-background h1,h2,p {
-    color: palegoldenrod;
+/*------ USE THIS FOR ALL WINDOW STYLING------*/
+.window-styling {
+    background: rgb(from var(--footer-color) r g b / 0.8);
+    border: 2px solid var(--header-color);
+    border-radius: 20px;
 }
 
+button:hover {
+    cursor: pointer;
+}
 
 /*------ INDEX BODY CSS ------*/
 .index-body {
-    background: rgb(from var(--footer-purple) r g b / 0.5);
     width: 50%;
     max-width: 1000px;
     margin-top: 1vh;
-    border: 2px solid var(--header-purple);
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.welcome{
+.welcome {
     text-align: center;
 }
 
-.cupcake-box{
+.cupcake-box {
     display: grid;
     place-items: center;
     width: min(320px, 50vw);
     aspect-ratio: 1 / 1;
 }
 
-.cupcake-box img{
+.cupcake-box img {
     grid-area: 1 / 1;
     width: 100%;
     height: auto;
@@ -180,47 +198,85 @@ main {
     margin-top: 4rem;
 }
 
-.bottom-img{
+.bottom-img {
     z-index: 1;
     transform: translateY(10%);
 }
 
-.topping-img{
+.topping-img {
     z-index: 2;
     transform: translateY(-30%);
 }
 
-.cupcake-creator{
+.cupcake-creator {
 }
-
 
 
 /*------ Basket BODY CSS ------*/
-.basket-body{
-   width: 65%;
+.basket-body {
+    margin-top: 1vh;
+    width: 65%;
 }
 
-.basket-body-row{
+.basket-body-row {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
 }
 
 .basket-cupcake-body {
     width: 90%;
     max-width: 1000px;
     min-width: 600px;
-    margin-top: 1vh;
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: flex-start;
 }
 
 .basket-checkout-card {
-    width: 10%;
-    background: #007A72;
-    height: 400px;
+    flex: 0 0 30%;
+    align-self: flex-start;
+    height: auto;
+    min-height: unset;
+}
+
+.basket-checkout-details-card {
+    margin: 4%;
+}
+
+.basket-checkout-details-card-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: auto;
+    padding-bottom: 5px;
+}
+
+.basket-checkout-card button {
+    width: 100px;
+    border: solid 2px var(--header-color);
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.basket-clear-cart-button {
+    background-color: darkred;
+    color: var(--font-text-base);
+}
+
+.basket-clear-cart-button:hover {
+    background-color: firebrick;
+}
+
+.basket-checkout-button {
+    background-color: green;
+    color: var(--font-text-base);
+}
+
+.basket-checkout-button:hover {
+    background-color: forestgreen;
 }
 
 .basket-title-box {
@@ -229,16 +285,12 @@ main {
 }
 
 .cupcake-card {
-    background: var(--footer-test);
-    border: 2px solid var(--header-test);
-    border-radius: 20px;
-
     display: flex;
     flex-direction: column;
     flex: 0 0 31%;
     min-height: 360px;
     max-width: 30%;
-    margin: 1%;
+    margin: 0 0.5% 1% 0.5%;
     overflow: hidden;
     position: relative;
 }
@@ -265,7 +317,23 @@ main {
     flex: 1 1 auto;
     margin: 0 2%;
     padding: 0 8% 5% 8%;
+}
 
+.cupcake-card-info button {
+    background: none;
+    border: none;
+}
+
+.minus-icon, .plus-icon {
+    padding-top: 5px;
+}
+
+.delete-icon, .minus-icon, .plus-icon {
+    color: palegoldenrod;
+}
+
+.delete-icon:hover, .minus-icon:hover, .plus-icon:hover {
+    cursor: pointer;
 }
 
 .cupcake-card-info .row {
@@ -277,21 +345,17 @@ main {
     justify-content: center;
     align-items: center;
     gap: 5%;
+    padding-bottom: 2%;
 }
 
-.basket-checkout-card {
-
+.underline {
+    text-decoration: underline;
 }
-
-.basket-checkout-card button {
-
-}
-
 
 
 /*------ FOOTER CSS ------*/
 footer {
-    background: var(--footer-test);
+    background: var(--footer-color);
     min-height: 60px;
     height: 10vh;
     width: 100%;
@@ -299,11 +363,6 @@ footer {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-}
-
-footer a{
-    color: black;
-    text-decoration: none;
 }
 
 address {
@@ -335,7 +394,7 @@ address {
     height: 100%;
 }
 
-.title{
+.title {
     text-align: center;
 }
 
@@ -343,3 +402,6 @@ address {
     display: flex;
     justify-content: space-between;
 }
+
+
+/*------ MEDIA CSS ------*/
