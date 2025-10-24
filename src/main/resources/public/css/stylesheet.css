@@ -143,6 +143,10 @@ main {
     background-position: center;    /* Centers the image */
 }
 
+.test-background h1,h2,p {
+    color: palegoldenrod;
+}
+
 
 /*------ INDEX BODY CSS ------*/
 .index-body {
@@ -192,8 +196,17 @@ main {
 
 
 /*------ Basket BODY CSS ------*/
-.basket-body {
-    width: 50%;
+.basket-body{
+   width: 65%;
+}
+
+.basket-body-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.basket-cupcake-body {
+    width: 90%;
     max-width: 1000px;
     min-width: 600px;
     margin-top: 1vh;
@@ -202,7 +215,12 @@ main {
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
+}
 
+.basket-checkout-card {
+    width: 10%;
+    background: #007A72;
+    height: 400px;
 }
 
 .basket-title-box {
@@ -259,6 +277,14 @@ main {
     justify-content: center;
     align-items: center;
     gap: 5%;
+}
+
+.basket-checkout-card {
+
+}
+
+.basket-checkout-card button {
+
 }
 
 
