@@ -2,6 +2,7 @@ package app;
 
 import app.config.ThymeleafConfig;
 
+import app.controllers.AdminController;
 import app.controllers.ShoppingController;
 import app.controllers.UserController;
 import app.persistence.BottomMapper;
@@ -48,8 +49,11 @@ public class Main {
         ShoppingService shoppingService = new ShoppingServiceImpl(bottomMapper,toppingMapper);
         ShoppingController shoppingController = new ShoppingController(shoppingService);
 
+        AdminController adminController = new AdminController(userService);
+
         shoppingController.addRoutes(app);
-        userController.registerRoutes(app);
+        userController.addRoutes(app);
+        adminController.addRoutes(app);
 
     }
 }

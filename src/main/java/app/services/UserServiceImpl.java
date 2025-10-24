@@ -8,6 +8,7 @@ import app.persistence.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService
 {
@@ -76,15 +77,41 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public User getUserById(int userId) throws DatabaseException
+    public UserDTO getUserById(int userId) throws DatabaseException
     {
-        return userMapper.getUserById(userId);
+        User user = userMapper.getUserById(userId);
+        return buildUserDTO(user);
     }
 
     @Override
     public List<UserDTO> getAllUsers() throws DatabaseException
     {
         return userMapper.getAllUsers();
+    }
+
+    @Override
+    public List<UserDTO> searchUsersByName(String name) throws DatabaseException
+    {
+        return userMapper.getAllUsers().stream()
+                .filter(user -> user.getFirstName().toLowerCase().contains(name.toLowerCase())
+                        || user.getLastName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDTO> searchUsersByEmail(String email) throws DatabaseException
+    {
+        return userMapper.getAllUsers().stream()
+                .filter(user -> user.getEmail().toLowerCase().contains(email.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDTO> searchUsersByUserId(int userId) throws DatabaseException
+    {
+        return userMapper.getAllUsers().stream()
+                .filter(user -> user.getUserId() == userId)
+                .collect(Collectors.toList());
     }
 
     private void validateFirstOrLastName(String name)
@@ -164,5 +191,20 @@ public class UserServiceImpl implements UserService
         {
             throw new IllegalArgumentException("Gade kan ikke være tom");
         }
+    }
+
+    private UserDTO buildUserDTO(User user)
+    {
+        return new UserDTO(
+                user.getUserId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getStreet(),
+                user.getZipCode(),
+                user.getCity(),
+                user.getBalance()
+        );
     }
 }

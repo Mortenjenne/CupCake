@@ -14,7 +14,40 @@
     <div class="customer-info">
         <div th:if="${customers != null}">
             <h1>Kunder</h1>
-            <h2>Dine kunder:</h2>
+
+            <div th:if="${successMessage}" class="success-message">
+                <p th:text="${successMessage}"></p>
+            </div>
+
+            <div th:if="${errorMessage}" class="error-message">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <div class="customer-search">
+                <h2>Søg efter kunder</h2>
+                <form method="get" th:action="@{/customers/search}">
+                    <div class="search-form">
+                        <select name="searchType" required>
+                            <option value="">Vælg søgetype</option>
+                            <option value="id" th:selected="${searchType == 'id'}">Kunde ID</option>
+                            <option value="name" th:selected="${searchType == 'name'}">Navn</option>
+                            <option value="email" th:selected="${searchType == 'email'}">Email</option>
+                        </select>
+
+                        <input type="text"
+                               name="searchQuery"
+                               th:value="${searchQuery}"
+                               placeholder="Indtast søgeord..."
+                               required>
+
+                        <button class="search-button" type="submit">Søg</button>
+                        <a th:href="@{/customers}" class="reset-button">Nulstil</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="customer-details">
+            <h3>Dine kunder:</h3>
             <table>
                 <thead>
                 <tr>
@@ -27,6 +60,7 @@
                     <th>Postnummer</th>
                     <th>By</th>
                     <th>Balance</th>
+                    <th>Rediger balance</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -42,12 +76,13 @@
                     <td th:text="${customer.balance}"></td>
                     <td>
                         <form method="get" th:action="@{/customers/edit/{id}(id=${customer.userId})}">
-                            <button type="submit" class="icon-button"><img th:src="@{images/edit-w.svg}"></button>
+                            <button type="submit" id="icon-button" class="icon-button"><img id="edit" th:src="@{/images/edit-w.svg}"></button>
                         </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 
@@ -57,15 +92,7 @@
         <h3>Ingen kunder har oprettet sig i dit system</h3>
     </div>
 
-    <div th:if="${session.successMessage}" class="success-message">
-        <p th:text="${session.successMessage}"></p>
-        <span th:remove="all">${session.remove('successMessage')}</span>
-    </div>
 
-    <div th:if="${session.errorMessage}" class="error-message">
-        <p th:text="${session.errorMessage}"></p>
-        <span th:remove="all">${session.remove('errorMessage')}</span>
-    </div>
 </main>
 <div th:replace="~{fragments :: footerFragment}"></div>
 
