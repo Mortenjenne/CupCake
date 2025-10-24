@@ -11,7 +11,7 @@
 
 <div th:replace="~{fragments :: headerFragment}"></div>
 
-<main class="test-background">
+<main>
 
     <div class="basket-body">
         <div class="basket-title-box">
@@ -19,44 +19,79 @@
             <h2>Verificer din bestilling</h2>
         </div>
         <div class="basket-body-row">
-        <form method="post" action="/basket/action" class="basket-cupcake-body">
-            <div class="cupcake-card" th:each="o, iterStat : ${cart.shoppingCart}">
-                <div class="cupcake-box-basket">
-                    <img class="bottom-img"
-                         th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${o.cupcake.bottom.slug})}"
-                         alt="bottom">
-                    <img class="topping-img"
-                         th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${o.cupcake.topping.slug})}"
-                         alt="topping">
+            <form method="post" action="/basket/action" class="basket-cupcake-body">
+                <div class="cupcake-card basket-styling" th:each="o, iterStat : ${cart.shoppingCart}">
+                    <div class="cupcake-box-basket">
+                        <img class="bottom-img"
+                             th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${o.cupcake.bottom.slug})}"
+                             alt="bottom">
+                        <img class="topping-img"
+                             th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${o.cupcake.topping.slug})}"
+                             alt="topping">
+                    </div>
+                    <div class="cupcake-card-info">
+                        <div class="row">
+                            <p>Bund:</p>
+                            <p th:text="${o.cupcake.bottom.name}"></p>
+                        </div>
+                        <div class="row">
+                            <p>Topping:</p>
+                            <p th:text="${o.cupcake.topping.name}"></p>
+                        </div>
+                        <div class="rowQuantity">
+                            <button type="submit" name="decreaseQuantity" th:value="${iterStat.index}">
+                                <svg class="minus-icon" width="16" height="18" viewBox="0 0 16 18"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 9H14V7H2V9Z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                            <p th:text="${o.quantity + ' stk.'}"></p>
+                            <button type="submit" name="increaseQuantity" th:value="${iterStat.index}">
+                                <svg class="plus-icon" width="16" height="18" viewBox="0 0 16 18"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 14H9V9H14V7H9V2H7V7H2V9H7V14Z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <p>Pris:</p>
+                            <p th:text="${o.cupcake.cupcakePrice * o.quantity + ' kr.'}"></p>
+                        </div>
+                        <button type="submit" name="index" th:value="${iterStat.index}">
+                            <svg class="delete-icon" width="16" height="18" viewBox="0 0 16 18"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 18C2.45 18 1.97933 17.8043 1.588 17.413C1.19667 17.0217 1.00067 16.5507 1 16V3H0V1H5V0H11V1H16V3H15V16C15 16.55 14.8043 17.021 14.413 17.413C14.0217 17.805 13.5507 18.0007 13 18H3ZM13 3H3V16H13V3ZM5 14H7V5H5V14ZM9 14H11V5H9V14Z"
+                                      fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="cupcake-card-info">
-                    <div class="row">
-                        <p>Bund:</p>
-                        <p th:text="${o.cupcake.bottom.name}"></p>
+            </form>
+            <div class="basket-checkout-card basket-styling">
+                <div class="basket-checkout-details-card">
+                    <p>Din kurv består af:</p>
+                    <div class="basket-checkout-card-info" th:each="o, iterStat : ${cart.shoppingCart}">
+                        <div class="row">
+                            <p th:text="${o.quantity + 'stk. ' + o.cupcake.bottom.name + ' / ' + o.cupcake.topping.name}"></p>
+                            <p th:text="${o.cupcake.cupcakePrice * o.quantity + ' kr.'}"></p>
+                        </div>
                     </div>
-                    <div class="row">
-                        <p>Topping:</p>
-                        <p th:text="${o.cupcake.topping.name}"></p>
+                    <br>
+                    <div class="row total-price-styling">
+                        <p>Total beløb:</p>
+                        <p th:text="${basketTotalPrice + ' kr.'}"></p>
                     </div>
-                    <div class="rowQuantity">
-                        <button type="submit" name="decreaseQuantity" th:value="${iterStat.index}">➖</button>
-                        <p th:text="${o.quantity + ' stk.'}"></p>
-                        <button type="submit" name="increaseQuantity" th:value="${iterStat.index}">➕</button>
-                    </div>
-                    <div class="row">
-                        <p>Pris:</p>
-                        <p th:text="${o.cupcake.cupcakePrice * o.quantity + ' .' + '-'}"></p>
-                    </div>
-                    <button type="submit" name="index" th:value="${iterStat.index}">🗑️</button>
+                </div>
+                <div class="basket-checkout-details-card-buttons">
+                    <form method="post" action="/clearCart">
+                        <button type="submit" name="basketClearCart">Ryd kurv</button>
+                    </form>
+
+                    <form method="get" action="/checkout">
+                        <button type="submit">Gå til kassen</button>
+                    </form>
                 </div>
             </div>
-        </form>
-        <form method="get" action="/checkout" class="basket-checkout-card">
-            <div >
-                <button type="submit" name="basketClearCart">🗑️</button>
-                <button type="submit">CHECKOUT</button>
-            </div>
-        </form>
         </div>
     </div>
 </main>

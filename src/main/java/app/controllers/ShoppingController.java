@@ -27,6 +27,7 @@ public class ShoppingController
         app.get("/basket", this::showBasket);
         app.post("/basket/action", this::basketActions);
         app.get("/checkout",  this::showCheckout);
+        app.post("/clearCart", this::clearCart);
         //TODO: post på remove line og clear cart?
     }
 
@@ -57,6 +58,7 @@ public class ShoppingController
 
         var model = new HashMap<String, Object>();
         model.put("cart", cart);
+        model.put("basketTotalPrice", shoppingService.getTotalOrderPrice(cart));
 
         ctx.render("basket.html", model);
     }
