@@ -168,6 +168,10 @@ main {
     border-radius: 20px;
 }
 
+button:hover {
+    cursor: pointer;
+}
+
 /*------ INDEX BODY CSS ------*/
 .index-body {
     width: 50%;
@@ -332,7 +336,7 @@ main {
 }
 
 .delete-icon:hover, .minus-icon:hover, .plus-icon:hover {
-    outline-color: black;
+    cursor: pointer;
 }
 
 .cupcake-card-info .row {
@@ -344,6 +348,7 @@ main {
     justify-content: center;
     align-items: center;
     gap: 5%;
+    padding-bottom: 2%;
 }
 
 .underline{
