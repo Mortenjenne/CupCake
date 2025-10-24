@@ -94,6 +94,7 @@ body {
 
 body a:link, body a:visited, body a:visited {
     color: var(--font-text-base);
+    text-decoration: none;
 }
 
 
@@ -105,7 +106,6 @@ header {
     height: 8vh;
     min-height: 50px;
     width: 100%;
-
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -142,15 +142,12 @@ header img {
     gap: 2vw;
 }
 
-.account-info a, a:visited {
-    text-decoration: none;
-    color: var(--color-text-light);
-}
-
 
 /*------ MAIN CSS ------*/
 main {
     padding: 8vh 5vw 1vh;
+
+    /*DONT TOUCH THESE*/
     flex: 1;
     display: flex;
     justify-content: center;
@@ -264,7 +261,7 @@ button:hover {
     font-weight: bold;
 }
 
-.basket-clear-cart-button{
+.basket-clear-cart-button {
     background-color: darkred;
     color: var(--font-text-base);
 }
@@ -273,14 +270,14 @@ button:hover {
     background-color: firebrick;
 }
 
-.basket-checkout-button{
+.basket-checkout-button {
     background-color: green;
     color: var(--font-text-base);
 }
+
 .basket-checkout-button:hover {
     background-color: forestgreen;
 }
-
 
 .basket-title-box {
     width: 100%;
@@ -351,7 +348,7 @@ button:hover {
     padding-bottom: 2%;
 }
 
-.underline{
+.underline {
     text-decoration: underline;
 }
 
@@ -366,10 +363,6 @@ footer {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-}
-
-footer a {
-    text-decoration: none;
 }
 
 address {

@@ -15,8 +15,10 @@
 
     <div class="basket-body">
         <div class="basket-title-box">
-            <h1>Din Kurv</h1>
-            <h2>Verificer din bestilling</h2>
+            <h1 th:if="${cart.shoppingCart.isEmpty()}">Din kurv er tom</h1>
+            <h1 th:unless="${cart.shoppingCart.isEmpty()}">Din kurv</h1>
+            <h2 th:if="${cart.shoppingCart.isEmpty()}">Skynd dig at bestille nogle af vores lækre Cupcakes</h2>
+            <h2 th:unless="${cart.shoppingCart.isEmpty()}">Verificer din bestilling</h2>
         </div>
         <div class="basket-body-row">
             <form method="post" action="/basket/action" class="basket-cupcake-body">
@@ -67,34 +69,36 @@
                     </div>
                 </div>
             </form>
-            <div class="basket-checkout-card window-styling">
-                <div class="basket-checkout-details-card">
-                    <h4>Din kurv består af:</h4>
-                    <br>
-                    <div class="basket-checkout-card-info" th:each="o, iterStat : ${cart.shoppingCart}">
-                        <div class="row">
-                            <p th:text="${o.quantity + 'stk. ' + o.cupcake.bottom.name + ' / ' + o.cupcake.topping.name}"></p>
-                            <p th:text="${o.cupcake.cupcakePrice * o.quantity + ' kr.'}"></p>
+                <div th:if="${!cart.shoppingCart.isEmpty()}" class="basket-checkout-card window-styling">
+                    <div class="basket-checkout-details-card">
+                        <h4>Din kurv består af:</h4>
+                        <br>
+                        <div class="basket-checkout-card-info" th:each="o, iterStat : ${cart.shoppingCart}">
+                            <div class="row">
+                                <p th:text="${o.quantity + 'stk. ' + o.cupcake.bottom.name + ' / ' + o.cupcake.topping.name}"></p>
+                                <p th:text="${o.cupcake.cupcakePrice * o.quantity + ' kr.'}"></p>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row total-price-styling">
+                            <h5>Total beløb:</h5>
+                            <h5 class="underline" th:text="${basketTotalPrice + ' kr.'}"></h5>
                         </div>
                     </div>
-                    <br>
-                    <div class="row total-price-styling">
-                        <h5>Total beløb:</h5>
-                        <h5 class="underline" th:text="${basketTotalPrice + ' kr.'}"></h5>
+                    <div class="basket-checkout-details-card-buttons">
+                        <form method="post" action="/clearCart">
+                            <button class="basket-clear-cart-button" type="submit" name="basketClearCart">Ryd kurv
+                            </button>
+                        </form>
+
+                        <form method="get" action="/checkout">
+                            <button class="basket-checkout-button" type="submit">Gå til kassen</button>
+                        </form>
                     </div>
                 </div>
-                <div class="basket-checkout-details-card-buttons">
-                    <form method="post" action="/clearCart">
-                        <button class="basket-clear-cart-button" type="submit" name="basketClearCart">Ryd kurv</button>
-                    </form>
-
-                    <form method="get" action="/checkout">
-                        <button class="basket-checkout-button" type="submit">Gå til kassen</button>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
+
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
