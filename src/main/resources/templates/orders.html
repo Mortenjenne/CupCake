@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Olsker Cupcakes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="orders-view">
+        <h1 th:if="${session.currentUser.isAdmin}">Alle Ordre</h1>
+        <h1 th:unless="${session.currentUser.isAdmin}">Mine Ordre</h1>
+
+    <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+        <div th:if="${orders != null and !orders.isEmpty()}" class="orders-table">
+            <table>
+                <thead>
+                <th>Ordre Id</th>
+                <th th:if="session.currentUser.isAdmin">Kunde</th>
+                <th th:if="session.currentUser.isAdmin">Email</th>
+                <th>Ordre dato</th>
+                <th>Afhentnings dato</th>
+                <th>Total pris</th>
+                <th>Status</th>
+                <th>Handlinger</th>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderId}"></td>
+                <td th:if="${session.currentUser.isAdmin}">
+                    <span th:text="${order.userDTO.firstName + ' ' + order.userDTO.lastName}"></span>
+                </td>
+                    <td th:if="${session.currentUser.isAdmin}">
+                        <span th:text="${order.userDTO.email}"></span>
+                    </td>
+                    <td th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(order.pickUpDate, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${order.totalPrice + ' kr.'}"></td>
+                    <td>
+                        <span th:if="${order.paid}" class="status-paid">Betalt</span>
+                        <span th:unless="${order.paid}" class="status-unpaid">Ikke betalt</span>
+                    </td>
+                    <td class="action-buttons">
+                        <a th:href="@{/orders/details/{id}(id=${order.orderId})}"
+                           class="action-btn view-btn">
+                            <img th:src="@{/images/view-w.svg}" alt="Se detaljer"/>
+                        </a>
+
+                        <form th:if="${session.currentUser.isAdmin and !order.paid}" method="post" th:action="@{/orders/mark-paid/{id}(id=${order.orderId})}">
+                            <button type="submit" class="action-btn paid-btn" title="Marker som betalt">
+                                <img th:src="@{/images/check-w.svg}" alt="Marker betalt"/>
+                            </button>
+                        </form>
+
+                        <form th:if="${session.currentUser.isAdmin}" method="post" th:action="@{/orders/delete/{id}(id=${order.orderId})}" onclick="confirm('Er du sikker på du vil slette ordren?')">
+                            <button type="submit" class="action-btn delete-btn" title="Slet ordre">
+                                <img th:src="@{/images/delete-w.svg}" alt="Slet"/>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>
