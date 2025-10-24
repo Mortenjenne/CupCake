@@ -220,6 +220,8 @@ main {
 .basket-body-row {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
 }
 
 .basket-cupcake-body {
@@ -227,20 +229,15 @@ main {
     max-width: 1000px;
     min-width: 600px;
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: flex-start;
 }
 
 .basket-checkout-card {
-    width: 30%;
-    min-width: 30%;
-    min-height: 400px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 0.6%;
+    flex: 0 0 30%;
+    align-self: flex-start;
+    height: auto;
+    min-height: unset;
 }
 
 .basket-checkout-details-card {
@@ -252,6 +249,7 @@ main {
     flex-direction: row;
     justify-content: space-around;
     height: auto;
+    padding-bottom: 5px;
 }
 
 .basket-checkout-card button {
@@ -406,3 +404,6 @@ address {
     display: flex;
     justify-content: space-between;
 }
+
+
+/*------ MEDIA CSS ------*/
