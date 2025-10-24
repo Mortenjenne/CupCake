@@ -42,8 +42,9 @@ public class ShoppingCart
     {
         if (orderLine.getQuantity() == 1) {
             removeOrderLineFromCart(orderLine);
+        }else{
+            orderLine.setQuantity((orderLine.getQuantity() - 1));
         }
-        orderLine.setQuantity((orderLine.getQuantity() - 1));
     }
 
     public void addOneToCupcakeQuantity(OrderLine orderLine)

@@ -29,8 +29,8 @@ public class ToppingMapper
             while (rs.next()) {
                 Topping t = new Topping(
                         rs.getInt("topping_id"),
-                        rs.getString("flavour"),
-                        rs.getDouble("price")
+                        rs.getString("topping_flavour"),
+                        rs.getDouble("topping_price")
                 );
                 toppingList.add(t);
             }
@@ -50,8 +50,8 @@ public class ToppingMapper
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return new Topping(rs.getInt("topping_id"),
-                            rs.getString("flavour"),
-                            rs.getDouble("price"));
+                            rs.getString("topping_flavour"),
+                            rs.getDouble("topping_price"));
                 }
                 return null;
             }

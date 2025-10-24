@@ -38,6 +38,11 @@
     --color-teal: #007A72; /* Links */
     --color-text-light: #FFFFFF;
     --color-text-dark: #000000;
+
+    --header-test: #5D4532;
+    --footer-test: #775940;
+    --button-test: #926D4F;
+    --button-hover-test: #B08B6D;
 }
 
 
@@ -71,7 +76,7 @@ body {
 
 /*------ HEADER CSS ------*/
 header {
-    background: var(--header-purple);
+    background: var(--header-test);
     position: fixed;
     top: 0;
     height: 8vh;
@@ -82,6 +87,7 @@ header {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    z-index: 1000;
 
 }
 
@@ -125,6 +131,22 @@ main {
     justify-content: center;
 }
 
+.test-background{
+    padding: 8vh 5vw 1vh;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+
+    background-image: url("/images/backgroundtest.jpg");
+    background-size: cover;         /* Scales to fill element while maintaining aspect ratio */
+    background-repeat: no-repeat;   /* Prevents tiling */
+    background-position: center;    /* Centers the image */
+}
+
+.test-background h1,h2,p {
+    color: palegoldenrod;
+}
+
 
 /*------ INDEX BODY CSS ------*/
 .index-body {
@@ -149,6 +171,7 @@ main {
     width: min(320px, 50vw);
     aspect-ratio: 1 / 1;
 }
+
 .cupcake-box img{
     grid-area: 1 / 1;
     width: 100%;
@@ -172,9 +195,103 @@ main {
 
 
 
+/*------ Basket BODY CSS ------*/
+.basket-body{
+   width: 65%;
+}
+
+.basket-body-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.basket-cupcake-body {
+    width: 90%;
+    max-width: 1000px;
+    min-width: 600px;
+    margin-top: 1vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.basket-checkout-card {
+    width: 10%;
+    background: #007A72;
+    height: 400px;
+}
+
+.basket-title-box {
+    width: 100%;
+    text-align: center;
+}
+
+.cupcake-card {
+    background: var(--footer-test);
+    border: 2px solid var(--header-test);
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 31%;
+    min-height: 360px;
+    max-width: 30%;
+    margin: 1%;
+    overflow: hidden;
+    position: relative;
+}
+
+.cupcake-box-basket {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+}
+
+.cupcake-box-basket img {
+    grid-area: 1 / 1;
+    width: 65%;
+    height: auto;
+    object-fit: contain;
+}
+
+.cupcake-card-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1 1 auto;
+    margin: 0 2%;
+    padding: 0 8% 5% 8%;
+
+}
+
+.cupcake-card-info .row {
+    padding-bottom: 5%;
+}
+
+.rowQuantity {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+}
+
+.basket-checkout-card {
+
+}
+
+.basket-checkout-card button {
+
+}
+
+
+
 /*------ FOOTER CSS ------*/
 footer {
-    background: var(--footer-purple);
+    background: var(--footer-test);
     min-height: 60px;
     height: 10vh;
     width: 100%;

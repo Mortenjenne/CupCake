@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div th:replace="fragments :: headerFragment"></div>
+<div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
     <div class="login-container"></div>
@@ -45,7 +45,8 @@
 
 </main>
 
-<div th:replace="fragments :: footerFragment"></div>
+<div th:replace="~{fragments :: footerFragment}"></div>
+
 
 </body>
 </html>

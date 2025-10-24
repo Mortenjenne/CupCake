@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Olsker Cupcakes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main class="test-background">
+
+    <div class="basket-body">
+        <div class="basket-title-box">
+            <h1>Din Kurv</h1>
+            <h2>Verificer din bestilling</h2>
+        </div>
+        <div class="basket-body-row">
+        <form method="post" action="/basket/action" class="basket-cupcake-body">
+            <div class="cupcake-card" th:each="o, iterStat : ${cart.shoppingCart}">
+                <div class="cupcake-box-basket">
+                    <img class="bottom-img"
+                         th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${o.cupcake.bottom.slug})}"
+                         alt="bottom">
+                    <img class="topping-img"
+                         th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${o.cupcake.topping.slug})}"
+                         alt="topping">
+                </div>
+                <div class="cupcake-card-info">
+                    <div class="row">
+                        <p>Bund:</p>
+                        <p th:text="${o.cupcake.bottom.name}"></p>
+                    </div>
+                    <div class="row">
+                        <p>Topping:</p>
+                        <p th:text="${o.cupcake.topping.name}"></p>
+                    </div>
+                    <div class="rowQuantity">
+                        <button type="submit" name="decreaseQuantity" th:value="${iterStat.index}">➖</button>
+                        <p th:text="${o.quantity + ' stk.'}"></p>
+                        <button type="submit" name="increaseQuantity" th:value="${iterStat.index}">➕</button>
+                    </div>
+                    <div class="row">
+                        <p>Pris:</p>
+                        <p th:text="${o.cupcake.cupcakePrice * o.quantity + ' .' + '-'}"></p>
+                    </div>
+                    <button type="submit" name="index" th:value="${iterStat.index}">🗑️</button>
+                </div>
+            </div>
+        </form>
+        <form method="get" action="/checkout" class="basket-checkout-card">
+            <div >
+                <button type="submit" name="basketClearCart">🗑️</button>
+                <button type="submit">CHECKOUT</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>
