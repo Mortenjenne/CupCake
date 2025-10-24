@@ -26,9 +26,8 @@ public class ShoppingController
         app.post("/cart/add", this::addToCart);
         app.get("/basket", this::showBasket);
         app.post("/basket/action", this::basketActions);
-        app.get("/checkout",  this::showCheckout);
+        app.get("/checkout", this::showCheckout);
         app.post("/clearCart", this::clearCart);
-        //TODO: post på remove line og clear cart?
     }
 
     private void showIndex(Context ctx) throws DatabaseException
@@ -61,6 +60,12 @@ public class ShoppingController
         model.put("basketTotalPrice", shoppingService.getTotalOrderPrice(cart));
 
         ctx.render("basket.html", model);
+    }
+
+    private void showCheckout(Context ctx)
+    {
+        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        ctx.render("/checkout");
     }
 
     private ShoppingCart getOrCreateCart(Context ctx)
@@ -135,7 +140,7 @@ public class ShoppingController
     private void increaseCupcakeQuantity(Context ctx)
     {
         int index = Integer.parseInt(ctx.formParam("increaseQuantity"));
-        shoppingService.addOneToCupcakeQuantity(getOrCreateCart(ctx),index);
+        shoppingService.addOneToCupcakeQuantity(getOrCreateCart(ctx), index);
         ctx.sessionAttribute("CART", getOrCreateCart(ctx));
         ctx.redirect("/basket");
     }
@@ -143,7 +148,7 @@ public class ShoppingController
     private void decreaseCupcakeQuantity(Context ctx)
     {
         int index = Integer.parseInt(ctx.formParam("decreaseQuantity"));
-        shoppingService.removeOneFromCupcakeQuantity(getOrCreateCart(ctx),index);
+        shoppingService.removeOneFromCupcakeQuantity(getOrCreateCart(ctx), index);
         ctx.sessionAttribute("CART", getOrCreateCart(ctx));
         ctx.redirect("/basket");
     }
@@ -153,12 +158,6 @@ public class ShoppingController
         shoppingService.clearCart(getOrCreateCart(ctx));
         ctx.sessionAttribute("CART", getOrCreateCart(ctx));
         ctx.redirect("/basket");
-    }
-
-    private void showCheckout(Context ctx)
-    {
-        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
-        ctx.render("/checkout");
     }
 
 
