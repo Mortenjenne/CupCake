@@ -151,6 +151,8 @@ public class ShoppingController
     private void clearCart(Context ctx)
     {
         shoppingService.clearCart(getOrCreateCart(ctx));
+        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        ctx.redirect("/basket");
     }
 
     private void showCheckout(Context ctx)

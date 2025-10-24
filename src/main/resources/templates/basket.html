@@ -20,7 +20,7 @@
         </div>
         <div class="basket-body-row">
             <form method="post" action="/basket/action" class="basket-cupcake-body">
-                <div class="cupcake-card basket-styling" th:each="o, iterStat : ${cart.shoppingCart}">
+                <div class="cupcake-card window-styling" th:each="o, iterStat : ${cart.shoppingCart}">
                     <div class="cupcake-box-basket">
                         <img class="bottom-img"
                              th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${o.cupcake.bottom.slug})}"
@@ -67,9 +67,10 @@
                     </div>
                 </div>
             </form>
-            <div class="basket-checkout-card basket-styling">
+            <div class="basket-checkout-card window-styling">
                 <div class="basket-checkout-details-card">
-                    <p>Din kurv består af:</p>
+                    <h4>Din kurv består af:</h4>
+                    <br>
                     <div class="basket-checkout-card-info" th:each="o, iterStat : ${cart.shoppingCart}">
                         <div class="row">
                             <p th:text="${o.quantity + 'stk. ' + o.cupcake.bottom.name + ' / ' + o.cupcake.topping.name}"></p>
@@ -78,17 +79,17 @@
                     </div>
                     <br>
                     <div class="row total-price-styling">
-                        <p>Total beløb:</p>
-                        <p th:text="${basketTotalPrice + ' kr.'}"></p>
+                        <h5>Total beløb:</h5>
+                        <h5 class="underline" th:text="${basketTotalPrice + ' kr.'}"></h5>
                     </div>
                 </div>
                 <div class="basket-checkout-details-card-buttons">
                     <form method="post" action="/clearCart">
-                        <button type="submit" name="basketClearCart">Ryd kurv</button>
+                        <button class="basket-clear-cart-button" type="submit" name="basketClearCart">Ryd kurv</button>
                     </form>
 
                     <form method="get" action="/checkout">
-                        <button type="submit">Gå til kassen</button>
+                        <button class="basket-checkout-button" type="submit">Gå til kassen</button>
                     </form>
                 </div>
             </div>
