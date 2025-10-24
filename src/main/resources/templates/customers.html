@@ -11,7 +11,7 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div class="customer-view">
+    <div class="customer-info">
         <div th:if="${customers != null}">
             <h1>Kunder</h1>
             <h2>Dine kunder:</h2>
@@ -41,11 +41,8 @@
                     <td th:text="${customer.city}"></td>
                     <td th:text="${customer.balance}"></td>
                     <td>
-                        <form th:action="@{customers/update-balance}">
-                            <input type="hidden" name="userId" >
-                            <input type="number" name="newBalance" th:value="${customer.balance}" step="0.01"
-                                   min="0">
-                            <button type="submit">Opdater balance</button>
+                        <form method="get" th:action="@{/customers/edit/{id}(id=${customer.userId})}">
+                            <button type="submit" class="icon-button"><img th:src="@{images/edit-w.svg}"></button>
                         </form>
                     </td>
                 </tr>
