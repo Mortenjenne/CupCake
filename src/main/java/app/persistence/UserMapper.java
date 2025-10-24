@@ -1,9 +1,12 @@
 package app.persistence;
 
+import app.dto.UserDTO;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserMapper
 {
@@ -233,6 +236,38 @@ public class UserMapper
             throw new DatabaseException("Beløbet " + amount + ",- blev ikke tilføjet til bruger med id: " + userId);
         }
         return result;
+    }
+
+    public List<UserDTO> getAllUsers() throws DatabaseException
+    {
+        String sql = "SELECT users.*, zip_codes.city FROM users JOIN zip_codes ON users.zip_code = zip_codes.zip_code";
+        List<UserDTO> users = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                users.add(new UserDTO(
+                        rs.getInt("user_id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getString("email"),
+                        rs.getInt("phonenumber"),
+                        rs.getString("street"),
+                        rs.getInt("zip_code"),
+                        rs.getString("city"),
+                        rs.getDouble("balance")
+                ));
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl under hentning af alle brugere");
+        }
+        return users;
     }
 
     public User login(String email, String password) throws DatabaseException

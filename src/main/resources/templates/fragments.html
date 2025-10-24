@@ -1,38 +1,70 @@
-
 <!-- Header Fragment -->
 <div th:fragment="headerFragment">
     <header>
         <nav>
-            <a href="index.html" th:href="@{/}">
-                <img src="/public/images/logo-w.svg"
-                     alt="Cupcake Logo"
-                     th:src="@{/images/logo-w.svg}">
-            </a>
-        </nav>
+            <div class="header-left">
+                <div>
+                    <a href="index.html" th:href="@{/}">
+                        <img src="/public/images/logo-w.svg"
+                             alt="Cupcake Logo"
+                             th:src="@{/images/logo-w.svg}">
+                    </a>
+                </div>
+                <div th:if="${session.currentUser == null}">
+                    <a href="about.html" th:href="@{/about}">Om os</a>
+                </div>
+                <div th:if="${session.currentUser != null and !session.currentUser.isAdmin}">
+                    <a href="about.html" th:href="@{/about}">Om os</a>
+                </div>
+                <div th:if="${session.currentUser != null and session.currentUser.isAdmin}">
+                    <a href="about.html" th:href="@{/about}">Om os</a>
+                    <a href="orders.html" th:href="@{/orders}">Ordre</a>
+                    <a href="customers.html" th:href="@{/customers}">Kunder</a>
+                    <a href="statistics.html" th:href="@{/statistics}">Statistik</a>
+                </div>
+            </div>
 
-        <div class="account-info">
-            <div th:if="${session.currentUser != null}">
-                <span class="username" th:text="${session.currentUser.getEmail}">Username</span>
-                <a th:href="@{/my-page}">
-                    <img th:src="@{/images/profile.svg}" alt="profil">
-                </a>
-            <a href="checkout.html" th:href="@{/checkout}">
-                <img src="/public/images/basket-w.svg"
-                     alt="Cupcake Logo"
-                     th:src="@{/images/basket-w.svg}">
-            </a>
+            <div class="header-right">
+                <div>
+                    <div th:if="${session.currentUser == null}">
+                        <div class="icon-with-text">
+                            <a href="login.html" th:href="@{/login}">
+                                <img src="/public/images/mypage-w.svg"
+                                     alt="Login icon"
+                                     th:src="@{/images/mypage-w.svg}">
+                            </a>
+                            <a href="login.html" th:href="@{/login}">Login</a>
+                        </div>
+                    </div>
+                    <div th:if="${session.currentUser != null}">
+                        <div class="icon-with-text">
+                            <a href="mypage.html" th:href="@{/mypage}">
+                                <img src="/public/images/mypage-w.svg"
+                                     alt="My page icon"
+                                     th:src="@{/images/basket-w.svg}">
+                            </a>
+                            <a href="mypage.html" th:href="@{/mypage}">Min side</a>
+                        </div>
+                        <div class="icon-with-text">
+                            <a href="index.html" th:href="@{/logout}">
+                                <img src="/public/images/logout-w.svg"
+                                     alt="Log out icon"
+                                     th:src="@{/images/logout-w.svg}">
+                            </a>
+                            <a href="index.html" th:href="@{/logout}">Log ud</a>
+                        </div>
+                    </div>
+                    <div class="icon-with-text">
+                        <a href="basket.html" th:href="@{/basket}">
+                            <img src="/public/images/basket-w.svg"
+                                 alt="Basket icon"
+                                 th:src="@{/images/basket-w.svg}">
+                        </a>
+                        <a href="checkout.html" th:href="@{/checkout}">Se kurv</a>
+                    </div>
+                </div>
             </div>
-            <div th:if="${session.currentUser == null}">
-                <p>
-                    <a href="login.html" th:href="@{/login}">Login</a>
-                </p>
-                <a href="checkout.html" th:href="@{/checkout}">
-                    <img src="/public/images/basket-w.svg"
-                         alt="Cupcake Logo"
-                         th:src="@{/images/basket-w.svg}">
-                </a>
-            </div>
-        </div>
+        </nav>
     </header>
 </div>
 

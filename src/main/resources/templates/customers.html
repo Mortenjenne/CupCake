@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Olsker Cupcakes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="customer-view">
+        <div th:if="${customers != null}">
+            <h1>Kunder</h1>
+            <h2>Dine kunder:</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Kunde id</th>
+                    <th>Navn</th>
+                    <th>Efternavn</th>
+                    <th>Mail</th>
+                    <th>Telefon</th>
+                    <th>Adresse</th>
+                    <th>Postnummer</th>
+                    <th>By</th>
+                    <th>Balance</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${customers}">
+                    <td th:text="${customer.userId}"></td>
+                    <td th:text="${customer.firstName}"></td>
+                    <td th:text="${customer.lastName}"></td>
+                    <td th:text="${customer.email}"></td>
+                    <td th:text="${customer.phoneNumber}"></td>
+                    <td th:text="${customer.street}"></td>
+                    <td th:text="${customer.zipCode}"></td>
+                    <td th:text="${customer.city}"></td>
+                    <td th:text="${customer.balance}"></td>
+                    <td>
+                        <form th:action="@{customers/update-balance}">
+                            <input type="hidden" name="userId" >
+                            <input type="number" name="newBalance" th:value="${customer.balance}" step="0.01"
+                                   min="0">
+                            <button type="submit">Opdater balance</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="customer-view" th:if="${customers == null}">
+        <h1>Kunder</h1>
+        <h2>Dine kunder:</h2>
+        <h3>Ingen kunder har oprettet sig i dit system</h3>
+    </div>
+
+    <div th:if="${session.successMessage}" class="success-message">
+        <p th:text="${session.successMessage}"></p>
+        <span th:remove="all">${session.remove('successMessage')}</span>
+    </div>
+
+    <div th:if="${session.errorMessage}" class="error-message">
+        <p th:text="${session.errorMessage}"></p>
+        <span th:remove="all">${session.remove('errorMessage')}</span>
+    </div>
+</main>
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

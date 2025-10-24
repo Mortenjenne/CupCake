@@ -1,10 +1,13 @@
 package app.services;
 
 import app.dto.CreateUserRequestDTO;
+import app.dto.UserDTO;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.List;
 
 public class UserServiceImpl implements UserService
 {
@@ -76,6 +79,12 @@ public class UserServiceImpl implements UserService
     public User getUserById(int userId) throws DatabaseException
     {
         return userMapper.getUserById(userId);
+    }
+
+    @Override
+    public List<UserDTO> getAllUsers() throws DatabaseException
+    {
+        return userMapper.getAllUsers();
     }
 
     private void validateFirstOrLastName(String name)
