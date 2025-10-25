@@ -23,8 +23,10 @@ public class ToppingMapper
         String sql = "SELECT * FROM toppings";
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
+             ResultSet rs = ps.executeQuery())
+        {
+            while (rs.next())
+            {
                 Topping t = new Topping(
                         rs.getInt("topping_id"),
                         rs.getString("topping_flavour"),
@@ -33,7 +35,8 @@ public class ToppingMapper
                 toppingList.add(t);
             }
         }
-        catch (SQLException e) {
+        catch (SQLException e)
+        {
             throw new DatabaseException("Database error while fetching toppings: " + e);
         }
         return toppingList;
@@ -43,10 +46,13 @@ public class ToppingMapper
     {
         String sql = "SELECT * FROM toppings WHERE topping_id = ?";
         try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
             ps.setInt(1, toppingId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
                     return new Topping(rs.getInt("topping_id"),
                             rs.getString("topping_flavour"),
                             rs.getDouble("topping_price"));
@@ -62,34 +68,40 @@ public class ToppingMapper
 
     public Topping createTopping(String toppingFlavour, double toppingPrice) throws DatabaseException
     {
-        String sql = "INSERT INTO topping (topping_flavour, topping_price)" +
+        String sql = "INSERT INTO toppings (topping_flavour, topping_price)" +
                 "VALUES(?,?)";
 
         try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
+        {
 
             ps.setString(1, toppingFlavour);
             ps.setDouble(2, toppingPrice);
 
             int rowsAffected = ps.executeUpdate();
 
-            if (rowsAffected != 1) {
+            if (rowsAffected != 1)
+            {
                 throw new DatabaseException("Uventet fejl");
             }
 
             ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
+            if (rs.next())
+            {
                 int toppingId = rs.getInt(1);
 
                 return new Topping(toppingId, toppingFlavour, toppingPrice);
             }
 
         }
-        catch (SQLException e) {
-            if (e.getSQLState().equals("23505")) { // error code is the standard for catching unique constraint errors in PostgresSQL
+        catch (SQLException e)
+        {
+            if (e.getSQLState().equals("23505")) // error code is the standard for catching unique constraint errors in PostgresSQL
+            {
                 throw new DatabaseException("Topping Smag findes allerede");
             }
-            else {
+            else
+            {
                 throw new DatabaseException("Databasefejl ved oprettelse af Topping smag " + e.getMessage());
             }
         }
