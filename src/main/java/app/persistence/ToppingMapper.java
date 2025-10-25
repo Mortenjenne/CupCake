@@ -86,7 +86,7 @@ public class ToppingMapper
 
         }
         catch (SQLException e) {
-            if (e.getSQLState().equals("23505")) {
+            if (e.getSQLState().equals("23505")) { // error code is the standard for catching unique constraint errors in PostgresSQL
                 throw new DatabaseException("Topping Smag findes allerede");
             }
             else {
