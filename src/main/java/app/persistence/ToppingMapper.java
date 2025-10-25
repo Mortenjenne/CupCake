@@ -2,11 +2,9 @@ package app.persistence;
 
 import app.entities.Topping;
 import app.exceptions.DatabaseException;
+import javassist.bytecode.stackmap.BasicBlock;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,13 +54,45 @@ public class ToppingMapper
                 return null;
             }
         }
-        catch (SQLException e) {
+        catch (SQLException e)
+        {
             throw new DatabaseException("Database error while fetching toppings: " + e);
         }
     }
 
-    public Topping createTopping(Topping topping)
+    public Topping createTopping(String toppingFlavour, double toppingPrice) throws DatabaseException
     {
+        String sql = "INSERT INTO topping (topping_flavour, topping_price)" +
+                "VALUES(?,?)";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, toppingFlavour);
+            ps.setDouble(2, toppingPrice);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected != 1) {
+                throw new DatabaseException("Uventet fejl");
+            }
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                int toppingId = rs.getInt(1);
+
+                return new Topping(toppingId, toppingFlavour, toppingPrice);
+            }
+
+        }
+        catch (SQLException e) {
+            if (e.getSQLState().equals("23505")) {
+                throw new DatabaseException("Topping Smag findes allerede");
+            }
+            else {
+                throw new DatabaseException("Databasefejl ved oprettelse af Topping smag " + e.getMessage());
+            }
+        }
         return null;
     }
 

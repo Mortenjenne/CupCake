@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS public.toppings
     topping_id serial NOT NULL,
     topping_flavour character varying NOT NULL,
     topping_price double precision NOT NULL,
-    PRIMARY KEY (topping_id)
+    PRIMARY KEY (topping_id),
+    CONSTRAINT topping_flavour_unique UNIQUE (topping_flavour)
     );
 
 CREATE TABLE IF NOT EXISTS public.orderlines
