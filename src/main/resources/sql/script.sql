@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS public.bottoms
     bottom_flavour character varying NOT NULL,
     bottom_price double precision NOT NULL,
     PRIMARY KEY (bottom_id)
+    CONSTRAINT bottom_flavour_unique UNIQUE (bottom_flavour)
     );
 
 CREATE TABLE IF NOT EXISTS public.toppings
