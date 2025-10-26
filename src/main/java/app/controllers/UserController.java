@@ -1,16 +1,11 @@
 package app.controllers;
 
 import app.dto.CreateUserRequestDTO;
-import app.dto.UserDTO;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserController
 {

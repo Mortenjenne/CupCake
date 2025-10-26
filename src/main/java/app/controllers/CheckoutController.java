@@ -1,20 +1,15 @@
 package app.controllers;
 
 import app.dto.UserDTO;
-import app.entities.Order;
 import app.entities.ShoppingCart;
 import app.entities.User;
 import app.services.OrderService;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import net.bytebuddy.asm.Advice;
-import org.jetbrains.annotations.NotNull;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Locale;
 
 public class CheckoutController
 {
