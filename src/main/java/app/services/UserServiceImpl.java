@@ -114,6 +114,17 @@ public class UserServiceImpl implements UserService
                 .collect(Collectors.toList());
     }
 
+    public void validateInput (String firstName, String lastName, String street, int zipCode, String city, int phoneNumber, String email)
+    {
+        validateFirstOrLastName(firstName);
+        validateFirstOrLastName(lastName);
+        validateStreet(street);
+        validateZipCode(zipCode);
+        validateCity(city);
+        validatePhone(phoneNumber);
+        validateEmail(email);
+    }
+
     private void validateFirstOrLastName(String name)
     {
         if (name == null || name.trim().isEmpty())

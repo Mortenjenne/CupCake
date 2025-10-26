@@ -17,4 +17,5 @@ public List<UserDTO> getAllUsers() throws DatabaseException;
 public List<UserDTO> searchUsersByName(String name) throws DatabaseException;
 public List<UserDTO> searchUsersByEmail(String email) throws DatabaseException;
 public List<UserDTO> searchUsersByUserId(int userId) throws DatabaseException;
+public void validateInput(String firstName, String lastName, String street, int zipCode, String city, int phoneNumber, String email);
 }

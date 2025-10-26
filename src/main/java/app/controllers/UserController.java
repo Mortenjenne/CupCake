@@ -25,9 +25,16 @@ public class UserController
     {
         app.get("/login", ctx -> showLoginPage(ctx));
         app.get("/create-user", ctx -> showCreateUserPage(ctx));
+        app.get("/logout", ctx -> logOut(ctx));
 
         app.post("/create-user", ctx -> handleCreateUser(ctx));
         app.post("/login", ctx -> handleUserLogin(ctx));
+    }
+
+    private void logOut(Context ctx)
+    {
+        ctx.req().getSession().invalidate();
+        ctx.redirect("/");
     }
 
     private void handleUserLogin(Context ctx)
