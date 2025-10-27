@@ -59,7 +59,8 @@ public class CheckoutController
         String pickupDate = ctx.formParam("pickupDate");
         String pickupTime = ctx.formParam("pickupTime");
 
-        try {
+        try
+        {
             LocalDate date = LocalDate.parse(pickupDate);
             DayOfWeek dayOfWeek = date.getDayOfWeek();
             LocalTime time = LocalTime.parse(pickupTime);
@@ -84,7 +85,8 @@ public class CheckoutController
     private void showContactInfoPage(Context ctx)
     {
         String deliveryMethod = ctx.sessionAttribute("deliveryMethod");
-        if (deliveryMethod == null) {
+        if (deliveryMethod == null)
+        {
             ctx.redirect("/checkout/delivery");
             return;
         }
@@ -114,19 +116,21 @@ public class CheckoutController
         {
             int phoneNumber = Integer.parseInt(phoneNumberStr);
             int zipCode = 0;
-            if ("delivery".equals(deliveryMethod)) {
+            if ("delivery".equals(deliveryMethod))
+            {
                 zipCode = Integer.parseInt(zipCodeStr);
                 userService.validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
-            } else
+            }
+            else
             {
-
                 street = "N/A";
                 city = "N/A";
                 zipCode = 0;
 
                 if (firstName == null || firstName.trim().isEmpty() ||
                         lastName == null || lastName.trim().isEmpty() ||
-                        email == null || email.trim().isEmpty()) {
+                        email == null || email.trim().isEmpty())
+                {
                     throw new IllegalArgumentException("Alle felter skal udfyldes");
                 }
             }
@@ -159,6 +163,7 @@ public class CheckoutController
             ctx.attribute("currentUser", currentUser);
             ctx.attribute("deliveryMethod", deliveryMethod);
             ctx.render("checkout-contact");
+
         } catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
@@ -171,18 +176,21 @@ public class CheckoutController
     private void showPaymentPage(Context ctx)
     {
         UserDTO checkoutUser = ctx.sessionAttribute("checkoutUser");
-        if (checkoutUser == null) {
+        if (checkoutUser == null)
+        {
             ctx.redirect("/checkout/contact-info");
             return;
         }
 
         ShoppingCart cart = ctx.sessionAttribute("cart");
-        if (cart == null || cart.getShoppingCart().isEmpty()) {
+        if (cart == null || cart.getShoppingCart().isEmpty())
+        {
             ctx.redirect("/cart");
             return;
         }
 
-        if (checkoutUser.getUserId() != 0) {
+        if (checkoutUser.getUserId() != 0)
+        {
             double balanceAfterPurchase = checkoutUser.getBalance() - cart.getTotalOrderPrice();
             ctx.attribute("userBalanceAfterPurchase", balanceAfterPurchase);
         }
@@ -204,7 +212,8 @@ public class CheckoutController
             return;
         }
 
-        if (payNow) {
+        if (payNow)
+        {
             double totalPrice = cart.getTotalOrderPrice();
 
             if (checkoutUser.getUserId() == 0)
@@ -240,6 +249,7 @@ public class CheckoutController
             ctx.sessionAttribute("CART", new ShoppingCart());
             ctx.sessionAttribute("completedOrder", order);
             ctx.redirect("/order/confirmation");
+
         } catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
@@ -269,14 +279,19 @@ public class CheckoutController
             return false;
         }
 
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            if (time.isBefore(LocalTime.parse("10:00")) || time.isAfter(LocalTime.parse("17:30"))) {
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY)
+        {
+            if (time.isBefore(LocalTime.parse("10:00")) || time.isAfter(LocalTime.parse("17:30")))
+            {
                 ctx.attribute("errorMessage", "I weekenden er butikken åben 10:00-17:30. Du valgte " + pickupTime);
                 ctx.render("checkout-delivery");
                 return false;
             }
-        } else {
-            if (time.isBefore(LocalTime.parse("12:30")) || time.isAfter(LocalTime.parse("17:00"))) {
+        }
+        else
+        {
+            if (time.isBefore(LocalTime.parse("12:30")) || time.isAfter(LocalTime.parse("17:00")))
+            {
                 ctx.attribute("errorMessage", "På hverdage er butikken åben 12:30-17:00. Du valgte " + pickupTime);
                 ctx.render("checkout-delivery");
                 return false;
