@@ -28,13 +28,34 @@ public class OrderServiceImpl implements OrderService
     }
 
     @Override
-    public Order createOrder(int userId, List<OrderLine> orderLines, LocalDateTime pickUpDate, boolean payNow) throws DatabaseException
+    public Order createOrder(UserDTO userDTO, List<OrderLine> orderLines, LocalDateTime pickUpDate, boolean payNow) throws DatabaseException
     {
-        User user = userMapper.getUserById(userId);
-        UserDTO userDTO = buildUserDTO(user);
         double totalPrice = calculateTotalPrice(orderLines);
+        int userId = userDTO.getUserId();
 
-        validateUserBalance(payNow, user, totalPrice);
+        if (userId == 0)
+        {
+            if (payNow)
+            {
+                throw new DatabaseException("Gæster kan kun betale ved afhentning");
+            }
+
+        } else
+        {
+            User user = userMapper.getUserById(userId);
+
+            if (payNow)
+            {
+                if (user.getBalance() < totalPrice) {
+                    throw new DatabaseException("Utilstrækkelig saldo. Dit beløb: " + user.getBalance() +
+                            " kr. Ordretotal: " + totalPrice + " kr.");
+                }
+                double newUserBalance = user.getBalance() - totalPrice;
+                userMapper.updateUserBalance(userId, newUserBalance);
+            }
+
+            userDTO = buildUserDTO(user);
+        }
 
         Order order = new Order(
                 0,
@@ -46,13 +67,8 @@ public class OrderServiceImpl implements OrderService
                 totalPrice
         );
 
-        if(payNow)
-        {
-            double newUserBalance = user.getBalance() - totalPrice;
-            userMapper.updateUserBalance(userId, newUserBalance);
-        }
         return orderMapper.createOrder(order);
-        }
+    }
 
 
     @Override

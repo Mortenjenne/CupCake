@@ -12,20 +12,10 @@
 
 <main>
     <section>
-        <div class="customer-info">
-            <h2>Faktureringsadresse</h2>
-            <a th:href="@{/checkout/contact-info}">Ret</a>
-
-            <p><strong><span th:text="${session.checkoutUser.firstName} + ' ' + ${session.checkoutUser.lastName}"></span></strong></p>
-            <p><span th:text="${session.checkoutUser.street}"></span></p>
-            <p><span th:text="${session.checkoutUser.zipCode} + ' ' + ${session.checkoutUser.city}"></span></p>
-            <p><span th:text="${session.checkoutUser.phoneNumber}"></span></p>
-            <p><span th:text="${session.checkoutUser.email}"></span></p>
-        </div>
-
         <div class="delivery">
-            <form action="/checkout/delivery/action" method="post">
+            <form th:action="@{/checkout/delivery}" method="post">
                 <h2>Levering</h2>
+                <p class="checkout-step">Trin 1 af 3</p>
 
                 <div class="delivery-method">
                     <h3>Vælg leveringsmetode</h3>
@@ -103,7 +93,7 @@
                 </div>
 
                 <div class="button-group">
-                    <button type="submit">Fortsæt til betaling</button>
+                    <button type="submit">Fortsæt til kontaktinfo</button>
                 </div>
 
                 <p id="error-message" class="error"
@@ -116,7 +106,6 @@
 
     <aside class="summary-info">
         <h3>Din bestilling</h3>
-        <a th:href="@{/checkout/contact-info}">Ret</a>
         <div th:replace="fragments :: orderLinePostCard"></div>
         <div class="summary-info">
             <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>

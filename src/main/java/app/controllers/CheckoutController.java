@@ -9,7 +9,6 @@ import app.services.OrderService;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -29,24 +28,171 @@ public class CheckoutController
 
     public void addRoutes(Javalin app)
     {
-        app.get("/checkout/contact-info", ctx -> showCheckoutContactPage(ctx));
-        app.get("/checkout/delivery/info", ctx -> showDeliveryPage(ctx));
-        app.get("/order/confirmation", ctx -> showConfirmationPage(ctx));
+        app.get("/checkout/delivery", ctx -> showDeliveryPage(ctx));
+        app.post("/checkout/delivery", ctx -> saveDeliveryInfo(ctx));
 
-        app.post("/checkout/delivery/info", ctx -> saveCheckoutContactInfo(ctx));
-        app.post("/checkout/delivery/action", ctx -> handleDeliveryAction(ctx));
-        app.post("/checkout/payment/action", ctx -> handlePayment(ctx));
+        app.get("/checkout/contact-info", ctx -> showContactInfoPage(ctx));
+        app.post("/checkout/contact-info", ctx -> saveContactInfo(ctx));
+
+        app.get("/checkout/payment", ctx -> showPaymentPage(ctx));
+        app.post("/checkout/payment", ctx -> handlePayment(ctx));
+
+        app.get("/order/confirmation", ctx -> showConfirmationPage(ctx));
     }
 
-    private void showConfirmationPage(Context ctx)
+    private void showDeliveryPage(Context ctx)
     {
-        ctx.render("/purchase-confirmed");
+        ShoppingCart cart = ctx.sessionAttribute("CART");
+
+        if (cart == null || cart.getShoppingCart().isEmpty()) {
+            ctx.redirect("/cart");
+            return;
+        }
+
+        ctx.sessionAttribute("cart", cart);
+        ctx.render("checkout-delivery");
+    }
+
+    private void saveDeliveryInfo(Context ctx)
+    {
+        String deliveryMethod = ctx.formParam("deliveryMethod");
+        String pickupDate = ctx.formParam("pickupDate");
+        String pickupTime = ctx.formParam("pickupTime");
+
+        try {
+            LocalDate date = LocalDate.parse(pickupDate);
+            DayOfWeek dayOfWeek = date.getDayOfWeek();
+            LocalTime time = LocalTime.parse(pickupTime);
+
+            if (!validateDateAndTime(ctx, date, time, dayOfWeek, pickupTime))
+            {
+                return;
+            }
+
+            LocalDateTime pickupDateTime = LocalDateTime.of(date, time);
+
+            ctx.sessionAttribute("pickUp", pickupDateTime);
+            ctx.sessionAttribute("deliveryMethod", deliveryMethod);
+            ctx.redirect("/checkout/contact-info");
+
+        } catch (Exception e) {
+            ctx.attribute("errorMessage", "Der skete en fejl med dato/tid valg");
+            ctx.render("checkout-delivery");
+        }
+    }
+
+    private void showContactInfoPage(Context ctx)
+    {
+        String deliveryMethod = ctx.sessionAttribute("deliveryMethod");
+        if (deliveryMethod == null) {
+            ctx.redirect("/checkout/delivery");
+            return;
+        }
+
+        User currentUser = ctx.sessionAttribute("currentUser");
+        ShoppingCart cart = ctx.sessionAttribute("cart");
+
+        ctx.attribute("currentUser", currentUser);
+        ctx.attribute("deliveryMethod", deliveryMethod);
+        ctx.render("checkout-contact");
+    }
+
+    private void saveContactInfo(Context ctx)
+    {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        String deliveryMethod = ctx.sessionAttribute("deliveryMethod");
+
+        String firstName = ctx.formParam("firstName");
+        String lastName = ctx.formParam("lastName");
+        String email = ctx.formParam("email");
+        String phoneNumberStr = ctx.formParam("phoneNumber");
+        String street = ctx.formParam("street");
+        String city = ctx.formParam("city");
+        String zipCodeStr = ctx.formParam("zipCode");
+
+        try
+        {
+            int phoneNumber = Integer.parseInt(phoneNumberStr);
+            int zipCode = 0;
+            if ("delivery".equals(deliveryMethod)) {
+                zipCode = Integer.parseInt(zipCodeStr);
+                userService.validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
+            } else
+            {
+
+                street = "N/A";
+                city = "N/A";
+                zipCode = 0;
+
+                if (firstName == null || firstName.trim().isEmpty() ||
+                        lastName == null || lastName.trim().isEmpty() ||
+                        email == null || email.trim().isEmpty()) {
+                    throw new IllegalArgumentException("Alle felter skal udfyldes");
+                }
+            }
+
+            UserDTO userDTO;
+            if(currentUser == null)
+            {
+                userDTO = new UserDTO(
+                        0,
+                        firstName,
+                        lastName,
+                        email,
+                        phoneNumber,
+                        street,
+                        zipCode,
+                        city,
+                        0
+                );
+            } else
+            {
+                userDTO = userService.getUserById(currentUser.getUserId());
+            }
+
+            ctx.sessionAttribute("checkoutUser", userDTO);
+            ctx.redirect("/checkout/payment");
+
+        } catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage","Kun heltal i postnummer og telefonnummer");
+            ctx.attribute("currentUser", currentUser);
+            ctx.attribute("deliveryMethod", deliveryMethod);
+            ctx.render("checkout-contact");
+        } catch (DatabaseException | IllegalArgumentException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.attribute("currentUser", currentUser);
+            ctx.attribute("deliveryMethod", deliveryMethod);
+            ctx.render("checkout-contact");
+        }
+    }
+
+    private void showPaymentPage(Context ctx)
+    {
+        UserDTO checkoutUser = ctx.sessionAttribute("checkoutUser");
+        if (checkoutUser == null) {
+            ctx.redirect("/checkout/contact-info");
+            return;
+        }
+
+        ShoppingCart cart = ctx.sessionAttribute("cart");
+        if (cart == null || cart.getShoppingCart().isEmpty()) {
+            ctx.redirect("/cart");
+            return;
+        }
+
+        if (checkoutUser.getUserId() != 0) {
+            double balanceAfterPurchase = checkoutUser.getBalance() - cart.getTotalOrderPrice();
+            ctx.attribute("userBalanceAfterPurchase", balanceAfterPurchase);
+        }
+        ctx.render("checkout-payment");
     }
 
     private void handlePayment(Context ctx)
     {
         String paymentMethod = ctx.formParam("paymentMethod");
-        boolean payNow = paymentMethod.equals("pay-now");
+        boolean payNow = "pay-now".equals(paymentMethod);
 
         UserDTO checkoutUser = ctx.sessionAttribute("checkoutUser");
         ShoppingCart cart = ctx.sessionAttribute("cart");
@@ -65,7 +211,7 @@ public class CheckoutController
             {
                 ctx.attribute("errorMessage", "Gæster kan kun betale ved afhentning");
                 ctx.attribute("userBalanceAfterPurchase", 0);
-                ctx.render("checkout");
+                ctx.render("checkout-payment");
                 return;
             }
 
@@ -75,7 +221,7 @@ public class CheckoutController
                         String.format("Du har ikke penge nok på din konto. Din saldo: %.2f kr. Pris: %.2f kr. Vælg 'betal ved afhentning' eller kontakt os for at indsætte penge.",
                                 checkoutUser.getBalance(), totalPrice));
                 ctx.attribute("userBalanceAfterPurchase", checkoutUser.getBalance() - totalPrice);
-                ctx.render("checkout");
+                ctx.render("checkout-payment");
                 return;
             }
         }
@@ -83,7 +229,7 @@ public class CheckoutController
         try
         {
             Order order = orderService.createOrder(
-                    checkoutUser.getUserId(),
+                    checkoutUser,
                     cart.getShoppingCart(),
                     pickupDateTime,
                     payNow
@@ -93,120 +239,18 @@ public class CheckoutController
             ctx.sessionAttribute("cart", cart);
             ctx.sessionAttribute("CART", new ShoppingCart());
             ctx.sessionAttribute("completedOrder", order);
-            ctx.render("purchase-confirmed");
+            ctx.redirect("/order/confirmation");
         } catch (DatabaseException e)
         {
-            ctx.attribute("errorMessage",e.getMessage());
+            ctx.attribute("errorMessage", e.getMessage());
             ctx.attribute("userBalanceAfterPurchase", checkoutUser.getBalance() - cart.getTotalOrderPrice());
-            ctx.render("checkout.html");
+            ctx.render("checkout-payment");
         }
-
     }
 
-    private void handleDeliveryAction(Context ctx)
+    private void showConfirmationPage(Context ctx)
     {
-        String deliveryMethod = ctx.formParam("deliveryMethod");
-        String pickupDate = ctx.formParam("pickupDate");
-        String pickupTime = ctx.formParam("pickupTime");
-
-        LocalDate date = LocalDate.parse(pickupDate);
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        LocalTime time = LocalTime.parse(pickupTime);
-
-        if (!validateDateAndTime(ctx, date, time, dayOfWeek, pickupTime))
-        {
-            return;
-        }
-
-        LocalDateTime pickupDateTime = LocalDateTime.of(date, time);
-        UserDTO userDTO = ctx.sessionAttribute("checkoutUser");
-        ShoppingCart cart = ctx.sessionAttribute("cart");
-        double balanceAfterPurchase = userDTO.getBalance() - cart.getTotalOrderPrice();
-
-        ctx.sessionAttribute("pickUp", pickupDateTime);
-        ctx.sessionAttribute("deliveryMethod", deliveryMethod);
-        ctx.attribute("userBalanceAfterPurchase", balanceAfterPurchase);
-        ctx.render("checkout");
-    }
-
-    private void showDeliveryPage(Context ctx)
-    {
-        UserDTO checkoutUser = ctx.sessionAttribute("checkoutUser");
-        if (checkoutUser == null) {
-            ctx.redirect("/checkout/contact-info");
-            return;
-        }
-
-        ShoppingCart cart = ctx.sessionAttribute("cart");
-        if (cart == null || cart.getShoppingCart().isEmpty()) {
-            ctx.redirect("/cart");
-            return;
-        }
-        ctx.render("checkout-delivery.html");
-    }
-
-    private void saveCheckoutContactInfo(Context ctx)
-    {
-            User currentUser = ctx.sessionAttribute("currentUser");
-            UserDTO userDTO = null;
-
-            String firstName = ctx.formParam("firstName");
-            String lastName = ctx.formParam("lastName");
-            String email = ctx.formParam("email");
-            String phoneNumberStr = ctx.formParam("phoneNumber");
-            String street = ctx.formParam("street");
-            String city = ctx.formParam("city");
-            String zipCodeStr = ctx.formParam("zipCode");
-
-            try
-            {
-                int phoneNumber = Integer.parseInt(phoneNumberStr);
-                int zipCode = Integer.parseInt(zipCodeStr);
-                userService.validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
-
-                if(currentUser == null)
-                {
-                    userDTO = new UserDTO(
-                            0,
-                            firstName,
-                            lastName,
-                            email,
-                            phoneNumber,
-                            street,
-                            zipCode,
-                            city,
-                            0
-                    );
-                } else
-                {
-                    userDTO = userService.getUserById(currentUser.getUserId());
-                }
-                ctx.sessionAttribute("checkoutUser", userDTO);
-                ctx.render("checkout-delivery");
-
-            } catch (NumberFormatException e)
-            {
-                ctx.attribute("errorMessage","Kun hel tal i postnummer og telefon nummer");
-                ctx.attribute("currentUser", currentUser);
-                ctx.attribute("cart", ctx.sessionAttribute("cart"));
-                ctx.render("checkout-contact.html");
-            } catch (DatabaseException | IllegalArgumentException e)
-            {
-                ctx.attribute("errorMessage", e.getMessage());
-                ctx.attribute("currentUser", currentUser);
-                ctx.attribute("cart", ctx.sessionAttribute("cart"));
-                ctx.render("checkout-contact.html");
-            }
-    }
-
-    private void showCheckoutContactPage(Context ctx)
-    {
-        User currentUser = ctx.sessionAttribute("currentUser");
-        ShoppingCart cart = ctx.sessionAttribute("CART");
-
-        ctx.attribute("currentUser", currentUser);
-        ctx.sessionAttribute("cart",cart);
-        ctx.render("checkout-contact");
+        ctx.render("checkout-confirmed");
     }
 
     private boolean validateDateAndTime(Context ctx, LocalDate date, LocalTime time, DayOfWeek dayOfWeek, String pickupTime)
@@ -214,30 +258,27 @@ public class CheckoutController
         if (dayOfWeek == DayOfWeek.MONDAY)
         {
             ctx.attribute("errorMessage", "Butikken er lukket om mandagen");
-            ctx.render("checkout-delivery.html");
+            ctx.render("checkout-delivery");
             return false;
         }
 
         if(date.isBefore(LocalDate.now()))
         {
             ctx.attribute("errorMessage", "Du kan ikke lægge ordre tilbage i tiden");
-            ctx.render("checkout-delivery.html");
+            ctx.render("checkout-delivery");
             return false;
         }
 
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-
             if (time.isBefore(LocalTime.parse("10:00")) || time.isAfter(LocalTime.parse("17:30"))) {
                 ctx.attribute("errorMessage", "I weekenden er butikken åben 10:00-17:30. Du valgte " + pickupTime);
-                ctx.render("checkout-delivery.html");
+                ctx.render("checkout-delivery");
                 return false;
             }
-        } else
-        {
-
+        } else {
             if (time.isBefore(LocalTime.parse("12:30")) || time.isAfter(LocalTime.parse("17:00"))) {
                 ctx.attribute("errorMessage", "På hverdage er butikken åben 12:30-17:00. Du valgte " + pickupTime);
-                ctx.render("checkout-delivery.html");
+                ctx.render("checkout-delivery");
                 return false;
             }
         }
@@ -260,13 +301,13 @@ public class CheckoutController
 
         if(pickupDateTime == null)
         {
-            ctx.redirect("/checkout/delivery/info");
+            ctx.redirect("/checkout/delivery");
             return false;
         }
 
         if(deliveryMethod == null || deliveryMethod.isEmpty())
         {
-            ctx.redirect("/checkout/delivery/info");
+            ctx.redirect("/checkout/delivery");
             return false;
         }
         return true;

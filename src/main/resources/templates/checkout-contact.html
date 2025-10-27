@@ -1,11 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>Kontakt information - Olsker Cupcakes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
     <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
 </head>
 <body>
@@ -14,66 +12,73 @@
 
 <main>
     <section>
-  <div class="delivery-info">
-    <form th:action="@{/checkout/delivery/info}" method="post">
-        <h2>Checkout</h2>
+        <div class="delivery-info">
+            <form th:action="@{/checkout/contact-info}" method="post">
+                <h2>Kontaktinformation</h2>
+                <p class="checkout-step">Trin 2 af 3</p>
 
-        <div class="create-group">
-            <label>Fornavn</label>
-            <input type="text" name="firstName" th:value="${currentUser != null} ? ${currentUser.firstName} : ''" required>
-        </div>
+                <div class="create-group">
+                    <label>Fornavn</label>
+                    <input type="text" name="firstName" th:value="${currentUser != null} ? ${currentUser.firstName} : ''" required>
+                </div>
 
-        <div class="create-group">
-            <label>Efternavn</label>
-            <input type="text" name="lastName" th:value="${currentUser != null} ? ${currentUser.lastName} : ''" required>
-        </div>
+                <div class="create-group">
+                    <label>Efternavn</label>
+                    <input type="text" name="lastName" th:value="${currentUser != null} ? ${currentUser.lastName} : ''" required>
+                </div>
 
-        <div class="create-group">
-            <label>Adresse</label>
-            <input type="text" name="street" th:value="${currentUser != null} ? ${currentUser.street} : ''" required>
-        </div>
+                <div class="create-group">
+                    <label for="phoneNumber">Telefonnummer</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
+                </div>
 
-        <div class="create-group">
-            <label>By</label>
-            <input type="text" name="city" th:value="${currentUser != null} ? ${currentUser.city} : ''" required>
-        </div>
+                <div class="create-group">
+                    <label>Email</label>
+                    <input type="email" name="email" th:value="${currentUser != null} ? ${currentUser.email} : ''" required>
+                </div>
 
-        <div class="create-group">
-            <label>Postnummer</label>
-            <input type="text" name="zipCode" th:value="${currentUser != null} ? ${currentUser.zipCode} : ''" required>
-        </div>
+                <div th:if="${deliveryMethod == 'delivery'}">
+                    <h3>Leveringsadresse</h3>
 
-        <div class="create-group">
-            <label for="phoneNumber">Indtast telefon nummer</label>
-            <input type="text" id="phoneNumber" name="phoneNumber" th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
-        </div>
+                    <div class="create-group">
+                        <label>Adresse</label>
+                        <input type="text" name="street" th:value="${currentUser != null} ? ${currentUser.street} : ''" required>
+                    </div>
 
-        <div class="create-group">
-            <label>Email</label>
-            <input type="email" name="email" th:value="${currentUser != null} ? ${currentUser.email} : ''" required>
-        </div>
+                    <div class="create-group">
+                        <label>By</label>
+                        <input type="text" name="city" th:value="${currentUser != null} ? ${currentUser.city} : ''" required>
+                    </div>
 
-        <button type="submit">Forsæt</button>
-        <p id="error-message" class="error"
-           th:if="${errorMessage != null}"
-           th:text="${errorMessage}">
-        </p>
-    </form>
-</div>
-        <div class="delivery-options">
+                    <div class="create-group">
+                        <label>Postnummer</label>
+                        <input type="text" name="zipCode" th:value="${currentUser != null} ? ${currentUser.zipCode} : ''" required>
+                    </div>
+                </div>
 
+                <div class="button-group">
+                    <a th:href="@{/checkout/delivery}" class="button-secondary">Tilbage</a>
+                    <button type="submit">Fortsæt til betaling</button>
+                </div>
+
+                <p id="error-message" class="error"
+                   th:if="${errorMessage != null}"
+                   th:text="${errorMessage}">
+                </p>
+            </form>
         </div>
     </section>
 
     <aside class="summary">
+        <h3>Din bestilling</h3>
         <div th:replace="fragments :: orderLinePostCard"></div>
         <div class="summary-total">
             <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr</p>
         </div>
     </aside>
 </main>
-<div th:replace="fragments :: footerFragment"></div>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
 </body>
 </html>
-
-
