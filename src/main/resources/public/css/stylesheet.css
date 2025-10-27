@@ -211,6 +211,14 @@ button:hover {
 .cupcake-creator {
 }
 
+.index-basket-button{
+    background-color: var(--button-color);
+
+}
+.index-basket-button:hover {
+    background-color: var(--button-hover);
+}
+
 
 /*------ Basket BODY CSS ------*/
 .basket-body {

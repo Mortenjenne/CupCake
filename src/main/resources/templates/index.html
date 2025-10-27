@@ -20,12 +20,12 @@
         </section>
 
         <section class="cupcake-box">
-                <img class="topping-img" src="/public/images/cupcakes/toppings/topping_strawberry.png"
-                     th:src="@{/images/cupcakes/toppings/topping_strawberry.png}"
-                     alt="cupcake Topping"/>
-                <img class="bottom-img" src="/public/images/cupcakes/bottoms/bottom_chocolate.png"
-                     th:src="@{/images/cupcakes/bottoms/bottom_chocolate.png}"
-                     alt="Cupcake Bottom"/>
+            <img class="topping-img" src="/public/images/cupcakes/toppings/topping_strawberry.png"
+                 th:src="@{/images/cupcakes/toppings/topping_strawberry.png}"
+                 alt="cupcake Topping"/>
+            <img class="bottom-img" src="/public/images/cupcakes/bottoms/bottom_chocolate.png"
+                 th:src="@{/images/cupcakes/bottoms/bottom_chocolate.png}"
+                 alt="Cupcake Bottom"/>
         </section>
 
         <section class="cupcake-creator">
@@ -50,17 +50,20 @@
 
                 </select>
 
-
-
-                <input type="number" name="cupcakeQuantity" min="1" placeholder="1" th:value="${cupcakeQuantity}" required>
+                <input type="number" name="cupcakeQuantity" min="1" placeholder="1" th:value="${cupcakeQuantity}"
+                       required>
 
                 <button type="submit">Tilføj til kurv</button>
                 <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
                 <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
 
             </form>
+
         </section>
 
+        <div class="index-basket-button">
+            <a href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
+        </div>
 
     </section>
 
