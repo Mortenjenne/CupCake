@@ -10,8 +10,6 @@
                          th:src="@{/images/logo-w.svg}">
                 </a>
 
-                <a href="about.html" th:href="@{/about}" class="nav-link">Om os</a>
-
                 <!-- Admin links (conditional) -->
                 <div th:if="${session.currentUser != null and session.currentUser.isAdmin}" class="admin-links">
                     <a href="orders.html" th:href="@{/orders}" class="nav-link">Ordre</a>
