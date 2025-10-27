@@ -429,6 +429,62 @@ button:hover {
     padding-bottom: 2%;
 }
 
+/* Checkout */
+/* Selve postkort container */
+.order-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: #fffafc;
+    border: 1px solid #e3d8e0;
+    border-radius: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    max-width: 320px;
+}
+
+/* Cupcake container – lille version */
+.cupcake-summary {
+    position: relative;
+    width: 80px;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+}
+
+.cupcake-summary img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.cupcake-summary .bottom-img {
+    z-index: 1;
+    transform: translateY(8%);
+}
+
+.cupcake-summary .topping-img {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    transform: translateY(-30%);
+}
+
+.order-card-info p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    line-height: 1.2rem;
+}
+
+.summary-total {
+    border-top: 1px solid #e3d8e0;
+    padding-top: 0.5rem;
+    font-weight: bold;
+    max-width: 320px;
+}
+
+
 /* FOOTER */
 
 footer {
