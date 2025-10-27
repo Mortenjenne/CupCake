@@ -267,14 +267,14 @@ button:hover {
 }
 
 /* Custom select-container */
- .select {
-     position: relative;
-     display: inline-block;
-     width: min(250px, 90vw);
- }
+.cupcake-creator-select {
+    position: relative;
+    display: inline-block;
+    width: min(250px, 90vw);
+}
 
 /* Selve <select> */
-.select select {
+.cupcake-creator-select select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -297,21 +297,21 @@ button:hover {
 }
 
 /* Hover/focus states */
-.select select:hover {
+.cupcake-creator-select select:hover {
     border-color: var(--button-hover);
 }
 
-.select select:focus {
+.cupcake-creator-select select:focus {
     outline: none;
     border-color: rgb(from #231A12 r g b / 0.4);
     box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
 }
 
-.select select:required:invalid {
+.cupcake-creator-select select:required:invalid {
     color: color-mix(in srgb, var(--color-text-base) 60%, white);
 }
 
-.select select option[disabled][selected] {
+.cupcake-creator-select select option[disabled][selected] {
     color: color-mix(in srgb, var(--color-text-base) 60%, white);
 }
 
