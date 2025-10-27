@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS public.bottoms
     bottom_id serial NOT NULL,
     bottom_flavour character varying NOT NULL,
     bottom_price double precision NOT NULL,
-    PRIMARY KEY (bottom_id)
+    PRIMARY KEY (bottom_id),
     CONSTRAINT bottom_flavour_unique UNIQUE (bottom_flavour)
     );
 
@@ -130,9 +130,9 @@ INSERT INTO public.toppings (topping_flavour, topping_price) VALUES
     ON CONFLICT DO NOTHING;
 
 INSERT INTO public.users (firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) VALUES
-                                                                                                                   ('System', 'Administrator', 'Admin@mail.dk', '1234', NULL, 'Head Office', 1000, 0, TRUE),
-                                                                                                                   ('Poul', 'Hansen', 'poul.hansen@mail.dk', 'bornholm123', '20481234', 'Snellemark 14', 3700, 250.75, FALSE),
-                                                                                                                   ('Maja', 'Christiansen', 'maja.christiansen@mail.dk', 'solskinsø', '30487766', 'Søndergade 8', 3740, 180.00, FALSE)
+                                                                                                                   ('System', 'Administrator', 'Admin@mail.dk', '$2a$12$jXQYyBGZ8Z96NC.2c6cm7e/QdtAL2/gBJohWp7CYPV0Zk/QT7Zq2q', NULL, 'Head Office', 1000, 0, TRUE),
+                                                                                                                   ('Poul', 'Hansen', 'poul.hansen@mail.dk', '$2a$12$oy8Cuq.QOFgx6KXOwyT5MO3IsT/NNZ21fZn4g/NAJZGLgltz7f0gC', '20481234', 'Snellemark 14', 3700, 250.75, FALSE),
+                                                                                                                   ('Maja', 'Christiansen', 'maja.christiansen@mail.dk', '$2a$12$ZW19PU.VHt8mtlKK/I5nJ.lst/9Ji5AH/u4fhw1qge8IGBGzbW8c.', '30487766', 'Søndergade 8', 3740, 180.00, FALSE)
     ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO public.orders (order_date, pickup_date, paid, price_total) VALUES
@@ -141,12 +141,12 @@ INSERT INTO public.orders (order_date, pickup_date, paid, price_total) VALUES
                                                                            (now(), now() + interval '1 day', TRUE, 27.00);
 
 INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity, orderline_price) VALUES
-                                                                              (1, 1, 1, 1, 10.00),
-                                                                              (1, 2, 2, 1, 10.00),
-                                                                              (2, 5, 4, 2, 24.00),
-                                                                              (3, 6, 5, 1, 14.00),
-                                                                              (3, 3, 1, 1, 10.00),
-                                                                              (3, 9, 2, 1, 14.00);
+                                                                                               (1, 1, 1, 1, 10.00),
+                                                                                               (1, 2, 2, 1, 10.00),
+                                                                                               (2, 5, 4, 2, 24.00),
+                                                                                               (3, 6, 5, 1, 14.00),
+                                                                                               (3, 3, 1, 1, 10.00),
+                                                                                               (3, 9, 2, 1, 14.00);
 
 INSERT INTO public.users_orders (user_id, order_id) VALUES
                                                         (2, 1),
