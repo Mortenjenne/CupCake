@@ -121,19 +121,18 @@ body {
     display: flex;
     flex-direction: column;
 
-    /*ORIGINAL COLOR*/
     background:
             linear-gradient(
                     to bottom,
-                    #5D4532 0%,     /* Deep brown top */
-                    #74412F 10%,    /* Warm chestnut */
-                    #A05335 25%,    /* Soft red-brown */
-                    #C47A52 40%,    /* Muted terracotta */
-                    #D6A88C 50%,    /* Gentle beige transition */
-                    #8A9B9B 60%,    /* Teal-grey center */
-                    #A67A5C 75%,    /* Tan warmth */
-                    #8B6041 90%,    /* Rich cocoa */
-                    #775940 100%    /* Footer brown */
+                    #231A12 0%,    /* Almost black brown top */
+                    #422C22 10%,   /* Dark chocolate chestnut */
+                    #61372B 25%,   /* Deep earthy red-brown */
+                    #7A503B 40%,   /* Dark muted terracotta */
+                    #947160 50%,   /* Smoky beige mid */
+                    #596667 60%,   /* Dark teal-grey */
+                    #7A563D 75%,   /* Tan warmth, muted */
+                    #5C4432 90%,   /* Cocoa brown */
+                    #4C382C 100%   /* Footer brown */
             ),
             repeating-linear-gradient(
                     45deg,
@@ -143,27 +142,8 @@ body {
                     transparent 4px
             );
 
-    /*SLIGHTLY DARKER*/
-    /*background:*/
-    /*        linear-gradient(*/
-    /*                to bottom,*/
-    /*                #3B2E23 0%,     !* Deep brown top *!*/
-    /*                #552E25 10%,    !* Dark chestnut *!*/
-    /*                #7A3D2B 25%,    !* Deep red-brown *!*/
-    /*                #985940 40%,    !* Muted terracotta, darker *!*/
-    /*                #B0826C 50%,    !* Deeper beige transition *!*/
-    /*                #6B7A7A 60%,    !* Darker teal-grey center *!*/
-    /*                #8A5F45 75%,    !* Tan warmth, darker *!*/
-    /*                #6A4B36 90%,    !* Rich cocoa, darker *!*/
-    /*                #5B4432 100%    !* Footer brown *!*/
-    /*        ),*/
-    /*        repeating-linear-gradient(*/
-    /*                45deg,*/
-    /*                rgba(255, 255, 255, 0.02) 0px,*/
-    /*                rgba(255, 255, 255, 0.02) 1px,*/
-    /*                rgba(0, 0, 0, 0.03) 2px,   !* Slightly stronger shadow lines *!*/
-    /*                transparent 4px*/
-    /*        );*/
+
+
     background-blend-mode: overlay;
     background-attachment: fixed;
     color: var(--font-text-base);
