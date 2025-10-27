@@ -21,6 +21,7 @@ public class UserController
         app.get("/login", ctx -> showLoginPage(ctx));
         app.get("/create-user", ctx -> showCreateUserPage(ctx));
         app.get("/logout", ctx -> logOut(ctx));
+        app.get("/about", ctx -> showAboutPage(ctx));
 
         app.post("/create-user", ctx -> handleCreateUser(ctx));
         app.post("/login", ctx -> handleUserLogin(ctx));
@@ -90,6 +91,9 @@ public class UserController
 
     private void showLoginPage(Context ctx)
     { ctx.render("login"); }
+
+    private void showAboutPage(Context ctx)
+    { ctx.render("about"); }
 
     private void keepFormValues(Context ctx, String email, String firstName, String lastName, String street, String zipCode, String city, String phone)
     {
