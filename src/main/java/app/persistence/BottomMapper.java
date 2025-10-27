@@ -1,7 +1,6 @@
 package app.persistence;
 
 import app.entities.Bottom;
-import app.entities.Topping;
 import app.exceptions.DatabaseException;
 
 import java.sql.*;
@@ -114,8 +113,26 @@ public class BottomMapper
         return false;
     }
 
-    public boolean delete(int bottomId)
+    public boolean deleteBottom(int bottomId) throws DatabaseException
     {
+        String sql = "DELETE FROM bottoms WHERE bottom_id = ?";
+
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, bottomId);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                return true;
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af bottom med id: " + bottomId);
+        }
         return false;
     }
 }
