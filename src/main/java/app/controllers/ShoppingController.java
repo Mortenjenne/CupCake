@@ -70,7 +70,7 @@ public class ShoppingController
         model.put("cart", cart);
         model.put("basketTotalPrice", shoppingService.getTotalOrderPrice(cart));
 
-        ctx.render("/checkout", model);
+        ctx.render("checkout.html", model);
     }
 
     private ShoppingCart getOrCreateCart(Context ctx)
