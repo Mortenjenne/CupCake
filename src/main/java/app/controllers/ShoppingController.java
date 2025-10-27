@@ -61,7 +61,7 @@ public class ShoppingController
         ShoppingCart cart = getOrCreateCart(ctx);
         if (cart == null || cart.isEmpty())
         {
-            ctx.sessionAttribute("basketErrorLabet", "Din kurv er tom");
+            ctx.sessionAttribute("basketErrorLabel", "Din kurv er tom");
             ctx.redirect("/basket");
             return;
         }
