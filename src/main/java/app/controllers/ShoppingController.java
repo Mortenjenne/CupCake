@@ -58,8 +58,19 @@ public class ShoppingController
 
     private void showCheckout(Context ctx)
     {
-        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
-        ctx.render("/checkout");
+        ShoppingCart cart = getOrCreateCart(ctx);
+        if (cart == null || cart.isEmpty())
+        {
+            ctx.sessionAttribute("basketErrorLabet", "Din kurv er tom");
+            ctx.redirect("/basket");
+            return;
+        }
+
+        var model = new HashMap<String, Object>();
+        model.put("cart", cart);
+        model.put("basketTotalPrice", shoppingService.getTotalOrderPrice(cart));
+
+        ctx.render("/checkout", model);
     }
 
     private ShoppingCart getOrCreateCart(Context ctx)
