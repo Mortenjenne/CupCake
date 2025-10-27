@@ -130,7 +130,7 @@ INSERT INTO public.toppings (topping_flavour, topping_price) VALUES
     ON CONFLICT DO NOTHING;
 
 INSERT INTO public.users (firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) VALUES
-                                                                                                                   ('System', 'Administrator', 'Admin@mail.dk', '$2a$12$jXQYyBGZ8Z96NC.2c6cm7e/QdtAL2/gBJohWp7CYPV0Zk/QT7Zq2q', NULL, 'Head Office', 1000, 0, TRUE),
+                                                                                                                   ('System', 'Administrator', 'admin@mail.dk', '$2a$12$jXQYyBGZ8Z96NC.2c6cm7e/QdtAL2/gBJohWp7CYPV0Zk/QT7Zq2q', NULL, 'Head Office', 1000, 0, TRUE),
                                                                                                                    ('Poul', 'Hansen', 'poul.hansen@mail.dk', '$2a$12$oy8Cuq.QOFgx6KXOwyT5MO3IsT/NNZ21fZn4g/NAJZGLgltz7f0gC', '20481234', 'Snellemark 14', 3700, 250.75, FALSE),
                                                                                                                    ('Maja', 'Christiansen', 'maja.christiansen@mail.dk', '$2a$12$ZW19PU.VHt8mtlKK/I5nJ.lst/9Ji5AH/u4fhw1qge8IGBGzbW8c.', '30487766', 'Søndergade 8', 3740, 180.00, FALSE)
     ON CONFLICT (email) DO NOTHING;
