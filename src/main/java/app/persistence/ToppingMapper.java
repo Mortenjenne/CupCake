@@ -107,9 +107,32 @@ public class ToppingMapper
         return null;
     }
 
-    public boolean updateTopping(Topping topping)
+    public boolean updateTopping(Topping topping) throws DatabaseException
     {
-        return false;
+        String sql = "UPDATE toppings SET topping_flavour = ?, topping_price = ? WHERE topping_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, topping.getName());
+            ps.setDouble(2, topping.getPrice());
+            ps.setInt(3, topping.getToppingId());
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                return true;
+            }
+            else
+            {
+                throw new DatabaseException("Topping blev ikke opdateret - id: " + topping.getToppingId());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af topping: " + e.getMessage());
+        }
     }
 
     public boolean deleteTopping(int toppingId) throws DatabaseException
