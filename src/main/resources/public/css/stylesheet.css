@@ -319,6 +319,48 @@ select option {
     background-color: rgb(from #231A12 r g b / 0.4);
 }
 
+.cupcake-creator-input {
+    width: min(120px, 25vw);
+    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    border-radius: .75rem;
+    padding: 0;
+    background: rgb(from #231A12 r g b / 0.4);
+    color: var(--color-text-base);
+    font: inherit;
+    text-align: center;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.cupcake-creator-input:hover {
+    border-color: var(--button-hover);
+}
+
+.cupcake-creator-input:focus {
+    outline: none;
+    border-color: var(--button-hover);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
+    background-color: #fff1;
+}
+
+.cupcake-creator-input::-webkit-inner-spin-button,
+.cupcake-creator-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.cupcake-creator button{
+    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    border-radius: .75rem;
+    width: min(140px, 90vw);
+    background: rgb(from #231A12 r g b / 0.4);
+    color: var(--color-text-base);
+    font: inherit;
+    font-weight: var(--fw-semibold);
+    text-align: center;
+    text-decoration: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
 .cupcake-box {
     display: grid;
     place-items: center;

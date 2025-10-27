@@ -56,14 +56,17 @@
                     </select>
                 </div>
 
-                <input type="number" name="cupcakeQuantity" min="1" placeholder="1" th:value="${cupcakeQuantity}"
+                <input class="cupcake-creator-input" type="number" name="cupcakeQuantity" min="1" placeholder="Antal"
+                       th:value="${cupcakeQuantity}"
                        required>
 
                 <button type="submit">Tilføj til kurv</button>
-                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
-                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
 
             </form>
+            <div class="title">
+                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
+                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
+            </div>
         </section>
 
         <div class="index-basket-button">
