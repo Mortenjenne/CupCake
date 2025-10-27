@@ -251,10 +251,72 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .welcome {
     text-align: center;
+    padding-bottom: 0.5rem;
+}
+
+.cupcake-creator form {
+    display: flex;
+    flex-direction: row;
+    gap: clamp(1rem, 2vw, 2rem);
+    padding: 1rem clamp(4rem, 6vw, 8rem);
+}
+
+/* Custom select-container */
+ .select {
+     position: relative;
+     display: inline-block;
+     width: min(250px, 90vw);
+ }
+
+/* Selve <select> */
+.select select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    width: 100%;
+    padding: .8rem 3rem .8rem 1rem;         /* plads til pilen */
+    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    border-radius: .75rem;
+    background:
+        /* pil (inline SVG) */
+            url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
+      <path d='M7 10l5 5 5-5' fill='none' stroke='palegoldenrod' stroke-width='2' stroke-linecap='round'/>\
+    </svg>") no-repeat right .9rem center / 1rem,
+            rgb(from #231A12 r g b / 0.4);
+    color: var(--color-text-base);
+    font: inherit;
+    line-height: 1.2;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+/* Hover/focus states */
+.select select:hover {
+    border-color: var(--button-hover);
+}
+
+.select select:focus {
+    outline: none;
+    border-color: rgb(from #231A12 r g b / 0.4);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
+}
+
+.select select:required:invalid {
+    color: color-mix(in srgb, var(--color-text-base) 60%, white);
+}
+
+.select select option[disabled][selected] {
+    color: color-mix(in srgb, var(--color-text-base) 60%, white);
+}
+
+select option {
+    background-color: rgb(from #231A12 r g b / 0.4);
 }
 
 .cupcake-box {
@@ -280,9 +342,6 @@ button:hover {
 .topping-img {
     z-index: 2;
     transform: translateY(-30%);
-}
-
-.cupcake-creator {
 }
 
 .index-basket-button{
@@ -413,7 +472,6 @@ button:hover {
 }
 
 .minus-icon, .plus-icon {
-
 }
 
 .delete-icon, .minus-icon, .plus-icon {
@@ -588,3 +646,16 @@ address p,
 
 
 /*------ MEDIA CSS ------*/
+
+@media (prefers-contrast: more) {
+    .select select {
+        border-width: 3px;
+    }
+}
+
+/* Lille variant (hvis du vil bruge på mobile) */
+.select.select--sm select {
+    padding: .6rem 2.4rem .6rem .8rem;
+    border-radius: .6rem;
+    font-size: 0.95em;
+}
