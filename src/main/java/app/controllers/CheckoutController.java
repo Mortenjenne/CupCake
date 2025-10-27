@@ -108,47 +108,46 @@ public class CheckoutController
         String lastName = ctx.formParam("lastName");
         String email = ctx.formParam("email");
         String phoneNumberStr = ctx.formParam("phoneNumber");
-        String street = ctx.formParam("street");
-        String city = ctx.formParam("city");
-        String zipCodeStr = ctx.formParam("zipCode");
+
+        String street = "";
+        String city = "";
+        String zipCodeStr = "";
 
         try
         {
             int phoneNumber = Integer.parseInt(phoneNumberStr);
             int zipCode = 0;
-            if ("delivery".equals(deliveryMethod))
+
+            if (!deliveryMethod.equals("delivery"))
             {
-                zipCode = Integer.parseInt(zipCodeStr);
-                userService.validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
+                street = "Olsker Hovedgade 12";
+                city = "Allinge";
+                zipCode = 3770;
             }
             else
             {
-                street = "N/A";
-                city = "N/A";
-                zipCode = 0;
-
-                if (firstName == null || firstName.trim().isEmpty() ||
-                        lastName == null || lastName.trim().isEmpty() ||
-                        email == null || email.trim().isEmpty())
-                {
-                    throw new IllegalArgumentException("Alle felter skal udfyldes");
-                }
+                street = ctx.formParam("street");
+                city = ctx.formParam("city");
+                zipCodeStr = ctx.formParam("zipCode");
+                zipCode = Integer.parseInt(zipCodeStr);
             }
+
+            userService.validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
 
             UserDTO userDTO;
             if(currentUser == null)
             {
-                userDTO = new UserDTO(
-                        0,
+
+                User guestUser = userService.registerGuestUser(
                         firstName,
                         lastName,
                         email,
                         phoneNumber,
-                        street,
-                        zipCode,
                         city,
-                        0
+                        street,
+                        zipCode
                 );
+                userDTO = userService.getUserById(guestUser.getUserId());
             } else
             {
                 userDTO = userService.getUserById(currentUser.getUserId());
@@ -163,7 +162,6 @@ public class CheckoutController
             ctx.attribute("currentUser", currentUser);
             ctx.attribute("deliveryMethod", deliveryMethod);
             ctx.render("checkout-contact");
-
         } catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());

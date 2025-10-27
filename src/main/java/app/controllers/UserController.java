@@ -7,6 +7,8 @@ import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.util.ArrayList;
+
 public class UserController
 {
     private UserService userService;
@@ -41,6 +43,7 @@ public class UserController
         {
             User user = userService.authenticate(email, password);
             ctx.sessionAttribute("currentUser",user);
+            ctx.sessionAttribute("CART", new ArrayList()); // TODO Refactor this
             ctx.render("/index");
         } catch (DatabaseException e)
         {
@@ -89,7 +92,7 @@ public class UserController
     { ctx.render("createuser"); }
 
     private void showLoginPage(Context ctx)
-    { ctx.render("login"); }
+    {ctx.render("login"); }
 
     private void keepFormValues(Context ctx, String email, String firstName, String lastName, String street, String zipCode, String city, String phone)
     {
