@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS public.bottoms
     bottom_id serial NOT NULL,
     bottom_flavour character varying NOT NULL,
     bottom_price double precision NOT NULL,
-    PRIMARY KEY (bottom_id)
+    PRIMARY KEY (bottom_id),
     CONSTRAINT bottom_flavour_unique UNIQUE (bottom_flavour)
     );
 
