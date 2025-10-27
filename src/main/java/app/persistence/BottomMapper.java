@@ -108,9 +108,32 @@ public class BottomMapper
         return null;
     }
 
-    public boolean updateBottom(Bottom bottom)
+    public boolean updateBottom(Bottom bottom) throws DatabaseException
     {
-        return false;
+        String sql = "UPDATE bottoms SET bottom_flavour = ?, bottom_price = ? WHERE bottom_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, bottom.getName());
+            ps.setDouble(2, bottom.getPrice());
+            ps.setInt(3, bottom.getBottomId());
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                return true;
+            }
+            else
+            {
+                throw new DatabaseException("Bottom blev ikke opdateret - id: " + bottom.getBottomId());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af bottom: " + e.getMessage());
+        }
     }
 
     public boolean deleteBottom(int bottomId) throws DatabaseException
