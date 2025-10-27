@@ -28,10 +28,8 @@
     --button-hover: #B08B6D; /* Button effects */
     --color-rose-light: #F8B5D2; /* Input & Dropdown fields */
     --color-teal: #596667; /* Links */
-    --color-text-light: #FFFFFF;
-    --color-text-dark: #000000;
 
-    --font-text-base: palegoldenrod;
+    --color-text-base: palegoldenrod;
 }
 
 /* TYPOGRAPHY */
@@ -46,7 +44,7 @@ body {
     font-size: var(--font-base);
     font-weight: var(--fw-regular);
     line-height: 1.5;
-    color: var(--color-text-dark);
+    color: var(--color-text-base);
 }
 
 h1 {
@@ -92,7 +90,7 @@ p {
 }
 
 a {
-    color: var(--color-link);
+    color: var(--color-text-base);
     text-decoration: none;
     transition: opacity 0.2s ease;
 }
@@ -141,7 +139,7 @@ body {
             );
     background-blend-mode: overlay;
     background-attachment: fixed;
-    color: var(--font-text-base);
+    color: var(--color-text-base);
 }
 
 /* HEADER */
@@ -192,7 +190,7 @@ header img {
 }
 
 .nav-link {
-    color: var(--font-text-base);
+    color: var(--color-text-base);
     font-size: var(--font-base);
     font-weight: var(--fw-semibold);
     white-space: nowrap;
@@ -215,7 +213,7 @@ header img {
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
-    color: var(--font-text-base);
+    color: var(--color-text-base);
     font-size: var(--font-small);
 }
 
@@ -289,7 +287,7 @@ button:hover {
 
 .index-basket-button{
     background-color: var(--button-color);
-    width: 100px;
+    width: auto;
     border: solid 2px var(--color-darkest-brown);
     border-radius: 5px;
     padding: 5px;
@@ -352,7 +350,7 @@ button:hover {
 
 .basket-clear-cart-button {
     background-color: darkred;
-    color: var(--font-text-base);
+    color: var(--color-text-base);
 }
 
 .basket-clear-cart-button:hover {
@@ -361,7 +359,7 @@ button:hover {
 
 .basket-checkout-button {
     background-color: green;
-    color: var(--font-text-base);
+    color: var(--color-text-base);
 }
 
 .basket-checkout-button:hover {
@@ -371,6 +369,7 @@ button:hover {
 .basket-title-box {
     width: 100%;
     text-align: center;
+    padding-bottom: 1rem;
 }
 
 .cupcake-card {
@@ -418,7 +417,7 @@ button:hover {
 }
 
 .delete-icon, .minus-icon, .plus-icon {
-    color: var(--font-text-base);
+    color: var(--color-text-base);
 }
 
 .delete-icon:hover, .minus-icon:hover, .plus-icon:hover {
