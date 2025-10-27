@@ -2,16 +2,12 @@ package app;
 
 import app.config.ThymeleafConfig;
 
+import app.controllers.AdminController;
+import app.controllers.OrderController;
 import app.controllers.ShoppingController;
 import app.controllers.UserController;
-import app.persistence.BottomMapper;
-import app.persistence.ConnectionPool;
-import app.persistence.ToppingMapper;
-import app.persistence.UserMapper;
-import app.services.ShoppingService;
-import app.services.ShoppingServiceImpl;
-import app.services.UserService;
-import app.services.UserServiceImpl;
+import app.persistence.*;
+import app.services.*;
 import io.javalin.Javalin;//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 import io.javalin.rendering.template.JavalinThymeleaf;
 
@@ -48,8 +44,17 @@ public class Main {
         ShoppingService shoppingService = new ShoppingServiceImpl(bottomMapper,toppingMapper);
         ShoppingController shoppingController = new ShoppingController(shoppingService);
 
+        OrderLineMapper orderLineMapper = new OrderLineMapper(connectionPool);
+        OrderMapper orderMapper = new OrderMapper(connectionPool, orderLineMapper);
+        OrderService orderService = new OrderServiceImpl(orderMapper, userMapper);
+
+        OrderController orderController = new OrderController(orderService);
+        AdminController adminController = new AdminController(userService);
+
         shoppingController.addRoutes(app);
-        userController.registerRoutes(app);
+        userController.addRoutes(app);
+        orderController.addRoutes(app);
+        adminController.addRoutes(app);
 
     }
 }

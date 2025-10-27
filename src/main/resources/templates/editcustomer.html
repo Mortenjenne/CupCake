@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Rediger kunde - Olsker Cupcakes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="edit-customer-view">
+        <h1>Rediger Balance</h1>
+
+        <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <div class="customer-info" th:if="${customer != null}">
+            <h2>Kunde Information</h2>
+            <p><strong>Navn:</strong> <span th:text="${customer.firstName} + ' ' + ${customer.lastName}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
+            <p><strong>Nuværende balance:</strong> <span th:text="${customer.balance} + ' kr.'"></span></p>
+        </div>
+
+        <form method="post" th:action="@{/customers/update-balance}" class="edit-form" th:if="${customer != null}">
+            <input type="hidden" name="userId" th:value="${customer.userId}"/>
+
+            <div class="form-group">
+                <label for="newBalance">Ny balance (kr.):</label>
+                <input type="number"
+                       id="newBalance"
+                       name="newBalance"
+                       th:value="${customer.balance}"
+                       step="0.01"
+                       min="0"
+                       required/>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="save-btn">Gem Balance</button>
+                <a th:href="@{/customers}" class="cancel-btn">Annuller</a>
+            </div>
+        </form>
+    </div>
+
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

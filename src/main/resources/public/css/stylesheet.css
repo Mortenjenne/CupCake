@@ -1,29 +1,25 @@
+/* RESET & BASE STYLES */
+
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-:root {
+/* CSS VARIABLES */
 
+:root {
     /* Typography */
     --font-primary: system-ui, Arial, sans-serif;
-
-    /* Base font size fluid between 14px and 16px */
     --font-base: clamp(0.875rem, 0.8rem + 0.2vw, 1rem);
-
-    /* Hierarchy (fluid scaling) */
     --font-h6: clamp(1.05rem, 0.9rem + 0.3vw, 1.2rem);
     --font-h5: clamp(1.26rem, 1.1rem + 0.4vw, 1.44rem);
     --font-h4: clamp(1.512rem, 1.3rem + 0.5vw, 1.728rem);
     --font-h3: clamp(1.814rem, 1.6rem + 0.6vw, 2.074rem);
     --font-h2: clamp(2.178rem, 1.9rem + 0.8vw, 2.488rem);
     --font-h1: clamp(2.614rem, 2.2rem + 1vw, 2.986rem);
-
-    /* Smaller text */
     --font-small: clamp(0.729rem, 0.7rem + 0.15vw, 0.833rem);
     --font-xsmall: clamp(0.607rem, 0.55rem + 0.1vw, 0.694rem);
-
-    /* Font weights */
     --fw-regular: 400;
     --fw-semibold: 600;
     --fw-bold: 700;
@@ -41,33 +37,71 @@
     --font-text-base: palegoldenrod;
 }
 
+/* TYPOGRAPHY */
+
+html {
+    font-family: var(--font-primary);
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-size: var(--font-base);
+    font-weight: var(--fw-regular);
+    line-height: 1.5;
+    color: var(--color-text-dark);
+}
 
 h1 {
     font-size: var(--font-h1);
+    font-weight: var(--fw-bold);
+    line-height: 1.2;
 }
 
 h2 {
     font-size: var(--font-h2);
+    font-weight: var(--fw-bold);
+    line-height: 1.2;
 }
 
 h3 {
     font-size: var(--font-h3);
+    font-weight: var(--fw-semibold);
+    line-height: 1.3;
 }
 
 h4 {
     font-size: var(--font-h4);
+    font-weight: var(--fw-semibold);
+    line-height: 1.3;
 }
 
 h5 {
     font-size: var(--font-h5);
+    font-weight: var(--fw-semibold);
+    line-height: 1.4;
 }
 
 h6 {
     font-size: var(--font-h6);
+    font-weight: var(--fw-semibold);
+    line-height: 1.4;
 }
 
 p {
     font-size: var(--font-base);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+a:hover {
+    opacity: 0.8;
 }
 
 .small {
@@ -78,6 +112,8 @@ p {
     font-size: var(--font-xsmall);
 }
 
+/* LAYOUT */
+
 html, body {
     height: 100%;
 }
@@ -85,73 +121,106 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-    font-size: var(--font-base);
-
-    color: var(--font-text-base);
-    font-weight: bold;
 }
 
+/* HEADER */
 
-body a:link, body a:visited, body a:visited {
-    color: var(--font-text-base);
-    text-decoration: none;
-}
-
-
-/*------ HEADER CSS ------*/
 header {
     background: var(--header-color);
     position: fixed;
     top: 0;
-    height: 8vh;
-    min-height: 50px;
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+    height: 8vh;
+    min-height: 70px;
     z-index: 1000;
-
 }
 
-header nav, .account-info {
-    height: 100%;
-    width: 30%;
+header nav {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    height: 100%;
+    padding: 0 clamp(4rem, 12vw, 12rem);
+    gap: 2rem; /* TODO Swap this (and other 'gap') with spacing variable */
 }
 
-header a {
-    height: 100%;
+.header-left {
     display: flex;
-    justify-content: center;
     align-items: center;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    height: 100%;
+}
+
+header .logo-link {
+    display: flex;
+    align-items: center;
+    height: 80%;
 }
 
 header img {
-    max-height: 90%;
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
 }
 
-.header-icon {
-    max-height: 90%;
-    color: palegoldenrod;
+.admin-links {
+    display: flex;
+    gap: clamp(1rem, 2vw, 2rem);
+    align-items: center;
 }
 
-.account-info {
-    gap: 2vw;
+.nav-link {
+    color: var(--color-text-light);
+    font-size: var(--font-base);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 2rem);
+}
 
-/*------ MAIN CSS ------*/
+.user-actions {
+    display: flex;
+    gap: clamp(1rem, 2vw, 2rem);
+}
+
+/* TODO .icon-link not scaling in footer */
+.icon-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--color-text-light);
+    font-size: var(--font-small);
+}
+
+.icon-link img {
+    height: clamp(1.5rem, 2.5vw, 2rem);
+    width: auto;
+}
+
+/* MAIN CONTENT */
+
 main {
-    padding: 8vh 5vw 1vh;
-
-    /*DONT TOUCH THESE*/
+    background: var(--body-purple);
+    margin-top: 8vh;
+    padding: clamp(3rem, 6vh, 6rem) 5vw clamp(3rem, 6vh, 6rem);
     flex: 1;
     display: flex;
     justify-content: center;
+}
 
+/* TODO Test view in basket - remove or incorporate */
+.test-background {
+    margin-top: 8vh;
+    padding: clamp(3rem, 6vh, 6rem) 5vw clamp(3rem, 6vh, 6rem);
+    flex: 1;
+    display: flex;
+    justify-content: center;
     background-image: url("/images/backgroundtest.jpg");
     background-size: cover; /* Scales to fill element while maintaining aspect ratio */
     background-repeat: no-repeat; /* Prevents tiling */
@@ -169,7 +238,6 @@ button:hover {
     cursor: pointer;
 }
 
-/*------ INDEX BODY CSS ------*/
 .index-body {
     width: 50%;
     max-width: 1000px;
@@ -348,51 +416,83 @@ button:hover {
     padding-bottom: 2%;
 }
 
-.underline {
-    text-decoration: underline;
-}
+/* FOOTER */
 
-
-/*------ FOOTER CSS ------*/
 footer {
-    background: var(--footer-color);
-    min-height: 60px;
-    height: 10vh;
+    background: var(--footer-test);
+    min-height: 150px;
+    height: auto;
     width: 100%;
-
+    padding: clamp(1rem, 2vh, 2rem) clamp(1rem, 3vw, 3rem);
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-}
-
-address {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
-    width: 15%;
-    height: 100%;
-
-    font-style: normal;
-}
-
-.about {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 15%;
+    gap: 2rem;
 }
 
-.opening-hours {
+footer a {
+    color: var(--color-text-dark);
+}
+
+address,
+.footer-contact {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 5px;
-    width: 15%;
-    height: 100%;
+    gap: 0.5rem;
+    width: 20%;
+    min-width: 200px;
+    font-style: normal;
+    font-size: var(--font-small);
 }
+
+address p,
+.footer-contact p {
+    margin-bottom: 0.25rem;
+}
+
+.footer-hours {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 20%;
+    min-width: 200px;
+    font-size: var(--font-small);
+}
+
+.footer-title {
+    font-weight: var(--fw-bold);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.hours-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 2rem;
+}
+
+.hours-row span:last-child {
+    font-weight: var(--fw-semibold);
+}
+
+.footer-about {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15%;
+    min-width: 120px;
+}
+
+.footer-about.icon-link {
+    color: var(--color-text-dark);
+}
+
+/* UTILITY CLASSES */
 
 .title {
     text-align: center;
@@ -401,6 +501,81 @@ address {
 .row {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
+}
+
+/* LEGACY */
+/* TODO Review with team */
+
+.account-info {
+    display: flex;
+    gap: 2vw;
+    align-items: center;
+}
+
+.account-info a,
+.account-info a:visited {
+    color: var(--color-text-light);
+}
+
+.about {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 15%;
+    min-width: 120px;
+}
+
+.about .icon-link {
+    color: var(--color-text-dark);
+}
+
+.opening-hours {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 20%;
+    min-width: 200px;
+    font-size: var(--font-small);
+}
+
+.opening-hours .title {
+    font-weight: var(--fw-bold);
+    margin-bottom: 0.5rem;
+}
+
+/* RESPONSIVE */
+/* TODO Refactor this to implement burger menu on mobile */
+
+@media (max-width: 768px) {
+    header nav {
+        padding: 0 1rem;
+        gap: 1rem;
+    }
+
+    .header-left {
+        gap: 1rem;
+    }
+
+    .admin-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+
+    address,
+    .footer-hours,
+    .footer-about {
+        width: 100%;
+        min-width: unset;
+    }
 }
 
 

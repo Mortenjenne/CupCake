@@ -1,70 +1,89 @@
-
 <!-- Header Fragment -->
 <div th:fragment="headerFragment">
     <header>
-        <nav>
-            <a href="index.html" th:href="@{/}">
-                <img src="/public/images/logo-w.svg"
-                     alt="Cupcake Logo"
-                     th:src="@{/images/logo-w.svg}">
-            </a>
-        </nav>
+        <nav class="header-nav">
+            <!-- LEFT SECTION: Logo + Links -->
+            <div class="header-left">
+                <a href="index.html" th:href="@{/}" class="logo-link">
+                    <img src="/images/logo-w.svg"
+                         alt="Olsker Cupcakes Logo"
+                         th:src="@{/images/logo-w.svg}">
+                </a>
 
-        <div class="account-info">
-            <div th:if="${session.currentUser != null}">
-                <span class="username" th:text="${session.currentUser.getEmail}">Username</span>
-                <a th:href="@{/my-page}">
-                    <img th:src="@{/images/profile.svg}" alt="profil">
-                </a>
-            <a href="basket.html" th:href="@{/basket}">
-                <img src="/public/images/basket-w.svg"
-                     alt="Cupcake Logo"
-                     th:src="@{/images/basket-w.svg}">
-            </a>
+                <!-- Admin links (conditional) -->
+                <div th:if="${session.currentUser != null and session.currentUser.isAdmin}" class="admin-links">
+                    <a href="orders.html" th:href="@{/orders}" class="nav-link">Ordre</a>
+                    <a href="customers.html" th:href="@{/customers}" class="nav-link">Kunder</a>
+                    <a href="statistics.html" th:href="@{/statistics}" class="nav-link">Statistik</a>
+                </div>
             </div>
-            <div th:if="${session.currentUser == null}">
-                <p>
-                    <a href="login.html" th:href="@{/login}">Login</a>
-                </p>
-                <a href="basket.html" th:href="@{/basket}">
-                    <img src="/public/images/basket-w.svg"
-                         alt="Cupcake Logo"
-                         th:src="@{/images/basket-w.svg}">
+
+            <!-- RIGHT SECTION: User actions -->
+            <div class="header-right">
+                <!-- Not logged in -->
+                <a th:if="${session.currentUser == null}"
+                   href="login.html"
+                   th:href="@{/login}"
+                   class="icon-link">
+                    <img src="/images/mypage-w.svg" alt="Login" th:src="@{/images/mypage-w.svg}">
+                    <span>Login</span>
+                </a>
+
+                <!-- Logged in -->
+                <div th:if="${session.currentUser != null}" class="user-actions">
+                    <a href="mypage.html" th:href="@{/mypage}" class="icon-link">
+                        <img src="/images/mypage-w.svg" alt="Min side" th:src="@{/images/mypage-w.svg}">
+                        <span>Min side</span>
+                    </a>
+
+                    <a href="index.html" th:href="@{/logout}" class="icon-link">
+                        <img src="/images/logout-w.svg" alt="Log ud" th:src="@{/images/logout-w.svg}">
+                        <span>Log ud</span>
+                    </a>
+                </div>
+
+                <!-- Basket (always visible) -->
+                <a href="basket.html" th:href="@{/basket}" class="icon-link">
+                    <img src="/images/basket-w.svg" alt="Kurv" th:src="@{/images/basket-w.svg}">
+                    <span>Se kurv</span>
                 </a>
             </div>
-        </div>
+        </nav>
     </header>
 </div>
 
 <!-- Footer Fragment -->
 <div th:fragment="footerFragment">
     <footer>
-        <address>
-            <p>Olsker Cupcakes</p>
-            <p>Østre Ringvej 2A, 3700 Rønne</p>
+        <!-- LEFT SECTION: Contact info -->
+        <address class="footer-contact">
+            <p class="footer-title">Olsker Cupcakes</p>
+            <p>Olsker Hovedgade 12, 3770 Allinge</p>
             <a href="mailto:kontakt@olskercupcakes.dk">kontakt@olskercupcakes.dk</a>
             <a href="tel:+4512345678">+45 1234 5678</a>
         </address>
 
-        <nav class="about">
-            <a href="about.html" th:href="@{/about}">Om os</a>
-        </nav>
-
-        <section class="opening-hours">
-            <p class="title">Åbningstider</p>
-            <div class="row">
+        <!-- MIDDLE SECTION: Opening hours -->
+        <section class="footer-hours">
+            <p class="footer-title">Åbningstider</p>
+            <div class="hours-row">
                 <span>Mandag</span>
                 <span>LUKKET</span>
             </div>
-            <div class="row">
+            <div class="hours-row">
                 <span>Tirsdag - Fredag</span>
                 <span>12:30 - 17:30</span>
             </div>
-            <div class="row">
+            <div class="hours-row">
                 <span>Lørdag - Søndag</span>
                 <span>10:00 - 18:00</span>
             </div>
         </section>
+
+        <!-- RIGHT SECTION: Link -->
+        <a href="about.html" th:href="@{/about}" class="footer-about icon-link">
+            <img src="/images/cupcake-w.svg" alt="Om os" th:src="@{/images/cupcake-w.svg}">
+            <span>Om os</span>
+        </a>
     </footer>
 </div>
-
