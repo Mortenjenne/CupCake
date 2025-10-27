@@ -430,7 +430,6 @@ button:hover {
 }
 
 /* Checkout */
-/* Selve postkort container */
 .order-card {
     display: flex;
     align-items: center;
@@ -444,7 +443,6 @@ button:hover {
     max-width: 320px;
 }
 
-/* Cupcake container – lille version */
 .cupcake-summary {
     position: relative;
     width: 80px;
@@ -483,7 +481,6 @@ button:hover {
     font-weight: bold;
     max-width: 320px;
 }
-
 
 /* FOOTER */
 
