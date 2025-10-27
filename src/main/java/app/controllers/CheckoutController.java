@@ -179,17 +179,7 @@ public class CheckoutController
                     );
                 } else
                 {
-                    userDTO = new UserDTO(
-                            currentUser.getUserId(),
-                            firstName,
-                            lastName,
-                            email,
-                            phoneNumber,
-                            street,
-                            zipCode,
-                            city,
-                            currentUser.getBalance()
-                    );
+                    userDTO = userService.getUserById(currentUser.getUserId());
                 }
                 ctx.sessionAttribute("checkoutUser", userDTO);
                 ctx.render("checkout-delivery");
@@ -200,7 +190,7 @@ public class CheckoutController
                 ctx.attribute("currentUser", currentUser);
                 ctx.attribute("cart", ctx.sessionAttribute("cart"));
                 ctx.render("checkout-contact.html");
-            } catch (IllegalArgumentException e)
+            } catch (DatabaseException | IllegalArgumentException e)
             {
                 ctx.attribute("errorMessage", e.getMessage());
                 ctx.attribute("currentUser", currentUser);
