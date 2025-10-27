@@ -1,12 +1,16 @@
 package app.controllers;
 
 import app.dto.UserDTO;
+import app.entities.Order;
 import app.entities.ShoppingCart;
 import app.entities.User;
+import app.exceptions.DatabaseException;
 import app.services.OrderService;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -25,10 +29,53 @@ public class CheckoutController
     public void addRoutes(Javalin app)
     {
         app.get("/checkout/contact-info", ctx -> showCheckoutContactPage(ctx));
-        app.get("checkout/delivery/info", ctx -> showDeliveryPage(ctx));
+        app.get("/checkout/delivery/info", ctx -> showDeliveryPage(ctx));
 
-        app.post("/checkout/contact-info", ctx -> saveCheckoutContactInfo(ctx));
+        app.post("/checkout/delivery/info", ctx -> saveCheckoutContactInfo(ctx));
         app.post("/checkout/delivery/action", ctx -> handleDeliveryAction(ctx));
+        app.post("/checkout/payment/action", ctx -> handlePayment(ctx));
+
+    }
+
+    private void handlePayment(Context ctx)
+    {
+        String paymentMethod = ctx.formParam("paymentMethod");
+        boolean payNow = paymentMethod.equals("pay-now");
+
+        UserDTO checkoutUser = ctx.sessionAttribute("checkoutUser");
+        if (checkoutUser == null)
+        {
+            ctx.redirect("/checkout/contact-info");
+            return;
+        }
+
+        ShoppingCart cart = ctx.sessionAttribute("cart");
+        if (cart == null || cart.getShoppingCart().isEmpty())
+        {
+            ctx.redirect("/cart");
+            return;
+        }
+
+        LocalDateTime pickupDateTime = ctx.sessionAttribute("pickUp");
+        if(pickupDateTime == null)
+        {
+           ctx.redirect("/checkout-delivery");
+           return;
+        }
+
+        String deliveryMethod = ctx.sessionAttribute("delivery");
+        if(deliveryMethod == null || deliveryMethod.isEmpty())
+        {
+            ctx.redirect("/checkout-delivery");
+        }
+
+        try
+        {
+            Order order = orderService.createOrder(checkoutUser.getUserId(), cart.getShoppingCart(), pickupDateTime, payNow);
+        } catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage",e.getMessage());
+        }
 
     }
 
@@ -44,6 +91,12 @@ public class CheckoutController
 
         UserDTO userDTO = ctx.sessionAttribute("checkoutUser");
         ShoppingCart cart = ctx.sessionAttribute("cart");
+        double balanceAfterPurchase = userDTO.getBalance() - cart.getTotalOrderPrice();
+
+        ctx.sessionAttribute("pickUp",pickupDateTime);
+        ctx.sessionAttribute("deliveryMethod",deliveryMethod);
+        ctx.attribute("userBalanceAfterPurchase",balanceAfterPurchase);
+        ctx.render("checkout");
     }
 
     private void showDeliveryPage(Context ctx)
@@ -79,7 +132,7 @@ public class CheckoutController
             {
                 int phoneNumber = Integer.parseInt(phoneNumberStr);
                 int zipCode = Integer.parseInt(zipCodeStr);
-                userService.validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
+                //userService.validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
 
                 if(currentUser == null)
                 {
@@ -109,7 +162,7 @@ public class CheckoutController
                     );
                 }
                 ctx.sessionAttribute("checkoutUser", userDTO);
-                ctx.redirect("/checkout/delivery");
+                ctx.render("checkout-delivery");
 
             } catch (NumberFormatException e)
             {
@@ -124,18 +177,15 @@ public class CheckoutController
                 ctx.attribute("cart", ctx.sessionAttribute("cart"));
                 ctx.render("checkout-contact.html");
             }
-
-        ctx.sessionAttribute("checkoutUser", userDTO);
-        ctx.redirect("/checkout/delivery");
     }
 
     private void showCheckoutContactPage(Context ctx)
     {
         User currentUser = ctx.sessionAttribute("currentUser");
-        ShoppingCart cart = ctx.sessionAttribute("cart");
+        ShoppingCart cart = ctx.sessionAttribute("CART");
 
         ctx.attribute("currentUser", currentUser);
-        ctx.attribute("cart", cart);
-        ctx.render("checkout-contact.html");
+        ctx.sessionAttribute("cart",cart);
+        ctx.render("checkout-contact");
     }
 }

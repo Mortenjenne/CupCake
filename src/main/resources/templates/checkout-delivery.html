@@ -118,7 +118,7 @@
         <h3>Din bestilling</h3>
         <a th:href="@{/checkout/contact-info}">Ret</a>
 
-        <div th:each="orderLine : ${session.cart.orderLines}">
+        <div th:each="orderLine : ${session.cart.getShoppingCart()}">
             <div class="summary-info">
                 <img th:src="@{/images/bottom_almond.png}" alt="Cupcake image"/>
                 <p><span th:text="${orderLine.cupcake.bottom.name}"></span> +
@@ -130,7 +130,7 @@
         </div>
 
         <div class="summary-info">
-            <p>Subtotal: <span th:text="${session.cart.totalPrice}"></span> kr.</p>
+            <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
         </div>
     </aside>
 </main>

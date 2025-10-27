@@ -23,5 +23,4 @@ public interface OrderService
     public double getTotalRevenue(int adminId) throws DatabaseException;
     public double getMonthlyRevenue(int adminId, YearMonth month) throws DatabaseException;
     public double getAverageOrderValue(int adminId) throws DatabaseException;
-
 }

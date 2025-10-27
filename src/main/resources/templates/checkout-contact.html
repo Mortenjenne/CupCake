@@ -15,7 +15,7 @@
 <main>
     <section>
   <div class="delivery-info">
-    <form action="checkout/delivery/info" method="post">
+    <form th:action="@{/checkout/delivery/info}" method="post">
         <h2>Checkout</h2>
 
         <div class="create-group">
@@ -50,7 +50,7 @@
 
         <div class="create-group">
             <label for="phoneNumber">Indtast telefon nummer</label>
-            <input type="text" id="phoneNumber" name="phone" th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
+            <input type="text" id="phoneNumber" name="phoneNumber" th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
         </div>
 
         <div class="create-group">
@@ -71,7 +71,7 @@
     </section>
 
     <aside class="summary">
-        <div th:each="orderLine : ${cart.orderLines}">
+        <div th:each="orderLine : ${session.cart.getShoppingCart()}">
             <div class="summary-info">
                 <img th:src="@{/images/bottom_almond.png}" alt="Cupcake image"/>
                 <span th:text="${orderLine.cupcake.bottom.name}"></span> +
@@ -83,7 +83,7 @@
         </div>
 
         <div class="summary-info">
-            <p>Subtotal: <span th:text="${cart.totalPrice}"></span></p>
+            <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span></p>
         </div>
         </aside>
 </main>

@@ -24,7 +24,7 @@
         </div>
 
         <div class="payment">
-            <form action="/checkout/payment/action" method="post">
+            <form th:action="@{/checkout/payment/action}" method="post">
                 <h2>Betaling</h2>
 
                 <div class="payment-method">
@@ -34,7 +34,7 @@
                         <input type="radio" id="pay-now" name="paymentMethod" value="pay-now" required>
                         <label for="pay-now">Betal nu med din konto</label>
                         <p>Din nuværende saldo: <span th:text="${session.checkoutUser.balance}"></span> kr.</p>
-                        <p>Total pris: <span th:text="${session.cart.totalPrice}"></span> kr.</p>
+                        <p>Total pris: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
                         <p>Saldo efter køb: <span th:text="${userBalanceAfterPurchase}"></span> kr.</p>
                     </div>
 
@@ -52,7 +52,7 @@
     <aside class="summary-info">
         <h3>Din bestilling</h3>
 
-        <div th:each="orderLine : ${session.cart.orderLines}">
+        <div th:each="orderLine : ${session.cart.getShoppingCart()}">
             <div class="summary-item">
                 <img th:src="@{/images/bottom_almond.png}" alt="Cupcake image"/>
                 <p><span th:text="${orderLine.cupcake.bottom.name}"></span> +
@@ -64,7 +64,7 @@
         </div>
 
         <div class="summary-total">
-            <p><strong>Total:</strong> <span th:text="${session.cart.totalPrice}"></span> kr.</p>
+            <p><strong>Total:</strong> <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
         </div>
     </aside>
 </main>
