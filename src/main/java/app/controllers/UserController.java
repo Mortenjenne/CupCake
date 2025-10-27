@@ -41,7 +41,7 @@ public class UserController
         {
             User user = userService.authenticate(email, password);
             ctx.sessionAttribute("currentUser",user);
-            ctx.render("/index");
+            ctx.redirect("/");
         } catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
