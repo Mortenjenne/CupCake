@@ -23,12 +23,11 @@
     --fw-bold: 700;
 
     /* Colors */
-    --header-color: #5D4532; /* Header */
-    --footer-color: #775940; /* Footer */
+    --color-darkest-brown: #231A12; /* Header */
     --button-color: #926D4F; /* Button */
     --button-hover: #B08B6D; /* Button effects */
     --color-rose-light: #F8B5D2; /* Input & Dropdown fields */
-    --color-teal: #007A72; /* Links */
+    --color-teal: #596667; /* Links */
     --color-text-light: #FFFFFF;
     --color-text-dark: #000000;
 
@@ -89,7 +88,7 @@ h6 {
 p {
     font-size: var(--font-base);
     line-height: 1.6;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 a {
@@ -120,7 +119,6 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-
     background:
             linear-gradient(
                     to bottom,
@@ -141,9 +139,6 @@ body {
                     rgba(0, 0, 0, 0.02) 2px,
                     transparent 4px
             );
-
-
-
     background-blend-mode: overlay;
     background-attachment: fixed;
     color: var(--font-text-base);
@@ -197,7 +192,7 @@ header img {
 }
 
 .nav-link {
-    color: var(--color-text-light);
+    color: var(--font-text-base);
     font-size: var(--font-base);
     font-weight: var(--fw-semibold);
     white-space: nowrap;
@@ -220,7 +215,7 @@ header img {
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
-    color: var(--color-text-light);
+    color: var(--font-text-base);
     font-size: var(--font-small);
 }
 
@@ -242,9 +237,8 @@ main {
 
 /*------ USE THIS FOR ALL WINDOW STYLING------*/
 .window-styling {
-    /*background: rgb(from var(--footer-color) r g b / 0.8);*/
-    background: transparent;
-    border: 2px solid var(--header-color);
+    background: rgb(from #231A12 r g b / 0.4);
+    border: 2px solid rgb(from #231A12 r g b / 0.4);
     border-radius: 20px;
 }
 
@@ -296,7 +290,7 @@ button:hover {
 .index-basket-button{
     background-color: var(--button-color);
     width: 100px;
-    border: solid 2px var(--header-color);
+    border: solid 2px var(--color-darkest-brown);
     border-radius: 5px;
     padding: 5px;
     font-weight: bold;
@@ -350,7 +344,7 @@ button:hover {
 
 .basket-checkout-card button {
     width: 100px;
-    border: solid 2px var(--header-color);
+    border: solid 2px var(--color-darkest-brown);
     border-radius: 5px;
     padding: 5px;
     font-weight: bold;
@@ -420,20 +414,17 @@ button:hover {
 }
 
 .minus-icon, .plus-icon {
-    padding-top: 5px;
+
 }
 
 .delete-icon, .minus-icon, .plus-icon {
-    color: palegoldenrod;
+    color: var(--font-text-base);
 }
 
 .delete-icon:hover, .minus-icon:hover, .plus-icon:hover {
     cursor: pointer;
 }
 
-.cupcake-card-info .row {
-    padding-bottom: 5%;
-}
 
 .rowQuantity {
     display: flex;
@@ -441,6 +432,10 @@ button:hover {
     align-items: center;
     gap: 5%;
     padding-bottom: 2%;
+}
+
+.rowQuantity p {
+    margin-bottom: 0.4rem;
 }
 
 /* FOOTER */
@@ -456,10 +451,6 @@ footer {
     justify-content: space-around;
     align-items: center;
     gap: 2rem;
-}
-
-footer a {
-    color: var(--color-text-dark);
 }
 
 address,
@@ -515,9 +506,6 @@ address p,
     min-width: 120px;
 }
 
-.footer-about.icon-link {
-    color: var(--color-text-dark);
-}
 
 /* UTILITY CLASSES */
 
@@ -540,10 +528,6 @@ address p,
     align-items: center;
 }
 
-.account-info a,
-.account-info a:visited {
-    color: var(--color-text-light);
-}
 
 .about {
     display: flex;
@@ -554,9 +538,7 @@ address p,
     min-width: 120px;
 }
 
-.about .icon-link {
-    color: var(--color-text-dark);
-}
+
 
 .opening-hours {
     display: flex;
