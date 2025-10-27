@@ -1,5 +1,4 @@
 /* RESET & BASE STYLES */
-
 * {
     margin: 0;
     padding: 0;
@@ -7,7 +6,6 @@
 }
 
 /* CSS VARIABLES */
-
 :root {
     /* Typography */
     --font-primary: system-ui, Arial, sans-serif;
@@ -116,18 +114,66 @@ a:hover {
 
 html, body {
     height: 100%;
+    min-height: 100vh;
 }
 
 body {
     display: flex;
     flex-direction: column;
+
+    /*ORIGINAL COLOR*/
+    background:
+            linear-gradient(
+                    to bottom,
+                    #5D4532 0%,     /* Deep brown top */
+                    #74412F 10%,    /* Warm chestnut */
+                    #A05335 25%,    /* Soft red-brown */
+                    #C47A52 40%,    /* Muted terracotta */
+                    #D6A88C 50%,    /* Gentle beige transition */
+                    #8A9B9B 60%,    /* Teal-grey center */
+                    #A67A5C 75%,    /* Tan warmth */
+                    #8B6041 90%,    /* Rich cocoa */
+                    #775940 100%    /* Footer brown */
+            ),
+            repeating-linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.02) 0px,
+                    rgba(255, 255, 255, 0.02) 1px,
+                    rgba(0, 0, 0, 0.02) 2px,
+                    transparent 4px
+            );
+
+    /*SLIGHTLY DARKER*/
+    /*background:*/
+    /*        linear-gradient(*/
+    /*                to bottom,*/
+    /*                #3B2E23 0%,     !* Deep brown top *!*/
+    /*                #552E25 10%,    !* Dark chestnut *!*/
+    /*                #7A3D2B 25%,    !* Deep red-brown *!*/
+    /*                #985940 40%,    !* Muted terracotta, darker *!*/
+    /*                #B0826C 50%,    !* Deeper beige transition *!*/
+    /*                #6B7A7A 60%,    !* Darker teal-grey center *!*/
+    /*                #8A5F45 75%,    !* Tan warmth, darker *!*/
+    /*                #6A4B36 90%,    !* Rich cocoa, darker *!*/
+    /*                #5B4432 100%    !* Footer brown *!*/
+    /*        ),*/
+    /*        repeating-linear-gradient(*/
+    /*                45deg,*/
+    /*                rgba(255, 255, 255, 0.02) 0px,*/
+    /*                rgba(255, 255, 255, 0.02) 1px,*/
+    /*                rgba(0, 0, 0, 0.03) 2px,   !* Slightly stronger shadow lines *!*/
+    /*                transparent 4px*/
+    /*        );*/
+    background-blend-mode: overlay;
+    background-attachment: fixed;
+    color: var(--font-text-base);
 }
 
 /* HEADER */
 
 header {
-    background: var(--header-color);
-    position: fixed;
+    background: transparent;
+    position: relative;
     top: 0;
     width: 100%;
     height: 8vh;
@@ -206,30 +252,18 @@ header img {
 /* MAIN CONTENT */
 
 main {
-    background: var(--body-purple);
-    margin-top: 8vh;
-    padding: clamp(3rem, 6vh, 6rem) 5vw clamp(3rem, 6vh, 6rem);
+    background: transparent;
+    padding: clamp(1rem, 2vh, 4rem) 5vw clamp(1rem, 2vh, 4rem);
     flex: 1;
     display: flex;
     justify-content: center;
 }
 
-/* TODO Test view in basket - remove or incorporate */
-.test-background {
-    margin-top: 8vh;
-    padding: clamp(3rem, 6vh, 6rem) 5vw clamp(3rem, 6vh, 6rem);
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    background-image: url("/images/backgroundtest.jpg");
-    background-size: cover; /* Scales to fill element while maintaining aspect ratio */
-    background-repeat: no-repeat; /* Prevents tiling */
-    background-position: center; /* Centers the image */
-}
 
 /*------ USE THIS FOR ALL WINDOW STYLING------*/
 .window-styling {
-    background: rgb(from var(--footer-color) r g b / 0.8);
+    /*background: rgb(from var(--footer-color) r g b / 0.8);*/
+    background: transparent;
     border: 2px solid var(--header-color);
     border-radius: 20px;
 }
@@ -432,7 +466,7 @@ button:hover {
 /* FOOTER */
 
 footer {
-    background: var(--footer-test);
+    background: transparent;
     min-height: 150px;
     height: auto;
     width: 100%;
