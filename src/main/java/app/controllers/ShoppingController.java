@@ -58,8 +58,19 @@ public class ShoppingController
 
     private void showCheckout(Context ctx)
     {
-        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
-        ctx.render("/checkout");
+        ShoppingCart cart = getOrCreateCart(ctx);
+        if (cart == null || cart.isEmpty())
+        {
+            ctx.sessionAttribute("basketErrorLabel", "Din kurv er tom");
+            ctx.redirect("/basket");
+            return;
+        }
+
+        var model = new HashMap<String, Object>();
+        model.put("cart", cart);
+        model.put("basketTotalPrice", shoppingService.getTotalOrderPrice(cart));
+
+        ctx.render("checkout.html", model);
     }
 
     private ShoppingCart getOrCreateCart(Context ctx)
@@ -125,32 +136,37 @@ public class ShoppingController
 
     private void removeFromCart(Context ctx)
     {
+        ShoppingCart cart = getOrCreateCart(ctx);
         int index = Integer.parseInt(ctx.formParam("index"));
-        shoppingService.removeOrderLineFromCart(getOrCreateCart(ctx), index);
-        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        shoppingService.removeOrderLineFromCart(cart, index);
+        ctx.sessionAttribute("CART", cart);
         ctx.redirect("/basket");
+
     }
 
     private void increaseCupcakeQuantity(Context ctx)
     {
+        ShoppingCart cart = getOrCreateCart(ctx);
         int index = Integer.parseInt(ctx.formParam("increaseQuantity"));
-        shoppingService.addOneToCupcakeQuantity(getOrCreateCart(ctx), index);
-        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        shoppingService.addOneToCupcakeQuantity(cart, index);
+        ctx.sessionAttribute("CART", cart);
         ctx.redirect("/basket");
     }
 
     private void decreaseCupcakeQuantity(Context ctx)
     {
+        ShoppingCart cart = getOrCreateCart(ctx);
         int index = Integer.parseInt(ctx.formParam("decreaseQuantity"));
-        shoppingService.removeOneFromCupcakeQuantity(getOrCreateCart(ctx), index);
-        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        shoppingService.removeOneFromCupcakeQuantity(cart, index);
+        ctx.sessionAttribute("CART", cart);
         ctx.redirect("/basket");
     }
 
     private void clearCart(Context ctx)
     {
-        shoppingService.clearCart(getOrCreateCart(ctx));
-        ctx.sessionAttribute("CART", getOrCreateCart(ctx));
+        ShoppingCart cart = getOrCreateCart(ctx);
+        shoppingService.clearCart(cart);
+        ctx.sessionAttribute("CART", cart);
         ctx.redirect("/basket");
     }
 }

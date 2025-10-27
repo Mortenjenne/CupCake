@@ -65,4 +65,9 @@ public class ShoppingCart
         this.shoppingCart.clear();
     }
 
+    public boolean isEmpty()
+    {
+        return this.shoppingCart.isEmpty();
+    }
+
 }
