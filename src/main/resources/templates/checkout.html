@@ -73,18 +73,7 @@
 
     <aside class="summary-info">
         <h3>Din bestilling</h3>
-
-        <div th:each="orderLine : ${session.cart.getShoppingCart()}">
-            <div class="summary-item">
-                <img th:src="@{/images/bottom_almond.png}" alt="Cupcake image"/>
-                <p><span th:text="${orderLine.cupcake.bottom.name}"></span> +
-                    <span th:text="${orderLine.cupcake.topping.name}"></span></p>
-                <p>Antal: <span th:text="${orderLine.quantity}"></span></p>
-                <p>Pris: <span th:text="${orderLine.orderLinePrice}"></span> kr.</p>
-                <hr>
-            </div>
-        </div>
-
+        <div th:replace="fragments :: orderLinePostCard"></div>
         <div class="summary-total">
             <p><strong>Total:</strong> <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
         </div>

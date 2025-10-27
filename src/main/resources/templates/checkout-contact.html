@@ -66,33 +66,13 @@
     </section>
 
     <aside class="summary">
-        <div th:each="orderLine : ${session.cart.getShoppingCart()}" class="order-card">
-            <div class="order-card-img">
-                <div class="cupcake-summary">
-                    <img class="bottom-img"
-                         th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${orderLine.cupcake.bottom.slug})}"
-                         alt="bottom">
-                    <img class="topping-img"
-                         th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${orderLine.cupcake.topping.slug})}"
-                         alt="topping">
-                </div>
-            </div>
-            <div class="order-card-info">
-                <p>
-                    <span th:text="${orderLine.cupcake.bottom.name}"></span> +
-                    <span th:text="${orderLine.cupcake.topping.name}"></span>
-                </p>
-                <p>Antal: <span th:text="${orderLine.quantity}"></span></p>
-                <p>Pris: <span th:text="${orderLine.orderLinePrice}"></span> kr</p>
-            </div>
-        </div>
-
+        <div th:replace="fragments :: orderLinePostCard"></div>
         <div class="summary-total">
             <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr</p>
         </div>
     </aside>
 </main>
-
+<div th:replace="fragments :: footerFragment"></div>
 </body>
 </html>
 
