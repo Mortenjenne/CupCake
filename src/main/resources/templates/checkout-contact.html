@@ -44,11 +44,6 @@
         </div>
 
         <div class="create-group">
-            <label for="street">Gade:</label>
-            <input type="text" id="street" name="street" th:value="${currentUser != null} ? ${currentUser.street} : ''" required>
-        </div>
-
-        <div class="create-group">
             <label for="phoneNumber">Indtast telefon nummer</label>
             <input type="text" id="phoneNumber" name="phoneNumber" th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
         </div>
