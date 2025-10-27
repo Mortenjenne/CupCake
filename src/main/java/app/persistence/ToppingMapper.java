@@ -2,7 +2,6 @@ package app.persistence;
 
 import app.entities.Topping;
 import app.exceptions.DatabaseException;
-import javassist.bytecode.stackmap.BasicBlock;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -113,9 +112,26 @@ public class ToppingMapper
         return false;
     }
 
-    public boolean delete(int bottomId)
+    public boolean deleteTopping(int toppingId) throws DatabaseException
     {
+        String sql = "DELETE FROM bottoms WHERE topping_id = ?";
+
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, toppingId);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
+            {
+                return true;
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af topping med id: " + toppingId);
+        }
         return false;
     }
-
 }
