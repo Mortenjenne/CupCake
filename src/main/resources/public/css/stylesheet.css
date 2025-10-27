@@ -213,6 +213,11 @@ button:hover {
 
 .index-basket-button{
     background-color: var(--button-color);
+    width: 100px;
+    border: solid 2px var(--header-color);
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
 
 }
 .index-basket-button:hover {
