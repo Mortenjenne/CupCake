@@ -78,6 +78,12 @@ public class ShoppingServiceImpl implements ShoppingService
     }
 
     @Override
+    public int getTotalOrderQuantity(ShoppingCart cart)
+    {
+        return cart.getTotalOrderQuantitiy();
+    }
+
+    @Override
     public void clearCart(ShoppingCart cart)
     {
         cart.clearShoppingCart();

@@ -27,5 +27,7 @@ public interface ShoppingService
 
     double getTotalOrderPrice(ShoppingCart cart);
 
+    int getTotalOrderQuantity(ShoppingCart cart);
+
     void clearCart(ShoppingCart cart);
 }
