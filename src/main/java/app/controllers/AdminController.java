@@ -34,7 +34,40 @@ public class AdminController
         app.get("/orders/details/{id}", ctx -> showOrderDetails(ctx));
 
         app.post("/customers/update-balance", ctx -> handleEditCustomerBalance(ctx));
+        app.post("/orders/delete/{id}", ctx -> deleteOrder(ctx));
 
+    }
+
+    private void deleteOrder(Context ctx)
+    {
+        String orderIdStr = ctx.pathParam("id");
+        User currentUser = ctx.sessionAttribute("currentUser");
+
+        try
+        {
+            int orderId = Integer.parseInt(orderIdStr);
+            if(orderService.deleteOrder(orderId, currentUser.getUserId(), false))
+            {
+                ctx.redirect("/orders");
+                ctx.attribute("successMesage","Du har slette ordren med id " + orderId);
+            }
+            else
+            {
+                ctx.attribute("errorMessage", "Kunne ikke slette ordren");
+                ctx.redirect("/orders");
+            }
+
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke parse tallet");
+            ctx.redirect("/orders");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.redirect("/orders");
+        }
     }
 
     private void showOrderDetails(Context ctx)
@@ -236,5 +269,5 @@ public class AdminController
             return;
         }
     }
-    
+
 }

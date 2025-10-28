@@ -74,6 +74,14 @@
                 </tbody>
             </table>
         </div>
+        <p id="error-message" class="error"
+           th:if="${errorMessage != null}"
+           th:text="${errorMessage}">
+        </p>
+        <p id="success-message" class="success"
+           th:if="${successMessage != null}"
+           th:text="${successMessage}">
+        </p>
     </div>
 </main>
 
