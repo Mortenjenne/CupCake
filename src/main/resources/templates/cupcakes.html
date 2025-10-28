@@ -12,6 +12,49 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <section>
+
+        <div class="admin-cupcake-body window-styling">
+            <div class="admin-create">
+                <p>Lav ny topping/bund</p>
+
+                <form method="post" th:action="@{/updateBottom}">
+                    <div class="cupcake-creator-select">
+                        <select id="bottomSelect" name="bottomId" required>
+                            <option value="" disabled selected>Vælg Bund</option>
+                            <option th:each="b : ${bottoms}"
+                                    th:value="${b.bottomId}"
+                                    th:text="${b.name}">
+                            </option>
+                        </select>
+                        <input type="text" name="bottomUpdateFlavour" placeholder="indsæt nyt navn">
+                        <input type="text" name="bottomUpdatePrice" placeholder="indsæt ny pris">
+                        <button type="submit">Opdater</button>
+                    </div>
+                </form>
+
+                <form method="post" th:action="@{/updateTopping}">
+                    <div class="cupcake-creator-select">
+                        <select id="toppingSelect" name="toppingId" required>
+                            <option value="" disabled selected>Vælg Topping</option>
+                            <option th:each="t : ${toppings}"
+                                    th:value="${t.toppingId}"
+                                    th:text="${t.name}">
+                            </option>
+                        </select>
+                        <input type="text" name="toppingUpdateFlavour" placeholder="Indsæt nyt navn"
+                               th:value="${newToppingFlavour}">
+                        <input type="text" name="toppingUpdatePrice" placeholder="Indsæt ny pris"
+                               th:value="${newToppingPrice}">
+                        <button type="submit">Opdater</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
