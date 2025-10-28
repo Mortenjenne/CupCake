@@ -69,33 +69,37 @@
                     </div>
                 </div>
             </form>
-                <div th:if="${!cart.shoppingCart.isEmpty()}" class="basket-checkout-card window-styling">
-                    <div class="basket-checkout-details-card">
-                        <h4>Din kurv består af:</h4>
-                        <br>
-                        <div class="basket-checkout-card-info" th:each="o, iterStat : ${cart.shoppingCart}">
-                            <div class="row">
-                                <p th:text="${o.quantity + 'stk. ' + o.cupcake.bottom.name + ' / ' + o.cupcake.topping.name}"></p>
-                                <p th:text="${o.cupcake.cupcakePrice * o.quantity + ' kr.'}"></p>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row total-price-styling">
-                            <h5>Total beløb:</h5>
-                            <h5 class="underline" th:text="${basketTotalPrice + ' kr.'}"></h5>
+            <div th:if="${!cart.shoppingCart.isEmpty()}" class="basket-checkout-card window-styling">
+                <div class="basket-checkout-details-card">
+                    <h4>Din kurv består af:</h4>
+                    <br>
+                    <div class="basket-checkout-card-info" th:each="o, iterStat : ${cart.shoppingCart}">
+                        <div class="row">
+                            <p th:text="${o.quantity + 'stk. ' + o.cupcake.bottom.name + ' / ' + o.cupcake.topping.name}"></p>
+                            <p th:text="${o.cupcake.cupcakePrice * o.quantity + ' kr.'}"></p>
                         </div>
                     </div>
-                    <div class="basket-checkout-details-card-buttons">
-                        <form method="post" action="/clearCart">
-                            <button class="basket-clear-cart-button" type="submit" name="basketClearCart">Ryd kurv
-                            </button>
-                        </form>
-
-                        <form method="get" action="/checkout">
-                            <button class="basket-checkout-button" type="submit">Gå til kassen</button>
-                        </form>
+                    <br>
+                    <div class="row total-price-styling">
+                        <h5>Antal cupcakes:</h5>
+                        <h5 class="underline" th:text="${basketTotalQuantity + ' stk.'}"></h5>
+                    </div>
+                    <div class="row total-price-styling">
+                        <h5>Total beløb:</h5>
+                        <h5 class="underline" th:text="${basketTotalPrice + ' kr.'}"></h5>
                     </div>
                 </div>
+                <div class="basket-checkout-details-card-buttons">
+                    <form method="post" action="/clearCart">
+                        <button class="basket-clear-cart-button" type="submit" name="basketClearCart">Ryd kurv
+                        </button>
+                    </form>
+
+                    <form method="get" th:action="@{/checkout/delivery}">
+                        <button class="basket-checkout-button" type="submit">Gå til kassen</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

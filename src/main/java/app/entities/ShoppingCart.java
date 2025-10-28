@@ -70,4 +70,9 @@ public class ShoppingCart
         return this.shoppingCart.isEmpty();
     }
 
+    public int getTotalOrderQuantitiy()
+    {
+        return this.shoppingCart.stream().mapToInt(OrderLine::getQuantity)
+                .sum();
+    }
 }

@@ -5,12 +5,9 @@ import app.entities.Order;
 import app.entities.OrderLine;
 import app.entities.User;
 import app.exceptions.DatabaseException;
-import app.persistence.OrderLineMapper;
 import app.persistence.OrderMapper;
 import app.persistence.UserMapper;
-
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,13 +25,34 @@ public class OrderServiceImpl implements OrderService
     }
 
     @Override
-    public Order createOrder(int userId, List<OrderLine> orderLines, LocalDateTime pickUpDate, boolean payNow) throws DatabaseException
+    public Order createOrder(UserDTO userDTO, List<OrderLine> orderLines, LocalDateTime pickUpDate, boolean payNow) throws DatabaseException
     {
-        User user = userMapper.getUserById(userId);
-        UserDTO userDTO = buildUserDTO(user);
         double totalPrice = calculateTotalPrice(orderLines);
+        int userId = userDTO.getUserId();
 
-        validateUserBalance(payNow, user, totalPrice);
+        if (userId == 0)
+        {
+            if (payNow)
+            {
+                throw new DatabaseException("Gæster kan kun betale ved afhentning");
+            }
+
+        } else
+        {
+            User user = userMapper.getUserById(userId);
+
+            if (payNow)
+            {
+                if (user.getBalance() < totalPrice) {
+                    throw new DatabaseException("Utilstrækkelig saldo. Dit beløb: " + user.getBalance() +
+                            " kr. Ordretotal: " + totalPrice + " kr.");
+                }
+                double newUserBalance = user.getBalance() - totalPrice;
+                userMapper.updateUserBalance(userId, newUserBalance);
+            }
+
+            userDTO = buildUserDTO(user);
+        }
 
         Order order = new Order(
                 0,
@@ -46,14 +64,8 @@ public class OrderServiceImpl implements OrderService
                 totalPrice
         );
 
-        if(payNow)
-        {
-            double newUserBalance = user.getBalance() - totalPrice;
-            userMapper.updateUserBalance(userId, newUserBalance);
-        }
         return orderMapper.createOrder(order);
-        }
-
+    }
 
     @Override
     public List<Order> getAllUserOrders(UserDTO userDTO) throws DatabaseException
@@ -115,67 +127,6 @@ public class OrderServiceImpl implements OrderService
         return orderMapper.getAllOrders().stream()
                 .sorted(Comparator.comparing(Order::getOrderDate).reversed())
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public double getTotalRevenue(int adminId) throws DatabaseException
-    {
-        validateUserIsAdmin(adminId);
-        List<Order> orders = orderMapper.getAllOrders();
-
-        if (orders == null)
-        {
-            return 0.0;
-        }
-        return orders.stream()
-                .filter(Order::isPaid)
-                .mapToDouble(Order::getTotalPrice)
-                .sum();
-    }
-
-    @Override
-    public double getMonthlyRevenue(int adminId, YearMonth month) throws DatabaseException
-    {
-        validateUserIsAdmin(adminId);
-        List<Order> orders = orderMapper.getAllOrders();
-
-        if (orders == null)
-        {
-            return 0.0;
-        }
-
-        return orders.stream()
-                .filter(Order::isPaid)
-                .filter(order -> YearMonth.from(order.getOrderDate()).equals(month))
-                .mapToDouble(Order::getTotalPrice)
-                .sum();
-    }
-
-    @Override
-    public double getAverageOrderValue(int adminId) throws DatabaseException
-    {
-        validateUserIsAdmin(adminId);
-        List<Order> orders = orderMapper.getAllOrders();
-
-        if (orders == null || orders.isEmpty())
-        {
-            return 0.0;
-        }
-
-        List<Order> paidOrders = orders.stream()
-                .filter(Order::isPaid)
-                .collect(Collectors.toList());
-
-        if (paidOrders.isEmpty())
-        {
-            return 0.0;
-        }
-
-        double totalRevenue = paidOrders.stream()
-                .mapToDouble(Order::getTotalPrice)
-                .sum();
-
-        return totalRevenue / paidOrders.size();
     }
 
     private List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException

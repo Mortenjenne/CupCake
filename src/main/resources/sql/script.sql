@@ -1,12 +1,4 @@
--- =========================================================
---  CUPCAKE DATABASE INITIALIZATION & TEST DATA SCRIPT
--- =========================================================
-
 BEGIN;
-
--- =========================================================
--- TABLE CREATION
--- =========================================================
 
 CREATE TABLE IF NOT EXISTS public.zip_codes
 (
@@ -18,29 +10,21 @@ CREATE TABLE IF NOT EXISTS public.zip_codes
 CREATE TABLE IF NOT EXISTS public.users
 (
     user_id serial NOT NULL,
-    firstname character varying,
-    lastname character varying,
+    firstname character varying NOT NULL,
+    lastname character varying NOT NULL,
     email character varying NOT NULL,
-    password character varying NOT NULL,
-    phonenumber integer,
-    street character varying,
-    zip_code integer,
+    password character varying NULL,
+    phonenumber integer NOT NULL,
+    street character varying NULL,
+    zip_code integer NULL,
     balance double precision NOT NULL DEFAULT 0,
-    admin boolean,
+    admin boolean NOT NULL DEFAULT false,
+    is_guest boolean NOT NULL DEFAULT false,
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
     PRIMARY KEY (user_id),
     UNIQUE (email),
     FOREIGN KEY (zip_code) REFERENCES zip_codes(zip_code)
     ON DELETE NO ACTION ON UPDATE CASCADE
-    );
-
-CREATE TABLE IF NOT EXISTS public.orders
-(
-    order_id serial NOT NULL,
-    order_date timestamp with time zone NOT NULL DEFAULT now(),
-    pickup_date timestamp with time zone,
-                              paid boolean NOT NULL,
-                              price_total double precision,
-                              PRIMARY KEY (order_id)
     );
 
 CREATE TABLE IF NOT EXISTS public.bottoms
@@ -61,6 +45,20 @@ CREATE TABLE IF NOT EXISTS public.toppings
     CONSTRAINT topping_flavour_unique UNIQUE (topping_flavour)
     );
 
+
+CREATE TABLE IF NOT EXISTS public.orders
+(
+    order_id serial NOT NULL,
+    user_id integer NOT NULL,
+    order_date timestamp with time zone NOT NULL DEFAULT now(),
+    pickup_date timestamp with time zone NOT NULL,
+                              paid boolean NOT NULL DEFAULT false,
+                              price_total double precision NOT NULL,
+                              PRIMARY KEY (order_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+                          ON DELETE CASCADE ON UPDATE CASCADE
+    );
+
 CREATE TABLE IF NOT EXISTS public.orderlines
 (
     orderline_id serial NOT NULL,
@@ -78,20 +76,7 @@ CREATE TABLE IF NOT EXISTS public.orderlines
     ON DELETE NO ACTION ON UPDATE CASCADE
     );
 
-CREATE TABLE IF NOT EXISTS public.users_orders
-(
-    user_id integer NOT NULL,
-    order_id integer NOT NULL,
-    PRIMARY KEY (user_id, order_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
-    ON DELETE CASCADE ON UPDATE CASCADE
-    );
 
--- =========================================================
--- DATA POPULATION
--- =========================================================
 
 INSERT INTO public.zip_codes (zip_code, city) VALUES
                                                   (1000, 'København'),
@@ -135,10 +120,16 @@ INSERT INTO public.users (firstname, lastname, email, password, phonenumber, str
                                                                                                                    ('Maja', 'Christiansen', 'maja.christiansen@mail.dk', '$2a$12$ZW19PU.VHt8mtlKK/I5nJ.lst/9Ji5AH/u4fhw1qge8IGBGzbW8c.', '30487766', 'Søndergade 8', 3740, 180.00, FALSE)
     ON CONFLICT (email) DO NOTHING;
 
-INSERT INTO public.orders (order_date, pickup_date, paid, price_total) VALUES
-                                                                           (now(), now() + interval '2 day', TRUE, 22.00),
-                                                                           (now(), now() + interval '3 day', FALSE, 12.00),
-                                                                           (now(), now() + interval '1 day', TRUE, 27.00);
+
+INSERT INTO public.users (firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin, is_guest) VALUES
+    ('Lars', 'Nielsen', 'lars.nielsen@guest.dk', NULL, 12345678, 'Storegade 10', 3700, 0, FALSE, TRUE)
+    ON CONFLICT (email) DO NOTHING;
+
+
+INSERT INTO public.orders (user_id, order_date, pickup_date, paid, price_total) VALUES
+                                                                                    (2, now(), now() + interval '2 day', TRUE, 22.00),  -- Regular user
+                                                                                    (4, now(), now() + interval '3 day', FALSE, 12.00), -- Guest user
+                                                                                    (3, now(), now() + interval '1 day', TRUE, 27.00);  -- Regular user
 
 INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity, orderline_price) VALUES
                                                                                                (1, 1, 1, 1, 10.00),
@@ -147,11 +138,6 @@ INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity, orderl
                                                                                                (3, 6, 5, 1, 14.00),
                                                                                                (3, 3, 1, 1, 10.00),
                                                                                                (3, 9, 2, 1, 14.00);
-
-INSERT INTO public.users_orders (user_id, order_id) VALUES
-                                                        (2, 1),
-                                                        (3, 2),
-                                                        (3, 3);
 
 CREATE SCHEMA IF NOT EXISTS test;
 

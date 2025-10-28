@@ -13,7 +13,7 @@
 
 <main>
 
-    <section class="index-body window-styling">
+    <section class="index-body">
         <section class="welcome">
             <h1>Velkommen til Olsker Cupcakes</h1>
             <h2>Øens bedste cupcakes</h2>
@@ -28,42 +28,52 @@
                  alt="Cupcake Bottom"/>
         </section>
 
+        <h4 class="title">Vælg og bestil her</h4>
+
         <section class="cupcake-creator">
-            <h4>Vælg og bestil her</h4>
-
             <form method="post" th:action="@{/cart/add}">
-                <select name="bottomId" id="bottomSelect" required>
-                    <option value="">Vælg Bund</option>
-                    <option th:each="b : ${bottoms}"
-                            th:value="${b.bottomId}"
-                            th:text="${b.name + ' + ' + b.price + 'kr'}"
-                            th:attr="data-img=@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${b.slug})}">
-                    </option>
-                </select>
-                <select name="toppingId" id="toppingSelect" required>
-                    <option value="">Vælg Topping</option>
-                    <option th:each="t : ${toppings}"
-                            th:value="${t.toppingId}"
-                            th:text="${t.name + ' + ' + t.price + 'kr'}"
-                            th:attr="data-img=@{/images/cupcakes/toppings/topping_{slug}.png(slug=${t.slug})}">
-                    </option>
 
-                </select>
+                <div class="cupcake-creator-select">
+                    <select id="bottomSelect" name="bottomId" required>
+                        <option value="" disabled selected>Vælg Bund</option>
+                        <option th:each="b : ${bottoms}"
+                                th:value="${b.bottomId}"
+                                th:text="${b.name + ' • ' + b.price + ' kr'}"
+                                th:attr="data-img=@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${b.slug})}">
+                        </option>
+                    </select>
+                </div>
 
-                <input type="number" name="cupcakeQuantity" min="1" placeholder="1" th:value="${cupcakeQuantity}"
+
+                <div class="cupcake-creator-select">
+                    <select id="toppingSelect" name="toppingId" required>
+                        <option value="" disabled selected>Vælg Topping</option>
+                        <option th:each="t : ${toppings}"
+                                th:value="${t.toppingId}"
+                                th:text="${t.name + ' • ' + t.price + ' kr'}"
+                                th:attr="data-img=@{/images/cupcakes/toppings/topping_{slug}.png(slug=${t.slug})}">
+                        </option>
+                    </select>
+                </div>
+
+                <input class="cupcake-creator-input" type="number" name="cupcakeQuantity" min="1" placeholder="Antal"
+                       th:value="${cupcakeQuantity}"
                        required>
 
-                <button type="submit">Tilføj til kurv</button>
-                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
-                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
+                <button class="add-to-basket-index" type="submit">Tilføj til kurv</button>
 
             </form>
-
+            <div th:if="${succesLabel != null}" class="title">
+                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
+                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
+            </div>
+            <div th:unless="${succesLabel != null}">
+                <br>
+            </div>
         </section>
 
-        <div class="index-basket-button">
-            <a href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
-        </div>
+        <a class="index-basket-button" href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
+
 
     </section>
 

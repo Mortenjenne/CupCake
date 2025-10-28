@@ -52,6 +52,7 @@ public class ShoppingController
         var model = new HashMap<String, Object>();
         model.put("cart", cart);
         model.put("basketTotalPrice", shoppingService.getTotalOrderPrice(cart));
+        model.put("basketTotalQuantity", shoppingService.getTotalOrderQuantity(cart));
 
         ctx.render("basket.html", model);
     }
@@ -69,8 +70,9 @@ public class ShoppingController
         var model = new HashMap<String, Object>();
         model.put("cart", cart);
         model.put("basketTotalPrice", shoppingService.getTotalOrderPrice(cart));
+        model.put("basketTotalQuantity", shoppingService.getTotalOrderQuantity(cart));
 
-        ctx.render("checkout.html", model);
+        ctx.render("checkout-payment.html", model);
     }
 
     private ShoppingCart getOrCreateCart(Context ctx)

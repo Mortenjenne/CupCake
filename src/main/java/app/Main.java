@@ -2,10 +2,7 @@ package app;
 
 import app.config.ThymeleafConfig;
 
-import app.controllers.AdminController;
-import app.controllers.OrderController;
-import app.controllers.ShoppingController;
-import app.controllers.UserController;
+import app.controllers.*;
 import app.persistence.*;
 import app.services.*;
 import io.javalin.Javalin;//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -50,11 +47,13 @@ public class Main {
 
         OrderController orderController = new OrderController(orderService);
         AdminController adminController = new AdminController(userService);
+        CheckoutController checkoutController = new CheckoutController(orderService, userService);
 
         shoppingController.addRoutes(app);
         userController.addRoutes(app);
         orderController.addRoutes(app);
         adminController.addRoutes(app);
+        checkoutController.addRoutes(app);
 
     }
 }

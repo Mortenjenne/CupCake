@@ -27,8 +27,8 @@ class OrderMapperTest
 
     Bottom bottomChocolate = new Bottom(1, "Chocolate", 5.0);
     Topping toppingChocolate = new Topping(1, "Chocolate", 5.0);
-    Bottom bottomPistacio = new Bottom(4, "Vanila", 6.0);
-    Topping toppingStrawberry = new Topping(4, "Vanila", 6.0);
+    Bottom bottomPistacio = new Bottom(4, "Pistacio", 6.0);
+    Topping toppingStrawberry = new Topping(4, "Strawberry", 6.0);
 
     Cupcake cupcakeChocolate = new Cupcake(bottomChocolate, toppingChocolate);
     Cupcake cupcakePistacioStrawberry = new Cupcake(bottomPistacio, toppingStrawberry);
@@ -46,8 +46,7 @@ class OrderMapperTest
             {
                 try (Statement stmt = testConnection.createStatement())
                 {
-
-                    stmt.execute("DROP TABLE IF EXISTS test.users_orders CASCADE");
+                    // DROP tables in correct order
                     stmt.execute("DROP TABLE IF EXISTS test.orderlines CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orders CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.users CASCADE");
@@ -55,40 +54,84 @@ class OrderMapperTest
                     stmt.execute("DROP TABLE IF EXISTS test.bottoms CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.toppings CASCADE");
 
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.users_user_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.orders_order_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.orderlines_orderline_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.bottoms_bottom_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.toppings_topping_id_seq CASCADE");
+                    // CREATE tables with EXPLICIT structure
+                    stmt.execute("""
+                        CREATE TABLE test.zip_codes (
+                            zip_code integer PRIMARY KEY,
+                            city varchar NOT NULL
+                        )
+                    """);
 
-                    stmt.execute("CREATE TABLE test.zip_codes AS (SELECT * FROM public.zip_codes) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.users AS (SELECT * FROM public.users) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.orders AS (SELECT * FROM public.orders) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.bottoms AS (SELECT * FROM public.bottoms) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.toppings AS (SELECT * FROM public.toppings) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.orderlines AS (SELECT * FROM public.orderlines) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.users_orders AS (SELECT * FROM public.users_orders) WITH NO DATA");
+                    stmt.execute("""
+                        CREATE TABLE test.users (
+                            user_id serial PRIMARY KEY,
+                            firstname varchar NOT NULL,
+                            lastname varchar NOT NULL,
+                            email varchar NOT NULL UNIQUE,
+                            password varchar,
+                            phonenumber integer NOT NULL,
+                            street varchar,
+                            zip_code integer,
+                            balance double precision NOT NULL DEFAULT 0,
+                            admin boolean NOT NULL DEFAULT false,
+                            is_guest boolean NOT NULL DEFAULT false,
+                            created_at timestamp with time zone NOT NULL DEFAULT now(),
+                            FOREIGN KEY (zip_code) REFERENCES test.zip_codes(zip_code)
+                                ON DELETE NO ACTION ON UPDATE CASCADE
+                        )
+                    """);
 
-                    stmt.execute("CREATE SEQUENCE test.users_user_id_seq");
-                    stmt.execute("ALTER TABLE test.users ALTER COLUMN user_id SET DEFAULT nextval('test.users_user_id_seq')");
+                    stmt.execute("""
+                        CREATE TABLE test.orders (
+                            order_id serial PRIMARY KEY,
+                            user_id integer NOT NULL,
+                            order_date timestamp with time zone NOT NULL DEFAULT now(),
+                            pickup_date timestamp with time zone NOT NULL,
+                            paid boolean NOT NULL DEFAULT false,
+                            price_total double precision NOT NULL,
+                            FOREIGN KEY (user_id) REFERENCES test.users(user_id)
+                                ON DELETE CASCADE ON UPDATE CASCADE
+                        )
+                    """);
 
-                    stmt.execute("CREATE SEQUENCE test.orders_order_id_seq");
-                    stmt.execute("ALTER TABLE test.orders ALTER COLUMN order_id SET DEFAULT nextval('test.orders_order_id_seq')");
+                    stmt.execute("""
+                        CREATE TABLE test.bottoms (
+                            bottom_id serial PRIMARY KEY,
+                            bottom_flavour varchar NOT NULL UNIQUE,
+                            bottom_price double precision NOT NULL
+                        )
+                    """);
 
-                    stmt.execute("CREATE SEQUENCE test.orderlines_orderline_id_seq");
-                    stmt.execute("ALTER TABLE test.orderlines ALTER COLUMN orderline_id SET DEFAULT nextval('test.orderlines_orderline_id_seq')");
+                    stmt.execute("""
+                        CREATE TABLE test.toppings (
+                            topping_id serial PRIMARY KEY,
+                            topping_flavour varchar NOT NULL UNIQUE,
+                            topping_price double precision NOT NULL
+                        )
+                    """);
 
-                    stmt.execute("CREATE SEQUENCE test.bottoms_bottom_id_seq");
-                    stmt.execute("ALTER TABLE test.bottoms ALTER COLUMN bottom_id SET DEFAULT nextval('test.bottoms_bottom_id_seq')");
-
-                    stmt.execute("CREATE SEQUENCE test.toppings_topping_id_seq");
-                    stmt.execute("ALTER TABLE test.toppings ALTER COLUMN topping_id SET DEFAULT nextval('test.toppings_topping_id_seq')");
+                    stmt.execute("""
+                        CREATE TABLE test.orderlines (
+                            orderline_id serial PRIMARY KEY,
+                            order_id integer NOT NULL,
+                            topping_id integer NOT NULL,
+                            bottom_id integer NOT NULL,
+                            quantity integer NOT NULL,
+                            orderline_price double precision NOT NULL,
+                            FOREIGN KEY (order_id) REFERENCES test.orders(order_id)
+                                ON DELETE CASCADE ON UPDATE CASCADE,
+                            FOREIGN KEY (topping_id) REFERENCES test.toppings(topping_id)
+                                ON DELETE NO ACTION ON UPDATE CASCADE,
+                            FOREIGN KEY (bottom_id) REFERENCES test.bottoms(bottom_id)
+                                ON DELETE NO ACTION ON UPDATE CASCADE
+                        )
+                    """);
                 }
             }
             catch (SQLException e)
             {
-                System.out.println(e.getMessage());
-                fail("Database connection failed");
+                e.printStackTrace();
+                fail("Database connection failed: " + e.getMessage());
             }
         }
         catch (Exception e)
@@ -105,8 +148,7 @@ class OrderMapperTest
         {
             try (Statement stmt = testConnection.createStatement())
             {
-
-                stmt.execute("DELETE FROM test.users_orders");
+                // Clear all data in correct order
                 stmt.execute("DELETE FROM test.orderlines");
                 stmt.execute("DELETE FROM test.orders");
                 stmt.execute("DELETE FROM test.users");
@@ -114,23 +156,24 @@ class OrderMapperTest
                 stmt.execute("DELETE FROM test.bottoms");
                 stmt.execute("DELETE FROM test.toppings");
 
+                // Reset sequences
                 stmt.execute("SELECT setval('test.users_user_id_seq', 1)");
                 stmt.execute("SELECT setval('test.orders_order_id_seq', 1)");
                 stmt.execute("SELECT setval('test.orderlines_orderline_id_seq', 1)");
                 stmt.execute("SELECT setval('test.bottoms_bottom_id_seq', 1)");
                 stmt.execute("SELECT setval('test.toppings_topping_id_seq', 1)");
 
-
+                // Insert test data
                 stmt.execute("INSERT INTO test.zip_codes (zip_code, city) VALUES " +
                         "(1000, 'Copenhagen'), " +
                         "(2000, 'Frederiksberg'), " +
                         "(2100, 'København Ø'), " +
                         "(8000, 'Aarhus C')");
 
-                stmt.execute("INSERT INTO test.users (user_id, firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) VALUES " +
-                        "(1, 'Hans', 'Hansen', 'hans@test.dk', 'password123', 12345678, 'Testvej 1', 2000, 100.0, false), " +
-                        "(2, 'Jens', 'Jensen', 'jens@test.dk', 'password456', 87654321, 'Prøvevej 2', 2100, 200.0, false), " +
-                        "(3, 'Admin', 'Adminson', 'admin@test.dk', 'admin123', 11111111, 'Adminvej 3', 8000, 0.0, true)");
+                stmt.execute("INSERT INTO test.users (user_id, firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin, is_guest) VALUES " +
+                        "(1, 'Hans', 'Hansen', 'hans@test.dk', 'password123', 12345678, 'Testvej 1', 2000, 100.0, false, false), " +
+                        "(2, 'Jens', 'Jensen', 'jens@test.dk', 'password456', 87654321, 'Prøvevej 2', 2100, 200.0, false, false), " +
+                        "(3, 'Admin', 'Adminson', 'admin@test.dk', 'admin123', 11111111, 'Adminvej 3', 8000, 0.0, true, false)");
 
                 stmt.execute("INSERT INTO test.bottoms (bottom_id, bottom_flavour, bottom_price) VALUES " +
                         "(1, 'Chocolate', 5.00), " +
@@ -144,7 +187,7 @@ class OrderMapperTest
                         "(3, 'Raspberry', 5.00), " +
                         "(4, 'Strawberry', 6.00)");
 
-
+                // Sync sequences after manual inserts
                 stmt.execute("SELECT setval('test.users_user_id_seq', COALESCE((SELECT MAX(user_id)+1 FROM test.users), 1), false)");
                 stmt.execute("SELECT setval('test.bottoms_bottom_id_seq', COALESCE((SELECT MAX(bottom_id)+1 FROM test.bottoms), 1), false)");
                 stmt.execute("SELECT setval('test.toppings_topping_id_seq', COALESCE((SELECT MAX(topping_id)+1 FROM test.toppings), 1), false)");
@@ -152,8 +195,8 @@ class OrderMapperTest
         }
         catch (SQLException e)
         {
-            System.out.println(e.getMessage());
-            fail("Database setup failed");
+            e.printStackTrace();
+            fail("Database setup failed: " + e.getMessage());
         }
     }
 
@@ -191,9 +234,8 @@ class OrderMapperTest
         UserDTO user = new UserDTO(2, "Jens", "Jensen", "jens@test.dk", 87654321, "Prøvevej 2", 2100, "København Ø", 200.0);
 
         List<OrderLine> orderLines = new ArrayList<>();
-
         orderLines.add(new OrderLine(cupcakeChocolate, 2));
-        orderLines.add(new OrderLine(cupcakePistacioStrawberry,4));
+        orderLines.add(new OrderLine(cupcakePistacioStrawberry, 4));
 
         Order order = new Order(0, user, LocalDateTime.now(), LocalDateTime.now().plusDays(1), false, orderLines, 68.0);
 
@@ -209,9 +251,8 @@ class OrderMapperTest
     {
         UserDTO user = new UserDTO(1, "Hans", "Hansen", "hans@test.dk", 12345678, "Testvej 1", 2000, "Frederiksberg", 100.0);
         List<OrderLine> orderLines = new ArrayList<>();
-
-        orderLines.add(new OrderLine(cupcakeChocolate,2));
-        orderLines.add(new OrderLine(cupcakePistacioStrawberry,3));
+        orderLines.add(new OrderLine(cupcakeChocolate, 2));
+        orderLines.add(new OrderLine(cupcakePistacioStrawberry, 3));
 
         Order order = new Order(0, user, LocalDateTime.now(), LocalDateTime.now().plusDays(2), true, orderLines, 56.00);
         Order createdOrder = orderMapper.createOrder(order);
@@ -238,9 +279,8 @@ class OrderMapperTest
     {
         UserDTO user = new UserDTO(1, "Hans", "Hansen", "hans@test.dk", 12345678, "Testvej 1", 2000, "Frederiksberg", 100.0);
         List<OrderLine> orderLines = new ArrayList<>();
-
-        orderLines.add(new OrderLine(cupcakeChocolate,2));
-        orderLines.add(new OrderLine(cupcakePistacioStrawberry,3));
+        orderLines.add(new OrderLine(cupcakeChocolate, 2));
+        orderLines.add(new OrderLine(cupcakePistacioStrawberry, 3));
 
         Order order = new Order(0, user, LocalDateTime.now(), LocalDateTime.now().plusDays(2), false, orderLines, 54.00);
         Order createdOrder = orderMapper.createOrder(order);
@@ -256,11 +296,10 @@ class OrderMapperTest
 
         List<OrderLine> orderLines1 = new ArrayList<>();
         List<OrderLine> orderLines2 = new ArrayList<>();
-
-        orderLines1.add(new OrderLine(cupcakeChocolate,2));
-        orderLines1.add(new OrderLine(cupcakePistacioStrawberry,3));
-        orderLines2.add(new OrderLine(cupcakeChocolate,1));
-        orderLines2.add(new OrderLine(cupcakePistacioStrawberry,1));
+        orderLines1.add(new OrderLine(cupcakeChocolate, 2));
+        orderLines1.add(new OrderLine(cupcakePistacioStrawberry, 3));
+        orderLines2.add(new OrderLine(cupcakeChocolate, 1));
+        orderLines2.add(new OrderLine(cupcakePistacioStrawberry, 1));
 
         Order order1 = new Order(0, user, LocalDateTime.now(), LocalDateTime.now().plusDays(1), false, orderLines1, 56.0);
         Order order2 = new Order(1, user, LocalDateTime.now(), LocalDateTime.now().plusDays(1), false, orderLines2, 22.0);
@@ -289,24 +328,22 @@ class OrderMapperTest
     @Test
     void testGetAllOrders() throws DatabaseException
     {
-        // Create orders for different users
         UserDTO user = new UserDTO(1, "Hans", "Hansen", "hans@test.dk", 12345678, "Testvej 1", 2000, "Frederiksberg", 100.0);
         UserDTO user2 = new UserDTO(2, "Jens", "Jensen", "jens@test.dk", 87654321, "Prøvevej 2", 2100, "København Ø", 200.0);
 
         List<OrderLine> orderLines1 = new ArrayList<>();
         List<OrderLine> orderLines2 = new ArrayList<>();
         List<OrderLine> orderLines3 = new ArrayList<>();
-
-
-        orderLines1.add(new OrderLine(cupcakeChocolate,2));
-        orderLines1.add(new OrderLine(cupcakePistacioStrawberry,3));
-        orderLines2.add(new OrderLine(cupcakeChocolate,1));
-        orderLines2.add(new OrderLine(cupcakePistacioStrawberry,1));
-        orderLines3.add(new OrderLine(cupcakeChocolate,1));
+        orderLines1.add(new OrderLine(cupcakeChocolate, 2));
+        orderLines1.add(new OrderLine(cupcakePistacioStrawberry, 3));
+        orderLines2.add(new OrderLine(cupcakeChocolate, 1));
+        orderLines2.add(new OrderLine(cupcakePistacioStrawberry, 1));
+        orderLines3.add(new OrderLine(cupcakeChocolate, 1));
 
         Order order1 = new Order(0, user, LocalDateTime.now(), LocalDateTime.now().plusDays(1), false, orderLines1, 56.0);
         Order order2 = new Order(1, user, LocalDateTime.now(), LocalDateTime.now().plusDays(1), false, orderLines2, 22.0);
-        Order order3 = new Order(2,user2, LocalDateTime.now(), LocalDateTime.now().plusDays(1), false, orderLines3, 10.0);
+        Order order3 = new Order(2, user2, LocalDateTime.now(), LocalDateTime.now().plusDays(1), false, orderLines3, 10.0);
+
         orderMapper.createOrder(order1);
         orderMapper.createOrder(order2);
         orderMapper.createOrder(order3);
@@ -322,9 +359,8 @@ class OrderMapperTest
     {
         UserDTO user = new UserDTO(1, "Hans", "Hansen", "hans@test.dk", 12345678, "Testvej 1", 2000, "Frederiksberg", 100.0);
         List<OrderLine> orderLines = new ArrayList<>();
-
-        orderLines.add(new OrderLine(cupcakeChocolate,2));
-        orderLines.add(new OrderLine(cupcakePistacioStrawberry,3));
+        orderLines.add(new OrderLine(cupcakeChocolate, 2));
+        orderLines.add(new OrderLine(cupcakePistacioStrawberry, 3));
 
         Order order = new Order(0, user, LocalDateTime.now(), LocalDateTime.now().plusDays(2), false, orderLines, 54.00);
         Order createdOrder = orderMapper.createOrder(order);
@@ -349,9 +385,8 @@ class OrderMapperTest
     {
         UserDTO user = new UserDTO(1, "Hans", "Hansen", "hans@test.dk", 12345678, "Testvej 1", 2000, "Frederiksberg", 100.0);
         List<OrderLine> orderLines = new ArrayList<>();
-
-        orderLines.add(new OrderLine(cupcakeChocolate,2));
-        orderLines.add(new OrderLine(cupcakePistacioStrawberry,3));
+        orderLines.add(new OrderLine(cupcakeChocolate, 2));
+        orderLines.add(new OrderLine(cupcakePistacioStrawberry, 3));
 
         Order order = new Order(0, user, LocalDateTime.now(), LocalDateTime.now().plusDays(2), false, orderLines, 54.00);
         Order createdOrder = orderMapper.createOrder(order);

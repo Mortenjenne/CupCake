@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Betaling - Olsker Cupcakes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <section>
+        <h2>Gennemse og betal</h2>
+        <p class="checkout-step">Trin 3 af 3</p>
+
+        <div class="customer-info">
+            <h3>Kontaktinformation</h3>
+            <a th:href="@{/checkout/contact-info}">Ret</a>
+
+            <p><strong><span th:text="${session.checkoutUser.firstName} + ' ' + ${session.checkoutUser.lastName}"></span></strong></p>
+            <p><span th:text="${session.checkoutUser.phoneNumber}"></span></p>
+            <p><span th:text="${session.checkoutUser.email}"></span></p>
+
+            <div th:if="${session.deliveryMethod == 'delivery'}">
+                <p><span th:text="${session.checkoutUser.street}"></span></p>
+                <p><span th:text="${session.checkoutUser.zipCode} + ' ' + ${session.checkoutUser.city}"></span></p>
+            </div>
+        </div>
+
+        <div class="delivery-info">
+            <h3>Levering</h3>
+            <a th:href="@{/checkout/delivery}">Ret</a>
+
+            <p><strong>Leveringsmetode:</strong>
+                <span th:if="${session.deliveryMethod == 'pickup'}">Afhent i butik (0 kr.)</span>
+                <span th:if="${session.deliveryMethod == 'delivery'}">Hjemmelevering med Olsker Express (29 kr.)</span>
+            </p>
+
+            <p><strong>Dato:</strong>
+                <span th:text="${#temporals.format(session.pickUp, 'dd-MM-yyyy')}"></span>
+            </p>
+
+            <p><strong>Tidspunkt:</strong>
+                <span th:text="${#temporals.format(session.pickUp, 'HH:mm')}"></span>
+            </p>
+        </div>
+
+        <div class="payment">
+            <form th:action="@{/checkout/payment}" method="post">
+                <h3>Betaling</h3>
+
+                <div class="payment-method">
+                    <h4>Vælg betalingsmetode:</h4>
+
+                    <div th:if="${session.checkoutUser.userId != 0}" class="payment-option">
+                        <input type="radio" id="pay-now" name="paymentMethod" value="pay-now" required>
+                        <label for="pay-now">
+                            <strong>Betal nu med din konto</strong>
+                            <p>Din nuværende saldo: <span th:text="${session.checkoutUser.balance}"></span> kr.</p>
+                            <p>Total pris: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
+                            <p>Saldo efter køb: <span th:text="${userBalanceAfterPurchase}"></span> kr.</p>
+                        </label>
+                    </div>
+
+                    <div class="payment-option">
+                        <input type="radio" id="pay-pickup" name="paymentMethod" value="pay-pickup" required checked>
+                        <label for="pay-pickup">
+                            <strong>Betal ved afhentning i butik</strong>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <a th:href="@{/checkout/contact-info}" class="button-secondary">Tilbage</a>
+                    <button type="submit">Gennemfør bestilling</button>
+                </div>
+
+                <p id="error-message" class="error"
+                   th:if="${errorMessage != null}"
+                   th:text="${errorMessage}">
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <aside class="summary-info">
+        <h3>Din bestilling</h3>
+        <div th:replace="fragments :: orderLinePostCard"></div>
+        <div class="summary-total">
+            <p><strong>Subtotal:</strong> <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
+            <p th:if="${session.deliveryMethod == 'delivery'}"><strong>Levering:</strong> 29 kr.</p>
+            <hr>
+            <p class="total-price">
+                <strong>Total:</strong>
+                <span th:if="${session.deliveryMethod == 'pickup'}" th:text="${session.cart.getTotalOrderPrice()}"></span>
+                <span th:if="${session.deliveryMethod == 'delivery'}" th:text="${session.cart.getTotalOrderPrice()}"></span>
+                kr.
+            </p>
+        </div>
+    </aside>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>
