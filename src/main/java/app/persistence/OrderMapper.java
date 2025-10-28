@@ -66,15 +66,18 @@ public class OrderMapper
         }
     }
 
+    // TODO
     public Order getOrderByOrderId(int orderId, int userId) throws DatabaseException
     {
-        String sql = "SELECT o.order_id, o.user_id, o.order_date, o.pickup_date, o.paid, o.price_total, " +
-                "u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, " +
-                "u.admin, u.is_guest, z.city " +
-                "FROM orders o " +
-                "JOIN users u ON o.user_id = u.user_id " +
-                "JOIN zip_codes z ON u.zip_code = z.zip_code " +
-                "WHERE o.order_id = ? AND o.user_id = ?";
+        String sql = """
+                SELECT o.order_id, o.user_id, o.order_date, o.pickup_date, o.paid, o.price_total,
+                                u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance,
+                                u.admin, u.is_guest, z.city
+                                FROM orders o
+                                JOIN users u ON o.user_id = u.user_id
+                                JOIN zip_codes z ON u.zip_code = z.zip_code
+                                WHERE o.order_id = ? AND o.user_id = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))

@@ -5,6 +5,7 @@ import app.entities.Order;
 import app.entities.OrderLine;
 import app.entities.User;
 import app.exceptions.DatabaseException;
+import app.persistence.OrderLineMapper;
 import app.persistence.OrderMapper;
 import app.persistence.UserMapper;
 import java.time.LocalDateTime;
@@ -16,11 +17,13 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService
 {
     private OrderMapper orderMapper;
+    private OrderLineMapper orderLineMapper;
     private UserMapper userMapper;
 
-    public OrderServiceImpl(OrderMapper orderMapper, UserMapper userMapper)
+    public OrderServiceImpl(OrderMapper orderMapper, OrderLineMapper orderLineMapper, UserMapper userMapper)
     {
         this.orderMapper = orderMapper;
+        this.orderLineMapper = orderLineMapper;
         this.userMapper = userMapper;
     }
 
@@ -127,6 +130,18 @@ public class OrderServiceImpl implements OrderService
         return orderMapper.getAllOrders().stream()
                 .sorted(Comparator.comparing(Order::getOrderDate).reversed())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Order getOrderById(int orderId, int userId) throws DatabaseException
+    {
+        return orderMapper.getOrderByOrderId(orderId, userId);
+    }
+
+    @Override
+    public List<OrderLine> getAllOrderLinesByOrderId(int orderId) throws DatabaseException
+    {
+        return orderLineMapper.getOrderLinesByOrderId(orderId);
     }
 
     private List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException

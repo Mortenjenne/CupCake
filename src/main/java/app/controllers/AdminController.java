@@ -1,8 +1,11 @@
 package app.controllers;
 
 import app.dto.UserDTO;
+import app.entities.Order;
+import app.entities.OrderLine;
 import app.entities.User;
 import app.exceptions.DatabaseException;
+import app.services.OrderService;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -15,22 +18,51 @@ import java.util.List;
 public class AdminController
 {
     private UserService userService;
+    private OrderService orderService;
 
-    public AdminController(UserService userService)
+    public AdminController(UserService userService, OrderService orderService)
     {
         this.userService = userService;
+        this.orderService = orderService;
     }
 
     public void addRoutes(Javalin app)
     {
         app.get("/customers", ctx -> showCustomerPage(ctx));
         app.get("/customers/edit/{id}", ctx -> showEditCustomerPage(ctx));
-        app.get("/customers/search", ctx -> handleSeachQuery(ctx));
+        app.get("/customers/search", ctx -> handleSearchQuery(ctx));
+        app.get("/orders/details/{id}", ctx -> showOrderDetails(ctx));
 
         app.post("/customers/update-balance", ctx -> handleEditCustomerBalance(ctx));
+
     }
 
-    private void handleSeachQuery(Context ctx)
+    private void showOrderDetails(Context ctx)
+    {
+        String orderIdStr = ctx.pathParam("id");
+
+        try
+        {
+            int orderId = Integer.parseInt(orderIdStr);
+            List<OrderLine> orderLines = orderService.getAllOrderLinesByOrderId(orderId);
+
+            ctx.attribute("id", orderId);
+            ctx.attribute("orderLines", orderLines);
+            ctx.render("order-details");
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke parse tallet");
+            ctx.redirect("/orders");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.redirect("/orders");
+        }
+    }
+
+    private void handleSearchQuery(Context ctx)
     {
         User currentUser = ctx.sessionAttribute("currentUser");
         validateCurrentUserIsAdmin(ctx, currentUser);
@@ -78,9 +110,10 @@ public class AdminController
             }
             ctx.render("customers.html");
 
-        }catch (DatabaseException e)
+        }
+        catch (DatabaseException e)
         {
-            ctx.attribute("errorMessage",e.getMessage());
+            ctx.attribute("errorMessage", e.getMessage());
             ctx.attribute("customers", new ArrayList<>());
             ctx.render("customers.html");
         }
@@ -203,4 +236,5 @@ public class AdminController
             return;
         }
     }
+    
 }

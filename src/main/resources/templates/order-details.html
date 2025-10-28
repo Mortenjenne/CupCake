@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Olsker Cupcakes - Ordredetaljer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <h1>Ordre detaljer</h1>
+    <h2>OrdreID: <span th:text="${id}"></span></h2>
+
+    <div th:fragment="orderLinePostCard">
+        <div th:each="orderLine : ${orderLines}" class="order-card">
+            <div class="order-card-img">
+                <div class="cupcake-summary">
+                    <img class="bottom-img-small"
+                         th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${orderLine.cupcake.bottom.slug})}"
+                         alt="bottom">
+                    <img class="topping-img-small"
+                         th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${orderLine.cupcake.topping.slug})}"
+                         alt="topping">
+                </div>
+            </div>
+            <div class="order-card-info">
+                <p>
+                    <span th:text="${orderLine.cupcake.bottom.name}"></span> +
+                    <span th:text="${orderLine.cupcake.topping.name}"></span>
+                </p>
+                <p>Antal: <span th:text="${orderLine.quantity}"></span></p>
+                <p>Pris: <span th:text="${orderLine.orderLinePrice}"></span> kr</p>
+            </div>
+        </div>
+    </div>
+
+    <p id="error-message" class="error"
+       th:if="${errorMessage != null}"
+       th:text="${errorMessage}">
+    </p>
+
+    <a href="orders.html" th:href="@{/orders}" class="nav-link">Tilbage</a>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>
