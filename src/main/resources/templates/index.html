@@ -60,18 +60,20 @@
                        th:value="${cupcakeQuantity}"
                        required>
 
-                <button type="submit">Tilføj til kurv</button>
+                <button class="add-to-basket-index" type="submit">Tilføj til kurv</button>
 
             </form>
-            <div class="title">
+            <div th:if="${succesLabel != null}" class="title">
                 <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
                 <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
             </div>
+            <div th:unless="${succesLabel != null}">
+                <br>
+            </div>
         </section>
 
-        <div class="index-basket-button">
-            <a href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
-        </div>
+        <a class="index-basket-button" href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
+
 
     </section>
 
