@@ -29,7 +29,6 @@ public class OrderMapper
             connection.setAutoCommit(false);
 
             int orderId = insertOrder(connection, order);
-            linkUserToOrder(connection, order.getUserDTO().getUserId(), orderId);
             orderLineMapper.insertOrderLines(connection, orderId, order.getOrderlines());
 
             connection.commit();
@@ -69,7 +68,13 @@ public class OrderMapper
 
     public Order getOrderByOrderId(int orderId, int userId) throws DatabaseException
     {
-        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total, u.user_id, u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, z.city FROM orders o JOIN users_orders uo ON o.order_id = uo.order_id JOIN users u ON uo.user_id = u.user_id JOIN zip_codes z ON u.zip_code = z.zip_code WHERE o.order_id = ? AND u.user_id = ?";
+        String sql = "SELECT o.order_id, o.user_id, o.order_date, o.pickup_date, o.paid, o.price_total, " +
+                "u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, " +
+                "u.admin, u.is_guest, z.city " +
+                "FROM orders o " +
+                "JOIN users u ON o.user_id = u.user_id " +
+                "JOIN zip_codes z ON u.zip_code = z.zip_code " +
+                "WHERE o.order_id = ? AND o.user_id = ?";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -81,18 +86,7 @@ public class OrderMapper
             {
                 if (rs.next())
                 {
-                    UserDTO user = new UserDTO(
-                            rs.getInt("user_id"),
-                            rs.getString("firstname"),
-                            rs.getString("lastname"),
-                            rs.getString("email"),
-                            rs.getInt("phonenumber"),
-                            rs.getString("street"),
-                            rs.getInt("zip_code"),
-                            rs.getString("city"),
-                            rs.getDouble("balance")
-                    );
-
+                    UserDTO user = buildUserDTOFromResultSet(rs);
                     List<OrderLine> orderLines = orderLineMapper.getOrderLinesByOrderId(orderId);
 
                     Order order = new Order(
@@ -122,7 +116,13 @@ public class OrderMapper
     {
         List<Order> orders = new ArrayList<>();
 
-        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total, u.user_id, u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, z.city FROM orders o JOIN users_orders uo ON o.order_id = uo.order_id JOIN users u ON uo.user_id = u.user_id JOIN zip_codes z ON u.zip_code = z.zip_code WHERE u.user_id = ?";
+        String sql = "SELECT o.order_id, o.user_id, o.order_date, o.pickup_date, o.paid, o.price_total, " +
+                "u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, " +
+                "u.admin, u.is_guest, z.city " +
+                "FROM orders o " +
+                "JOIN users u ON o.user_id = u.user_id " +
+                "JOIN zip_codes z ON u.zip_code = z.zip_code " +
+                "WHERE o.user_id = ?";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -134,7 +134,6 @@ public class OrderMapper
                 while (rs.next())
                 {
                     int orderId = rs.getInt("order_id");
-
                     List<OrderLine> orderLines = orderLineMapper.getOrderLinesByOrderId(orderId);
 
                     Order order = new Order(
@@ -161,30 +160,22 @@ public class OrderMapper
     {
         List<Order> orders = new ArrayList<>();
 
-        String sql = "SELECT o.order_id, o.order_date, o.pickup_date, o.paid, o.price_total, u.user_id, u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, z.city FROM orders o JOIN users_orders uo ON o.order_id = uo.order_id JOIN users u ON uo.user_id = u.user_id JOIN zip_codes z ON u.zip_code = z.zip_code";
+        String sql = "SELECT o.order_id, o.user_id, o.order_date, o.pickup_date, o.paid, o.price_total, " +
+                "u.firstname, u.lastname, u.email, u.phonenumber, u.street, u.zip_code, u.balance, " +
+                "u.admin, u.is_guest, z.city " +
+                "FROM orders o " +
+                "JOIN users u ON o.user_id = u.user_id " +
+                "JOIN zip_codes z ON u.zip_code = z.zip_code";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-
             try (ResultSet rs = ps.executeQuery())
             {
                 while (rs.next())
                 {
                     int orderId = rs.getInt("order_id");
-
-                    UserDTO userDTO = new UserDTO(
-                            rs.getInt("user_id"),
-                            rs.getString("firstname"),
-                            rs.getString("lastname"),
-                            rs.getString("email"),
-                            rs.getInt("phonenumber"),
-                            rs.getString("street"),
-                            rs.getInt("zip_code"),
-                            rs.getString("city"),
-                            rs.getDouble("balance")
-                    );
-
+                    UserDTO userDTO = buildUserDTOFromResultSet(rs);
                     List<OrderLine> orderLines = orderLineMapper.getOrderLinesByOrderId(orderId);
 
                     Order order = new Order(
@@ -256,14 +247,16 @@ public class OrderMapper
 
     private int insertOrder(Connection connection, Order order) throws SQLException
     {
-        String sql = "INSERT INTO orders (order_date, pickup_date, paid, price_total) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO orders (user_id, order_date, pickup_date, paid, price_total) " +
+                "VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
         {
-            ps.setTimestamp(1, Timestamp.valueOf(order.getOrderDate()));
-            ps.setTimestamp(2, Timestamp.valueOf(order.getPickUpDate()));
-            ps.setBoolean(3, order.isPaid());
-            ps.setDouble(4, order.getTotalPrice());
+            ps.setInt(1, order.getUserDTO().getUserId());
+            ps.setTimestamp(2, Timestamp.valueOf(order.getOrderDate()));
+            ps.setTimestamp(3, Timestamp.valueOf(order.getPickUpDate()));
+            ps.setBoolean(4, order.isPaid());
+            ps.setDouble(5, order.getTotalPrice());
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -275,15 +268,18 @@ public class OrderMapper
         }
     }
 
-    private void linkUserToOrder(Connection connection, int userId, int orderId) throws SQLException
+    private UserDTO buildUserDTOFromResultSet(ResultSet rs) throws SQLException
     {
-        String sql = "INSERT INTO users_orders (user_id, order_id) VALUES (?, ?)";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql))
-        {
-            ps.setInt(1, userId);
-            ps.setInt(2, orderId);
-            ps.executeUpdate();
-        }
+        return new UserDTO(
+                rs.getInt("user_id"),
+                rs.getString("firstname"),
+                rs.getString("lastname"),
+                rs.getString("email"),
+                rs.getInt("phonenumber"),
+                rs.getString("street"),
+                rs.getInt("zip_code"),
+                rs.getString("city"),
+                rs.getDouble("balance")
+        );
     }
 }

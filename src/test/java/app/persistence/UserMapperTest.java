@@ -33,7 +33,7 @@ class UserMapperTest
             {
                 try (Statement stmt = testConnection.createStatement())
                 {
-                    stmt.execute("DROP TABLE IF EXISTS test.users_orders CASCADE");
+                    // DROP tables in correct order
                     stmt.execute("DROP TABLE IF EXISTS test.orderlines CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orders CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.users CASCADE");
@@ -41,57 +41,84 @@ class UserMapperTest
                     stmt.execute("DROP TABLE IF EXISTS test.bottoms CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.toppings CASCADE");
 
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.users_user_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.orders_order_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.orderlines_order_line_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.bottoms_bottom_id_seq CASCADE");
-                    stmt.execute("DROP SEQUENCE IF EXISTS test.toppings_topping_id_seq CASCADE");
-                    
-                    stmt.execute("CREATE TABLE test.zip_codes AS (SELECT * FROM public.zip_codes) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.users AS (SELECT * FROM public.users) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.orders AS (SELECT * FROM public.orders) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.bottoms AS (SELECT * FROM public.bottoms) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.toppings AS (SELECT * FROM public.toppings) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.orderlines AS (SELECT * FROM public.orderlines) WITH NO DATA");
-                    stmt.execute("CREATE TABLE test.users_orders AS (SELECT * FROM public.users_orders) WITH NO DATA");
+                    // CREATE tables with EXPLICIT structure
+                    stmt.execute("""
+                    CREATE TABLE test.zip_codes (
+                        zip_code integer PRIMARY KEY,
+                        city varchar NOT NULL
+                    )
+                """);
 
-                    stmt.execute("ALTER TABLE test.zip_codes ADD PRIMARY KEY (zip_code)");
-                    stmt.execute("ALTER TABLE test.users ADD PRIMARY KEY (user_id)");
-                    stmt.execute("ALTER TABLE test.orders ADD PRIMARY KEY (order_id)");
-                    stmt.execute("ALTER TABLE test.bottoms ADD PRIMARY KEY (bottom_id)");
-                    stmt.execute("ALTER TABLE test.toppings ADD PRIMARY KEY (topping_id)");
-                    stmt.execute("ALTER TABLE test.orderlines ADD PRIMARY KEY (orderline_id)");
-                    stmt.execute("ALTER TABLE test.users_orders ADD PRIMARY KEY (user_id, order_id)");
+                    stmt.execute("""
+                    CREATE TABLE test.users (
+                        user_id serial PRIMARY KEY,
+                        firstname varchar NOT NULL,
+                        lastname varchar NOT NULL,
+                        email varchar NOT NULL UNIQUE,
+                        password varchar,
+                        phonenumber integer NOT NULL,
+                        street varchar,
+                        zip_code integer,
+                        balance double precision NOT NULL DEFAULT 0,
+                        admin boolean NOT NULL DEFAULT false,
+                        is_guest boolean NOT NULL DEFAULT false,
+                        created_at timestamp with time zone NOT NULL DEFAULT now(),
+                        FOREIGN KEY (zip_code) REFERENCES test.zip_codes(zip_code)
+                            ON DELETE NO ACTION ON UPDATE CASCADE
+                    )
+                """);
 
-                    stmt.execute("ALTER TABLE test.users ADD CONSTRAINT email_unique UNIQUE (email)");
+                    stmt.execute("""
+                    CREATE TABLE test.orders (
+                        order_id serial PRIMARY KEY,
+                        user_id integer NOT NULL,
+                        order_date timestamp with time zone NOT NULL DEFAULT now(),
+                        pickup_date timestamp with time zone NOT NULL,
+                        paid boolean NOT NULL DEFAULT false,
+                        price_total double precision NOT NULL,
+                        FOREIGN KEY (user_id) REFERENCES test.users(user_id)
+                            ON DELETE CASCADE ON UPDATE CASCADE
+                    )
+                """);
 
-                    stmt.execute("ALTER TABLE test.users ADD CONSTRAINT zip_code_fk FOREIGN KEY (zip_code) REFERENCES test.zip_codes(zip_code)");
-                    stmt.execute("ALTER TABLE test.orderlines ADD CONSTRAINT order_fk FOREIGN KEY (order_id) REFERENCES test.orders(order_id) ON DELETE CASCADE");
-                    stmt.execute("ALTER TABLE test.orderlines ADD CONSTRAINT topping_fk FOREIGN KEY (topping_id) REFERENCES test.toppings(topping_id)");
-                    stmt.execute("ALTER TABLE test.orderlines ADD CONSTRAINT bottom_fk FOREIGN KEY (bottom_id) REFERENCES test.bottoms(bottom_id)");
-                    stmt.execute("ALTER TABLE test.users_orders ADD CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES test.users(user_id) ON DELETE CASCADE");
-                    stmt.execute("ALTER TABLE test.users_orders ADD CONSTRAINT order_fk2 FOREIGN KEY (order_id) REFERENCES test.orders(order_id) ON DELETE CASCADE");
+                    stmt.execute("""
+                    CREATE TABLE test.bottoms (
+                        bottom_id serial PRIMARY KEY,
+                        bottom_flavour varchar NOT NULL UNIQUE,
+                        bottom_price double precision NOT NULL
+                    )
+                """);
 
-                    stmt.execute("CREATE SEQUENCE test.users_user_id_seq");
-                    stmt.execute("ALTER TABLE test.users ALTER COLUMN user_id SET DEFAULT nextval('test.users_user_id_seq')");
+                    stmt.execute("""
+                    CREATE TABLE test.toppings (
+                        topping_id serial PRIMARY KEY,
+                        topping_flavour varchar NOT NULL UNIQUE,
+                        topping_price double precision NOT NULL
+                    )
+                """);
 
-                    stmt.execute("CREATE SEQUENCE test.orders_order_id_seq");
-                    stmt.execute("ALTER TABLE test.orders ALTER COLUMN order_id SET DEFAULT nextval('test.orders_order_id_seq')");
-
-                    stmt.execute("CREATE SEQUENCE test.orderlines_order_line_id_seq");
-                    stmt.execute("ALTER TABLE test.orderlines ALTER COLUMN orderline_id SET DEFAULT nextval('test.orderlines_order_line_id_seq')");
-
-                    stmt.execute("CREATE SEQUENCE test.bottoms_bottom_id_seq");
-                    stmt.execute("ALTER TABLE test.bottoms ALTER COLUMN bottom_id SET DEFAULT nextval('test.bottoms_bottom_id_seq')");
-
-                    stmt.execute("CREATE SEQUENCE test.toppings_topping_id_seq");
-                    stmt.execute("ALTER TABLE test.toppings ALTER COLUMN topping_id SET DEFAULT nextval('test.toppings_topping_id_seq')");
+                    stmt.execute("""
+                    CREATE TABLE test.orderlines (
+                        orderline_id serial PRIMARY KEY,
+                        order_id integer NOT NULL,
+                        topping_id integer NOT NULL,
+                        bottom_id integer NOT NULL,
+                        quantity integer NOT NULL,
+                        orderline_price double precision NOT NULL,
+                        FOREIGN KEY (order_id) REFERENCES test.orders(order_id)
+                            ON DELETE CASCADE ON UPDATE CASCADE,
+                        FOREIGN KEY (topping_id) REFERENCES test.toppings(topping_id)
+                            ON DELETE NO ACTION ON UPDATE CASCADE,
+                        FOREIGN KEY (bottom_id) REFERENCES test.bottoms(bottom_id)
+                            ON DELETE NO ACTION ON UPDATE CASCADE
+                    )
+                """);
                 }
             }
             catch (SQLException e)
             {
-                System.out.println(e.getMessage());
-                fail("Database connection failed");
+                e.printStackTrace();
+                fail("Database connection failed: " + e.getMessage());
             }
         }
         catch (Exception e)
@@ -108,8 +135,7 @@ class UserMapperTest
         {
             try (Statement stmt = testConnection.createStatement())
             {
-                // Clear all data
-                stmt.execute("DELETE FROM test.users_orders");
+                // Clear all data in correct order
                 stmt.execute("DELETE FROM test.orderlines");
                 stmt.execute("DELETE FROM test.orders");
                 stmt.execute("DELETE FROM test.users");
@@ -131,12 +157,13 @@ class UserMapperTest
                         "(2100, 'København Ø'), " +
                         "(8000, 'Aarhus C')");
 
-                stmt.execute("INSERT INTO test.users (user_id, firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin) VALUES " +
-                        "(1, 'Hans', 'Hansen', 'hans@test.dk', 'password123', 12345678, 'Testvej 1', 2000, 100.0, false), " +
-                        "(2, 'Jens', 'Jensen', 'jens@test.dk', 'password456', 87654321, 'Prøvevej 2', 2100, 200.0, false), " +
-                        "(3, 'Admin', 'Adminson', 'admin@test.dk', 'admin123', 11111111, 'Adminvej 3', 8000, 0.0, true)");
+                // NOTE: is_guest added to match new schema
+                stmt.execute("INSERT INTO test.users (user_id, firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin, is_guest) VALUES " +
+                        "(1, 'Hans', 'Hansen', 'hans@test.dk', 'password123', 12345678, 'Testvej 1', 2000, 100.0, false, false), " +
+                        "(2, 'Jens', 'Jensen', 'jens@test.dk', 'password456', 87654321, 'Prøvevej 2', 2100, 200.0, false, false), " +
+                        "(3, 'Admin', 'Adminson', 'admin@test.dk', 'admin123', 11111111, 'Adminvej 3', 8000, 0.0, true, false)");
 
-                // Set sequence to continue after inserted data
+                // Sync sequence after manual inserts
                 stmt.execute("SELECT setval('test.users_user_id_seq', COALESCE((SELECT MAX(user_id)+1 FROM test.users), 1), false)");
             }
         }
@@ -172,6 +199,25 @@ class UserMapperTest
         assertEquals("peter@test.dk", newUser.getEmail());
         assertEquals(4, newUser.getUserId());
         assertEquals(0.0, newUser.getBalance());
+        assertFalse(newUser.isGuest()); // NEW: Test is_guest
+    }
+
+    @Test
+    void testCreateGuestUser() throws DatabaseException // NEW TEST
+    {
+        User guestUser = userMapper.createGuestUser(
+                "Guest",
+                "User",
+                "guest@test.dk",
+                88888888,
+                "Gæstevej 5",
+                2000
+        );
+
+        assertNotNull(guestUser);
+        assertEquals("Guest", guestUser.getFirstName());
+        assertTrue(guestUser.isGuest());
+        assertEquals(0.0, guestUser.getBalance());
     }
 
     @Test
@@ -186,6 +232,7 @@ class UserMapperTest
         assertEquals(2000, user.getZipCode());
         assertEquals("Frederiksberg", user.getCity());
         assertEquals(100.0, user.getBalance());
+        assertFalse(user.isGuest()); // NEW
     }
 
     @Test
@@ -257,6 +304,18 @@ class UserMapperTest
     }
 
     @Test
+    void testUpdateGuestUserBalance() throws DatabaseException // NEW TEST
+    {
+        User guest = userMapper.createGuestUser("Test", "Guest", "testguest@test.dk", 12341234, "Street", 2000);
+
+        boolean result = userMapper.updateUserBalance(guest.getUserId(), 100.0);
+
+        assertFalse(result); // Should fail because is_guest = true
+        User retrieved = userMapper.getUserById(guest.getUserId());
+        assertEquals(0.0, retrieved.getBalance()); // Balance unchanged
+    }
+
+    @Test
     void testLogin() throws DatabaseException
     {
         User user = userMapper.login("admin@test.dk", "admin123");
@@ -265,6 +324,7 @@ class UserMapperTest
         assertEquals(3, user.getUserId());
         assertEquals("Admin", user.getFirstName());
         assertTrue(user.isAdmin());
+        assertFalse(user.isGuest()); // NEW
     }
 
     @Test
@@ -279,6 +339,15 @@ class UserMapperTest
     {
         assertThrows(DatabaseException.class,
                 () -> userMapper.login("doesnotexist@test.dk", "password123"));
+    }
+
+    @Test
+    void testGuestCannotLogin() throws DatabaseException // NEW TEST
+    {
+        userMapper.createGuestUser("Cannot", "Login", "nologin@test.dk", 11112222, "Street", 2000);
+
+        assertThrows(DatabaseException.class,
+                () -> userMapper.login("nologin@test.dk", null)); // Guest has no password
     }
 
     @Test
@@ -299,7 +368,6 @@ class UserMapperTest
         assertEquals(9000, newUser.getZipCode());
         assertEquals("Aalborg", newUser.getCity());
 
-        // Verify zipcode was created
         User retrieved = userMapper.getUserById(newUser.getUserId());
         assertEquals("Aalborg", retrieved.getCity());
     }
@@ -307,11 +375,11 @@ class UserMapperTest
     @Test
     void testCreateUserWithEmailThatAlreadyExist()
     {
-        DatabaseException exception = assertThrows(DatabaseException.class,
+        assertThrows(DatabaseException.class,
                 () -> userMapper.createUser(
                         "Duplicate",
                         "User",
-                        "hans@test.dk",  // Email already exists
+                        "hans@test.dk",
                         "pass",
                         12121212,
                         "Dupvej 1",
