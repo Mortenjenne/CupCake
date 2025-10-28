@@ -35,7 +35,40 @@ public class AdminController
 
         app.post("/customers/update-balance", ctx -> handleEditCustomerBalance(ctx));
         app.post("/orders/delete/{id}", ctx -> deleteOrder(ctx));
+        app.post("/orders/mark-paid/{id}", ctx -> markOrderAsPaid(ctx));
 
+    }
+
+    private void markOrderAsPaid(Context ctx)
+    {
+        String orderIdStr = ctx.pathParam("id");
+        User currentUser = ctx.sessionAttribute("currentUser");
+
+        try
+        {
+            int orderId = Integer.parseInt(orderIdStr);
+            if (orderService.updateOrderPaymentStatus(orderId, true, currentUser.getUserId()))
+            {
+                ctx.redirect("/orders");
+                ctx.attribute("successMessage", "Du har opdateret status på ordre id: " + orderId);
+            }
+            else
+            {
+                ctx.attribute("errorMessage", "Kunne ikke sætte status til betalt");
+                ctx.redirect("/orders");
+            }
+
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke parse tallet");
+            ctx.redirect("/orders");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.redirect("/orders");
+        }
     }
 
     private void deleteOrder(Context ctx)
@@ -46,10 +79,10 @@ public class AdminController
         try
         {
             int orderId = Integer.parseInt(orderIdStr);
-            if(orderService.deleteOrder(orderId, currentUser.getUserId(), false))
+            if (orderService.deleteOrder(orderId, currentUser.getUserId(), false))
             {
                 ctx.redirect("/orders");
-                ctx.attribute("successMesage","Du har slette ordren med id " + orderId);
+                ctx.attribute("successMesage", "Du har slette ordren med id " + orderId);
             }
             else
             {
