@@ -32,16 +32,19 @@ public class OrderController
 
         try
         {
-            List<Order> orders = orderService.getAllOrders(currentUser.getUserId());
+            List<Order> unpaidOrders = orderService.getAllOrdersByStatusNotPaid(currentUser.getUserId());
+            List<Order> paidOrders = orderService.getAllOrdersByStatusPaid(currentUser.getUserId());
             loadErrorAndSuccesMessage(ctx);
-            ctx.attribute("orders", orders);
-            ctx.render("orders.html");
+            ctx.attribute("unpaidOrders", unpaidOrders);
+            ctx.attribute("paidOrders", paidOrders);
+            ctx.render("orders");
         }
         catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
-            ctx.attribute("orders", new ArrayList<>());
-            ctx.render("orders.html");
+            ctx.attribute("unpaidOrders", new ArrayList<>());
+            ctx.attribute("paidOrders", new ArrayList<>());
+            ctx.redirect("/orders");
         }
     }
 
