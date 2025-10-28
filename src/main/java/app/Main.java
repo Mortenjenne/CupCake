@@ -50,12 +50,14 @@ public class Main {
 
         OrderController orderController = new OrderController(orderService);
         AdminController adminController = new AdminController(userService);
+        CheckoutController checkoutController = new CheckoutController(orderService, userService);
 
         shoppingController.addRoutes(app);
         userController.addRoutes(app);
         orderController.addRoutes(app);
         adminController.addRoutes(app);
         cupcakeController.addRoutes(app);
+        checkoutController.addRoutes(app);
 
     }
 }

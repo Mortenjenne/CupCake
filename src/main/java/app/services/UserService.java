@@ -11,6 +11,7 @@ public interface UserService
 {
 public User authenticate(String email, String password) throws DatabaseException;
 public User registerUser(CreateUserRequestDTO createUserRequestDTO) throws DatabaseException;
+public User registerGuestUser(String firstName, String lastName, String email, int phoneNumber, String city, String street, int zipCode) throws DatabaseException;
 public void addBalance(int userId, double amount) throws DatabaseException;
 public UserDTO getUserById(int userId) throws DatabaseException;
 public List<UserDTO> getAllUsers() throws DatabaseException;
