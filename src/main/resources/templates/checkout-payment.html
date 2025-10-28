@@ -11,9 +11,12 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div class="checkout-container">
     <section>
+        <div class="step-info">
         <h2>Gennemse og betal</h2>
         <p class="checkout-step">Trin 3 af 3</p>
+        </div>
 
         <div class="customer-info">
             <h3>Kontaktinformation</h3>
@@ -85,7 +88,7 @@
         </div>
     </section>
 
-    <aside class="summary-info">
+    <aside class="checkout-summary">
         <h3>Din bestilling</h3>
         <div th:replace="fragments :: orderLinePostCard"></div>
         <div class="summary-total">
@@ -100,6 +103,7 @@
             </p>
         </div>
     </aside>
+    </div>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>

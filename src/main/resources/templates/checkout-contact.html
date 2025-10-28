@@ -11,8 +11,9 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div class="checkout-container">
     <section>
-        <div class="delivery-info">
+        <div class="customer-info">
             <form th:action="@{/checkout/contact-info}" method="post">
                 <h2>Kontaktinformation</h2>
                 <p class="checkout-step">Trin 2 af 3</p>
@@ -69,13 +70,14 @@
         </div>
     </section>
 
-    <aside class="summary">
+    <aside class="checkout-summary">
         <h3>Din bestilling</h3>
         <div th:replace="fragments :: orderLinePostCard"></div>
         <div class="summary-total">
             <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr</p>
         </div>
     </aside>
+    </div>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
