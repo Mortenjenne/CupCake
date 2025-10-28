@@ -16,6 +16,9 @@ public class Bottom
         return name
                 .toLowerCase()
                 .replaceAll("[\\s/]+", "")
-                .replaceAll("[^a-z0-9]", "");
+                .replaceAll("[^a-z0-9]", "")
+                .replaceAll("å", "aa")
+                .replaceAll("æ", "ae")
+                .replaceAll("ø", "oe");
     }
 }
