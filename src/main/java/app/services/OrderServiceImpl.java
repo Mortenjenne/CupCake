@@ -144,7 +144,41 @@ public class OrderServiceImpl implements OrderService
         return orderLineMapper.getOrderLinesByOrderId(orderId);
     }
 
-    private List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException
+    @Override
+    public List<Order> searchOrdersByOrderId(int orderId) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getOrderId() == orderId)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> searchOrdersByName(String name) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getUserDTO().getFirstName().toLowerCase().contains(name.toLowerCase())
+                        || order.getUserDTO().getLastName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> searchOrdersByEmail(String email) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getUserDTO().getEmail().toLowerCase().contains(email))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> sortOrdersByPaymentStatus(List<Order> orders, boolean paid)
+    {
+        return orders.stream()
+                .filter(order -> order.isPaid() == paid)
+                .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException
     {
         return orderMapper.getAllOrders().stream()
                 .filter(order -> order.isPaid() == paid)

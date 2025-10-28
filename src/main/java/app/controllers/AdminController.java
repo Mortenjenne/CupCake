@@ -9,7 +9,6 @@ import app.services.OrderService;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +29,75 @@ public class AdminController
     {
         app.get("/customers", ctx -> showCustomerPage(ctx));
         app.get("/customers/edit/{id}", ctx -> showEditCustomerPage(ctx));
-        app.get("/customers/search", ctx -> handleSearchQuery(ctx));
+        app.get("/customers/search", ctx -> handleCustomerSearchQuery(ctx));
+        app.get("/orders/search", ctx -> handleOrderSearchQuery(ctx));
         app.get("/orders/details/{id}", ctx -> showOrderDetails(ctx));
 
         app.post("/customers/update-balance", ctx -> handleEditCustomerBalance(ctx));
         app.post("/orders/delete/{id}", ctx -> deleteOrder(ctx));
         app.post("/orders/mark-paid/{id}", ctx -> markOrderAsPaid(ctx));
 
+    }
+
+    private void handleOrderSearchQuery(Context ctx)
+    {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        validateCurrentUserIsAdmin(ctx, currentUser);
+
+        String searchType = ctx.queryParam("searchType");
+        String searchQuery = ctx.queryParam("searchQuery");
+
+        validateSearchType(ctx, searchType, searchQuery);
+
+        try
+        {
+            List<Order> orders = null;
+            switch (searchType)
+            {
+                case "id":
+                    try
+                    {
+                        int orderId = Integer.parseInt(searchQuery.trim());
+                        orders = orderService.searchOrdersByOrderId(orderId);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        ctx.attribute("errorMessage", "Ordre ID skal være et tal");
+                        orders = new ArrayList<>();
+                    }
+                    break;
+                case "name":
+                    orders = orderService.searchOrdersByName(searchQuery.trim());
+                    break;
+                case "email":
+                    orders = orderService.searchOrdersByEmail(searchQuery.trim());
+                    break;
+                default:
+                    ctx.attribute("errorMessage", "Ugyldig søgetype");
+                    orders = new ArrayList<>();
+            }
+
+            List<Order> unpaidOrders = orderService.sortOrdersByPaymentStatus(orders, false);
+            List<Order> paidOrders = orderService.sortOrdersByPaymentStatus(orders, true);
+
+            ctx.attribute("searchType", searchType);
+            ctx.attribute("searchQuery", searchQuery);
+            ctx.attribute("unpaidOrders", unpaidOrders);
+            ctx.attribute("paidOrders", paidOrders);
+
+            if (orders.isEmpty())
+            {
+                ctx.attribute("errorMessage", "Ingen ordre fundet med søgning: " + searchQuery);
+            }
+            ctx.render("orders.html");
+
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.attribute("orders", new ArrayList<>());
+            ctx.render("orders.html");
+        }
     }
 
     private void markOrderAsPaid(Context ctx)
@@ -128,7 +189,7 @@ public class AdminController
         }
     }
 
-    private void handleSearchQuery(Context ctx)
+    private void handleCustomerSearchQuery(Context ctx)
     {
         User currentUser = ctx.sessionAttribute("currentUser");
         validateCurrentUserIsAdmin(ctx, currentUser);

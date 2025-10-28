@@ -15,6 +15,29 @@
         <h1 th:if="${session.currentUser.isAdmin}">Alle Ordre</h1>
         <h1 th:unless="${session.currentUser.isAdmin}">Mine Ordre</h1>
 
+        <div th:if="${session.currentUser.isAdmin}" class="order-search">
+            <h2>Søg efter ordre</h2>
+            <form method="get" th:action="@{/orders/search}">
+                <div class="search-form">
+                    <select name="searchType" required>
+                        <option value="">Vælg søgetype</option>
+                        <option value="id" th:selected="${searchType == 'id'}">Ordre ID</option>
+                        <option value="name" th:selected="${searchType == 'name'}">Kundenavn</option>
+                        <option value="email" th:selected="${searchType == 'email'}">Email</option>
+                    </select>
+
+                    <input type="text"
+                           name="searchQuery"
+                           th:value="${searchQuery}"
+                           placeholder="Indtast søgeord..."
+                           required>
+
+                    <button class="search-button" type="submit">Søg</button>
+                    <a th:href="@{/orders}" class="reset-button">Nulstil</a>
+                </div>
+            </form>
+        </div>
+
         <div th:if="${successMessage}" class="success-message">
             <p th:text="${successMessage}"></p>
         </div>

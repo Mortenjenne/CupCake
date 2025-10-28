@@ -31,6 +31,8 @@
 
                 <!-- Logged in -->
                 <div th:if="${session.currentUser != null}" class="user-actions">
+                    <!-- EMAIL here -->
+                    <span class="username" th:text="${session.currentUser.email}"></span>
                     <a href="mypage.html" th:href="@{/mypage}" class="icon-link">
                         <img src="/images/mypage-w.svg" alt="Min side" th:src="@{/images/mypage-w.svg}">
                         <span>Min side</span>
