@@ -267,14 +267,14 @@ button:hover {
 }
 
 /* Custom select-container */
- .select {
-     position: relative;
-     display: inline-block;
-     width: min(250px, 90vw);
- }
+.cupcake-creator-select {
+    position: relative;
+    display: inline-block;
+    width: min(250px, 90vw);
+}
 
 /* Selve <select> */
-.select select {
+.cupcake-creator-select select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -282,7 +282,7 @@ button:hover {
     width: 100%;
     padding: .8rem 3rem .8rem 1rem;         /* plads til pilen */
     border: 2px solid rgb(from #231A12 r g b / 0.4);
-    border-radius: .75rem;
+    border-radius: 5px;
     background:
         /* pil (inline SVG) */
             url("data:image/svg+xml;utf8,\
@@ -292,31 +292,77 @@ button:hover {
             rgb(from #231A12 r g b / 0.4);
     color: var(--color-text-base);
     font: inherit;
-    line-height: 1.2;
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
 /* Hover/focus states */
-.select select:hover {
+.cupcake-creator-select select:hover {
     border-color: var(--button-hover);
 }
 
-.select select:focus {
+.cupcake-creator-select select:focus {
     outline: none;
     border-color: rgb(from #231A12 r g b / 0.4);
     box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
 }
 
-.select select:required:invalid {
+.cupcake-creator-select select:required:invalid {
     color: color-mix(in srgb, var(--color-text-base) 60%, white);
 }
 
-.select select option[disabled][selected] {
+.cupcake-creator-select select option[disabled][selected] {
     color: color-mix(in srgb, var(--color-text-base) 60%, white);
 }
 
 select option {
     background-color: rgb(from #231A12 r g b / 0.4);
+}
+
+.cupcake-creator-select select option {
+    background-color: rgb(from #231A12 r g b / 0.7); /* darker translucent brown */
+    color: var(--color-text-base);
+}
+
+.cupcake-creator-input {
+    width: min(120px, 25vw);
+    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    border-radius: 5px;
+    padding: 0;
+    background: rgb(from #231A12 r g b / 0.4);
+    color: var(--color-text-base);
+    font: inherit;
+    text-align: center;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.cupcake-creator-input:hover {
+    border-color: var(--button-hover);
+}
+
+.cupcake-creator-input:focus {
+    outline: none;
+    border-color: var(--button-hover);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
+    background-color: #fff1;
+}
+
+.cupcake-creator-input::-webkit-inner-spin-button,
+.cupcake-creator-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.cupcake-creator button{
+    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    border-radius: 5px;
+    width: min(140px, 90vw);
+    background: rgb(from #231A12 r g b / 0.4);
+    color: var(--color-text-base);
+    font: inherit;
+    font-weight: var(--fw-semibold);
+    text-align: center;
+    text-decoration: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
 .cupcake-box {
@@ -344,17 +390,25 @@ select option {
     transform: translateY(-30%);
 }
 
-.index-basket-button{
-    background-color: var(--button-color);
-    width: auto;
-    border: solid 2px var(--color-darkest-brown);
+.index-basket-button {
+    background-color: rgb(from #231A12 r g b / 0.4);
+    border: 2px solid rgb(from #231A12 r g b / 0.4);
     border-radius: 5px;
-    padding: 5px;
+    padding: 0.5rem 1rem;
     font-weight: bold;
-
+    color: var(--color-text-base);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
 }
+
 .index-basket-button:hover {
-    background-color: var(--button-hover);
+    border-color: var(--button-hover);
+    background-color: rgb(from #231A12 r g b / 0.6);
+}
+
+
+.cupcake-creator button:hover {
+    border-color: var(--button-hover);
 }
 
 

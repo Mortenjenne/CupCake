@@ -33,7 +33,7 @@
         <section class="cupcake-creator">
             <form method="post" th:action="@{/cart/add}">
 
-                <div class="select">
+                <div class="cupcake-creator-select">
                     <select id="bottomSelect" name="bottomId" required>
                         <option value="" disabled selected>Vælg Bund</option>
                         <option th:each="b : ${bottoms}"
@@ -45,7 +45,7 @@
                 </div>
 
 
-                <div class="select">
+                <div class="cupcake-creator-select">
                     <select id="toppingSelect" name="toppingId" required>
                         <option value="" disabled selected>Vælg Topping</option>
                         <option th:each="t : ${toppings}"
@@ -56,21 +56,24 @@
                     </select>
                 </div>
 
-
-                <input type="number" name="cupcakeQuantity" min="1" placeholder="1" th:value="${cupcakeQuantity}"
+                <input class="cupcake-creator-input" type="number" name="cupcakeQuantity" min="1" placeholder="Antal"
+                       th:value="${cupcakeQuantity}"
                        required>
 
-                <button type="submit">Tilføj til kurv</button>
-                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
-                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
+                <button class="add-to-basket-index" type="submit">Tilføj til kurv</button>
 
             </form>
-
+            <div th:if="${succesLabel != null}" class="title">
+                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
+                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
+            </div>
+            <div th:unless="${succesLabel != null}">
+                <br>
+            </div>
         </section>
 
-        <div class="index-basket-button">
-            <a href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
-        </div>
+        <a class="index-basket-button" href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
+
 
     </section>
 
