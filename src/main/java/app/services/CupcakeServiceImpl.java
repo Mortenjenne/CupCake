@@ -32,6 +32,18 @@ public class CupcakeServiceImpl implements CupcakeService
     }
 
     @Override
+    public Topping getToppingById(int id) throws DatabaseException
+    {
+        return toppingMapper.getToppingById(id);
+    }
+
+    @Override
+    public Bottom getBottomById(int id) throws DatabaseException
+    {
+        return bottomMapper.getBottomById(id);
+    }
+
+    @Override
     public void createNewBottomFlavour(String bottomFlavour, double bottomPrice) throws DatabaseException
     {
         bottomMapper.createBottom(bottomFlavour, bottomPrice);
@@ -41,35 +53,6 @@ public class CupcakeServiceImpl implements CupcakeService
     public void createNewToppingFlavour(String toppingFlavour, double toppingPrice) throws DatabaseException
     {
         toppingMapper.createTopping(toppingFlavour, toppingPrice);
-    }
-
-    @Override
-    public void setBottomPrice(Bottom bottom, double price) throws DatabaseException
-    {
-        Bottom updatedBottom = new Bottom(bottom.getBottomId(),bottom.getName(), price);
-
-        bottomMapper.updateBottom(updatedBottom);
-    }
-
-    @Override
-    public void setToppingPrice(Topping topping, double price) throws DatabaseException
-    {
-        Topping newTopping = new Topping(topping.getToppingId(), topping.getName(), price);
-        toppingMapper.updateTopping(newTopping);
-    }
-
-    @Override
-    public void renameBottomFlavour(Bottom bottom, String flavour) throws DatabaseException
-    {
-        Bottom updatedBottom = new Bottom(bottom.getBottomId(), flavour, bottom.getPrice());
-        bottomMapper.updateBottom(updatedBottom);
-    }
-
-    @Override
-    public void renameToppingFlavour(Topping topping, String flavour) throws DatabaseException
-    {
-        Topping newTopping = new Topping(topping.getToppingId(), flavour, topping.getPrice());
-        toppingMapper.updateTopping(newTopping);
     }
 
     @Override
@@ -85,15 +68,15 @@ public class CupcakeServiceImpl implements CupcakeService
     }
 
     @Override
-    public Bottom getBottomById(int id) throws DatabaseException
+    public void updateTopping(Topping topping) throws DatabaseException
     {
-        return bottomMapper.getBottomById(id);
+        toppingMapper.updateTopping(topping);
     }
 
     @Override
-    public Topping getToppingById(int id) throws DatabaseException
+    public void updateBottom(Bottom bottom) throws DatabaseException
     {
-        return toppingMapper.getToppingById(id);
+        bottomMapper.updateBottom(bottom);
     }
 }
 
