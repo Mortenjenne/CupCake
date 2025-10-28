@@ -41,6 +41,9 @@ public class Main {
         ShoppingService shoppingService = new ShoppingServiceImpl(bottomMapper,toppingMapper);
         ShoppingController shoppingController = new ShoppingController(shoppingService);
 
+        CupcakeService cupcakeService = new CupcakeServiceImpl(bottomMapper,toppingMapper);
+        CupcakeController cupcakeController = new CupcakeController(cupcakeService);
+
         OrderLineMapper orderLineMapper = new OrderLineMapper(connectionPool);
         OrderMapper orderMapper = new OrderMapper(connectionPool, orderLineMapper);
         OrderService orderService = new OrderServiceImpl(orderMapper, userMapper);
@@ -53,6 +56,7 @@ public class Main {
         userController.addRoutes(app);
         orderController.addRoutes(app);
         adminController.addRoutes(app);
+        cupcakeController.addRoutes(app);
         checkoutController.addRoutes(app);
 
     }

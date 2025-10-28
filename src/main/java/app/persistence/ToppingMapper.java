@@ -137,7 +137,7 @@ public class ToppingMapper
 
     public boolean deleteTopping(int toppingId) throws DatabaseException
     {
-        String sql = "DELETE FROM bottoms WHERE topping_id = ?";
+        String sql = "DELETE FROM toppings WHERE topping_id = ?";
 
 
         try (Connection connection = connectionPool.getConnection();
