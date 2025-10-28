@@ -121,11 +121,6 @@ INSERT INTO public.users (firstname, lastname, email, password, phonenumber, str
     ON CONFLICT (email) DO NOTHING;
 
 
-INSERT INTO public.users (firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin, is_guest) VALUES
-    ('Lars', 'Nielsen', 'lars.nielsen@guest.dk', NULL, 12345678, 'Storegade 10', 3700, 0, FALSE, TRUE)
-    ON CONFLICT (email) DO NOTHING;
-
-
 INSERT INTO public.orders (user_id, order_date, pickup_date, paid, price_total) VALUES
                                                                                     (2, now(), now() + interval '2 day', TRUE, 22.00),  -- Regular user
                                                                                     (4, now(), now() + interval '3 day', FALSE, 12.00), -- Guest user
