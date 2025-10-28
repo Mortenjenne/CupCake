@@ -5,6 +5,7 @@ import app.entities.Order;
 import app.entities.OrderLine;
 import app.entities.User;
 import app.exceptions.DatabaseException;
+import app.persistence.OrderLineMapper;
 import app.persistence.OrderMapper;
 import app.persistence.UserMapper;
 import java.time.LocalDateTime;
@@ -16,11 +17,13 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService
 {
     private OrderMapper orderMapper;
+    private OrderLineMapper orderLineMapper;
     private UserMapper userMapper;
 
-    public OrderServiceImpl(OrderMapper orderMapper, UserMapper userMapper)
+    public OrderServiceImpl(OrderMapper orderMapper, OrderLineMapper orderLineMapper, UserMapper userMapper)
     {
         this.orderMapper = orderMapper;
+        this.orderLineMapper = orderLineMapper;
         this.userMapper = userMapper;
     }
 
@@ -129,7 +132,53 @@ public class OrderServiceImpl implements OrderService
                 .collect(Collectors.toList());
     }
 
-    private List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException
+    @Override
+    public Order getOrderById(int orderId, int userId) throws DatabaseException
+    {
+        return orderMapper.getOrderByOrderId(orderId, userId);
+    }
+
+    @Override
+    public List<OrderLine> getAllOrderLinesByOrderId(int orderId) throws DatabaseException
+    {
+        return orderLineMapper.getOrderLinesByOrderId(orderId);
+    }
+
+    @Override
+    public List<Order> searchOrdersByOrderId(int orderId) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getOrderId() == orderId)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> searchOrdersByName(String name) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getUserDTO().getFirstName().toLowerCase().contains(name.toLowerCase())
+                        || order.getUserDTO().getLastName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> searchOrdersByEmail(String email) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getUserDTO().getEmail().toLowerCase().contains(email))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> sortOrdersByPaymentStatus(List<Order> orders, boolean paid)
+    {
+        return orders.stream()
+                .filter(order -> order.isPaid() == paid)
+                .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException
     {
         return orderMapper.getAllOrders().stream()
                 .filter(order -> order.isPaid() == paid)

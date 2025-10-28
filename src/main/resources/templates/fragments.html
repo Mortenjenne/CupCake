@@ -31,6 +31,8 @@
 
                 <!-- Logged in -->
                 <div th:if="${session.currentUser != null}" class="user-actions">
+                    <!-- EMAIL here -->
+                    <span class="username" th:text="${session.currentUser.email}"></span>
                     <a href="mypage.html" th:href="@{/mypage}" class="icon-link">
                         <img src="/images/mypage-w.svg" alt="Min side" th:src="@{/images/mypage-w.svg}">
                         <span>Min side</span>
@@ -50,29 +52,6 @@
             </div>
         </nav>
     </header>
-</div>
-<!-- Footer Fragment -->
-<div th:fragment="orderLinePostCard">
-<div th:each="orderLine : ${session.cart.getShoppingCart()}" class="order-card">
-    <div class="order-card-img">
-        <div class="cupcake-summary">
-            <img class="bottom-img"
-                 th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${orderLine.cupcake.bottom.slug})}"
-                 alt="bottom">
-            <img class="topping-img"
-                 th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${orderLine.cupcake.topping.slug})}"
-                 alt="topping">
-        </div>
-    </div>
-    <div class="order-card-info">
-        <p>
-            <span th:text="${orderLine.cupcake.bottom.name}"></span> +
-            <span th:text="${orderLine.cupcake.topping.name}"></span>
-        </p>
-        <p>Antal: <span th:text="${orderLine.quantity}"></span></p>
-        <p>Pris: <span th:text="${orderLine.orderLinePrice}"></span> kr</p>
-    </div>
-</div>
 </div>
 
 <!-- Footer Fragment -->
@@ -109,4 +88,28 @@
             <span>Om os</span>
         </a>
     </footer>
+</div>
+
+<!-- Orderline Postcard Fragment -->
+<div th:fragment="orderLinePostCard">
+    <div th:each="orderLine : ${session.cart.getShoppingCart()}" class="order-card">
+        <div class="order-card-img">
+            <div class="cupcake-summary">
+                <img class="bottom-img-small"
+                     th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${orderLine.cupcake.bottom.slug})}"
+                     alt="bottom">
+                <img class="topping-img-small"
+                     th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${orderLine.cupcake.topping.slug})}"
+                     alt="topping">
+            </div>
+        </div>
+        <div class="order-card-info">
+            <p>
+                <span th:text="${orderLine.cupcake.bottom.name}"></span> +
+                <span th:text="${orderLine.cupcake.topping.name}"></span>
+            </p>
+            <p>Antal: <span th:text="${orderLine.quantity}"></span></p>
+            <p>Pris: <span th:text="${orderLine.orderLinePrice}"></span> kr</p>
+        </div>
+    </div>
 </div>

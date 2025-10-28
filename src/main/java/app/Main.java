@@ -46,10 +46,10 @@ public class Main {
 
         OrderLineMapper orderLineMapper = new OrderLineMapper(connectionPool);
         OrderMapper orderMapper = new OrderMapper(connectionPool, orderLineMapper);
-        OrderService orderService = new OrderServiceImpl(orderMapper, userMapper);
+        OrderService orderService = new OrderServiceImpl(orderMapper, orderLineMapper, userMapper);
 
         OrderController orderController = new OrderController(orderService);
-        AdminController adminController = new AdminController(userService);
+        AdminController adminController = new AdminController(userService, orderService);
         CheckoutController checkoutController = new CheckoutController(orderService, userService);
 
         shoppingController.addRoutes(app);

@@ -1,12 +1,14 @@
 package app.controllers;
 
 import app.dto.UserDTO;
+import app.entities.Order;
+import app.entities.OrderLine;
 import app.entities.User;
 import app.exceptions.DatabaseException;
+import app.services.OrderService;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,22 +17,179 @@ import java.util.List;
 public class AdminController
 {
     private UserService userService;
+    private OrderService orderService;
 
-    public AdminController(UserService userService)
+    public AdminController(UserService userService, OrderService orderService)
     {
         this.userService = userService;
+        this.orderService = orderService;
     }
 
     public void addRoutes(Javalin app)
     {
         app.get("/customers", ctx -> showCustomerPage(ctx));
         app.get("/customers/edit/{id}", ctx -> showEditCustomerPage(ctx));
-        app.get("/customers/search", ctx -> handleSeachQuery(ctx));
+        app.get("/customers/search", ctx -> handleCustomerSearchQuery(ctx));
+        app.get("/orders/search", ctx -> handleOrderSearchQuery(ctx));
+        app.get("/orders/details/{id}", ctx -> showOrderDetails(ctx));
 
         app.post("/customers/update-balance", ctx -> handleEditCustomerBalance(ctx));
+        app.post("/orders/delete/{id}", ctx -> deleteOrder(ctx));
+        app.post("/orders/mark-paid/{id}", ctx -> markOrderAsPaid(ctx));
+
     }
 
-    private void handleSeachQuery(Context ctx)
+    private void handleOrderSearchQuery(Context ctx)
+    {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        validateCurrentUserIsAdmin(ctx, currentUser);
+
+        String searchType = ctx.queryParam("searchType");
+        String searchQuery = ctx.queryParam("searchQuery");
+
+        validateSearchType(ctx, searchType, searchQuery);
+
+        try
+        {
+            List<Order> orders = null;
+            switch (searchType)
+            {
+                case "id":
+                    try
+                    {
+                        int orderId = Integer.parseInt(searchQuery.trim());
+                        orders = orderService.searchOrdersByOrderId(orderId);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        ctx.attribute("errorMessage", "Ordre ID skal være et tal");
+                        orders = new ArrayList<>();
+                    }
+                    break;
+                case "name":
+                    orders = orderService.searchOrdersByName(searchQuery.trim());
+                    break;
+                case "email":
+                    orders = orderService.searchOrdersByEmail(searchQuery.trim());
+                    break;
+                default:
+                    ctx.attribute("errorMessage", "Ugyldig søgetype");
+                    orders = new ArrayList<>();
+            }
+
+            List<Order> unpaidOrders = orderService.sortOrdersByPaymentStatus(orders, false);
+            List<Order> paidOrders = orderService.sortOrdersByPaymentStatus(orders, true);
+
+            ctx.attribute("searchType", searchType);
+            ctx.attribute("searchQuery", searchQuery);
+            ctx.attribute("unpaidOrders", unpaidOrders);
+            ctx.attribute("paidOrders", paidOrders);
+
+            if (orders.isEmpty())
+            {
+                ctx.attribute("errorMessage", "Ingen ordre fundet med søgning: " + searchQuery);
+            }
+            ctx.render("orders.html");
+
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.attribute("orders", new ArrayList<>());
+            ctx.render("orders.html");
+        }
+    }
+
+    private void markOrderAsPaid(Context ctx)
+    {
+        String orderIdStr = ctx.pathParam("id");
+        User currentUser = ctx.sessionAttribute("currentUser");
+
+        try
+        {
+            int orderId = Integer.parseInt(orderIdStr);
+            if (orderService.updateOrderPaymentStatus(orderId, true, currentUser.getUserId()))
+            {
+                ctx.redirect("/orders");
+                ctx.attribute("successMessage", "Du har opdateret status på ordre id: " + orderId);
+            }
+            else
+            {
+                ctx.attribute("errorMessage", "Kunne ikke sætte status til betalt");
+                ctx.redirect("/orders");
+            }
+
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke parse tallet");
+            ctx.redirect("/orders");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.redirect("/orders");
+        }
+    }
+
+    private void deleteOrder(Context ctx)
+    {
+        String orderIdStr = ctx.pathParam("id");
+        User currentUser = ctx.sessionAttribute("currentUser");
+
+        try
+        {
+            int orderId = Integer.parseInt(orderIdStr);
+            if (orderService.deleteOrder(orderId, currentUser.getUserId(), false))
+            {
+                ctx.redirect("/orders");
+                ctx.attribute("successMesage", "Du har slette ordren med id " + orderId);
+            }
+            else
+            {
+                ctx.attribute("errorMessage", "Kunne ikke slette ordren");
+                ctx.redirect("/orders");
+            }
+
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke parse tallet");
+            ctx.redirect("/orders");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.redirect("/orders");
+        }
+    }
+
+    private void showOrderDetails(Context ctx)
+    {
+        String orderIdStr = ctx.pathParam("id");
+
+        try
+        {
+            int orderId = Integer.parseInt(orderIdStr);
+            List<OrderLine> orderLines = orderService.getAllOrderLinesByOrderId(orderId);
+
+            ctx.attribute("id", orderId);
+            ctx.attribute("orderLines", orderLines);
+            ctx.render("order-details");
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke parse tallet");
+            ctx.redirect("/orders");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.redirect("/orders");
+        }
+    }
+
+    private void handleCustomerSearchQuery(Context ctx)
     {
         User currentUser = ctx.sessionAttribute("currentUser");
         validateCurrentUserIsAdmin(ctx, currentUser);
@@ -78,9 +237,10 @@ public class AdminController
             }
             ctx.render("customers.html");
 
-        }catch (DatabaseException e)
+        }
+        catch (DatabaseException e)
         {
-            ctx.attribute("errorMessage",e.getMessage());
+            ctx.attribute("errorMessage", e.getMessage());
             ctx.attribute("customers", new ArrayList<>());
             ctx.render("customers.html");
         }
@@ -203,4 +363,5 @@ public class AdminController
             return;
         }
     }
+
 }
