@@ -15,10 +15,10 @@ public class Bottom
         if (name == null) return "";
         return name
                 .toLowerCase()
-                .replaceAll("[\\s/]+", "")
-                .replaceAll("[^a-z0-9]", "")
                 .replaceAll("å", "aa")
                 .replaceAll("æ", "ae")
-                .replaceAll("ø", "oe");
+                .replaceAll("ø", "oe")
+                .replaceAll("[\\s/]+", "")
+                .replaceAll("[^a-z0-9]", "");
     }
 }
