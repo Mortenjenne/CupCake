@@ -83,5 +83,17 @@ public class CupcakeServiceImpl implements CupcakeService
     {
         toppingMapper.deleteTopping(topping.getToppingId());
     }
+
+    @Override
+    public Bottom getBottomById(int id) throws DatabaseException
+    {
+        return bottomMapper.getBottomById(id);
+    }
+
+    @Override
+    public Topping getToppingById(int id) throws DatabaseException
+    {
+        return toppingMapper.getToppingById(id);
+    }
 }
 

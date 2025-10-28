@@ -28,4 +28,8 @@ public interface CupcakeService
     void deleteBottomFlavour(Bottom bottom) throws DatabaseException;
 
     void deleteToppingFlavour(Topping topping) throws DatabaseException;
+
+    Bottom getBottomById(int id) throws DatabaseException;
+
+    Topping getToppingById(int id) throws DatabaseException;
 }
