@@ -54,7 +54,6 @@ public class OrderController
         {
             ctx.attribute("errorMessage", "Du har ikke adgang til denne side");
             ctx.redirect("/");
-            return;
         }
     }
 
