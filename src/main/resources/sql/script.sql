@@ -115,7 +115,7 @@ INSERT INTO public.toppings (topping_flavour, topping_price) VALUES
     ON CONFLICT DO NOTHING;
 
 INSERT INTO public.users (firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin, is_guest) VALUES
-                                                                                                                             ('System', 'Administrator', 'admin@mail.dk', '$2a$12$jXQYyBGZ8Z96NC.2c6cm7e/QdtAL2/gBJohWp7CYPV0Zk/QT7Zq2q', 00000000, 'Head Office', 1000, 0, TRUE, FALSE),
+                                                                                                                             ('System', 'Administrator', 'admin@mail.dk', '$2a$12$jXQYyBGZ8Z96NC.2c6cm7e/QdtAL2/gBJohWp7CYPV0Zk/QT7Zq2q', 12345678, 'Olsker Hovedgade 12', 3770, 0, TRUE, FALSE),
                                                                                                                              ('Poul', 'Hansen', 'poul.hansen@mail.dk', '$2a$12$oy8Cuq.QOFgx6KXOwyT5MO3IsT/NNZ21fZn4g/NAJZGLgltz7f0gC', '20481234', 'Snellemark 14', 3700, 250.75, FALSE, FALSE),
                                                                                                                              ('Maja', 'Christiansen', 'maja.christiansen@mail.dk', '$2a$12$ZW19PU.VHt8mtlKK/I5nJ.lst/9Ji5AH/u4fhw1qge8IGBGzbW8c.', '30487766', 'Søndergade 8', 3740, 180.00, FALSE, FALSE),
                                                                                                                              ('Lars', 'Nielsen', 'lars.nielsen@guest.dk', NULL, 12345678, 'Storegade 10', 3700, 0, FALSE, TRUE)
@@ -123,9 +123,9 @@ INSERT INTO public.users (firstname, lastname, email, password, phonenumber, str
 
 
 INSERT INTO public.orders (user_id, order_date, pickup_date, paid, price_total) VALUES
-                                                                                    (2, now(), now() + interval '2 day', TRUE, 22.00),  -- Regular user
-                                                                                    (4, now(), now() + interval '3 day', FALSE, 12.00), -- Guest user
-                                                                                    (3, now(), now() + interval '1 day', TRUE, 27.00);  -- Regular user
+                                                                                    (2, now(), now() + interval '2 day', TRUE, 22.00),
+                                                                                    (4, now(), now() + interval '3 day', FALSE, 12.00),
+                                                                                    (3, now(), now() + interval '1 day', TRUE, 27.00);
 
 INSERT INTO public.orderlines (order_id, topping_id, bottom_id, quantity, orderline_price) VALUES
                                                                                                (1, 1, 1, 1, 10.00),
