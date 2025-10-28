@@ -47,7 +47,7 @@
                     <h3>Vælg afhentningsdato og tid</h3>
                     <p class="info-text">Butikkens åbningstider: Tir-Fre 12:30-17:30, Lør-Søn 10:00-18:00, Man lukket</p>
 
-                    <div class="create-group">
+                    <div class="delivery-date-picker">
                         <label for="pickup-date">Vælg dato</label>
                         <input type="date"
                                id="pickup-date"
@@ -57,8 +57,9 @@
                                required>
                     </div>
 
-                    <div class="create-group">
+                    <div class="delivery-time">
                         <label for="pickup-time">Vælg tidspunkt</label>
+                        <div class="delivery-time-picker">
                         <select id="pickup-time" name="pickupTime" required>
                             <option value="">Vælg tid</option>
                             <optgroup label="Tirsdag - Fredag (12:30-17:00)">
@@ -92,12 +93,13 @@
                                 <option value="17:30">17:30</option>
                             </optgroup>
                         </select>
+                        </div>
                         <small>Bemærk: Sidste afhentning er 30 min før lukketid. Mandag er butikken lukket.</small>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button type="submit">Fortsæt til kontaktinfo</button>
+                    <button class="checkout-button" type="submit">Fortsæt til kontaktinfo</button>
                 </div>
 
                 <p id="error-message" class="error"
