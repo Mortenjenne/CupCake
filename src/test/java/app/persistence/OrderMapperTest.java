@@ -46,7 +46,6 @@ class OrderMapperTest
             {
                 try (Statement stmt = testConnection.createStatement())
                 {
-                    // DROP tables in correct order
                     stmt.execute("DROP TABLE IF EXISTS test.orderlines CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orders CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.users CASCADE");
@@ -54,7 +53,6 @@ class OrderMapperTest
                     stmt.execute("DROP TABLE IF EXISTS test.bottoms CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.toppings CASCADE");
 
-                    // CREATE tables with EXPLICIT structure
                     stmt.execute("""
                         CREATE TABLE test.zip_codes (
                             zip_code integer PRIMARY KEY,
@@ -148,7 +146,6 @@ class OrderMapperTest
         {
             try (Statement stmt = testConnection.createStatement())
             {
-                // Clear all data in correct order
                 stmt.execute("DELETE FROM test.orderlines");
                 stmt.execute("DELETE FROM test.orders");
                 stmt.execute("DELETE FROM test.users");
@@ -156,14 +153,12 @@ class OrderMapperTest
                 stmt.execute("DELETE FROM test.bottoms");
                 stmt.execute("DELETE FROM test.toppings");
 
-                // Reset sequences
                 stmt.execute("SELECT setval('test.users_user_id_seq', 1)");
                 stmt.execute("SELECT setval('test.orders_order_id_seq', 1)");
                 stmt.execute("SELECT setval('test.orderlines_orderline_id_seq', 1)");
                 stmt.execute("SELECT setval('test.bottoms_bottom_id_seq', 1)");
                 stmt.execute("SELECT setval('test.toppings_topping_id_seq', 1)");
 
-                // Insert test data
                 stmt.execute("INSERT INTO test.zip_codes (zip_code, city) VALUES " +
                         "(1000, 'Copenhagen'), " +
                         "(2000, 'Frederiksberg'), " +
@@ -187,7 +182,6 @@ class OrderMapperTest
                         "(3, 'Raspberry', 5.00), " +
                         "(4, 'Strawberry', 6.00)");
 
-                // Sync sequences after manual inserts
                 stmt.execute("SELECT setval('test.users_user_id_seq', COALESCE((SELECT MAX(user_id)+1 FROM test.users), 1), false)");
                 stmt.execute("SELECT setval('test.bottoms_bottom_id_seq', COALESCE((SELECT MAX(bottom_id)+1 FROM test.bottoms), 1), false)");
                 stmt.execute("SELECT setval('test.toppings_topping_id_seq', COALESCE((SELECT MAX(topping_id)+1 FROM test.toppings), 1), false)");
