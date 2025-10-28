@@ -11,13 +11,14 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div class="checkout-container">
-    <section>
-        <div class="step-info">
+    <div class="checkout-wrapper">
+        <h1>Checkout</h1>
+    <div class="step-info">
         <h2>Levering</h2>
         <p class="checkout-step">Trin 1 af 3</p>
-        </div>
-
+    </div>
+    <div class="checkout-container">
+    <section>
         <div class="delivery">
             <form th:action="@{/checkout/delivery}" method="post">
                 <div class="delivery-method">
@@ -33,17 +34,17 @@
                     </div>
 
                     <div class="delivery-option">
-                        <input type="radio" id="home-delivery" name="deliveryMethod" value="delivery" required>
+                        <input type="radio" id="home-delivery" name="deliveryMethod" value="delivery" th:disabled="${session.currentUser == null}" required>
                         <label for="home-delivery">
                             <strong>Hjemmelevering med Olsker Express</strong>
-                            <span class="delivery-price">29 kr.</span>
+                            <span class="delivery-price">29 kr. <span th:if="${session.currentUser == null}" class="disabled-text">(Kræver login)</span></span>
                             <p class="delivery-description">Få leveret hurtigst muligt</p>
                         </label>
                     </div>
                 </div>
 
                 <div class="delivery-datetime">
-                    <h3>Vælg afhentningsdato og -tid</h3>
+                    <h3>Vælg afhentningsdato og tid</h3>
                     <p class="info-text">Butikkens åbningstider: Tir-Fre 12:30-17:30, Lør-Søn 10:00-18:00, Man lukket</p>
 
                     <div class="create-group">
@@ -114,6 +115,7 @@
             <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
         </div>
     </aside>
+    </div>
     </div>
 </main>
 

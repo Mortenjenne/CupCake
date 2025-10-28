@@ -11,13 +11,35 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div class="checkout-wrapper">
+        <h1>Checkout</h1>
+    <div class="step-info">
+        <h2>Kontaktinformation</h2>
+        <p class="checkout-step">Trin 2 af 3</p>
+    </div>
     <div class="checkout-container">
     <section>
+
+        <div class="delivery-info">
+            <h3>Levering</h3>
+            <a th:href="@{/checkout/delivery}">Ret</a>
+
+            <p><strong>Leveringsmetode:</strong>
+                <span th:if="${session.deliveryMethod == 'pickup'}">Afhent i butik (0 kr.)</span>
+                <span th:if="${session.deliveryMethod == 'delivery'}">Hjemmelevering med Olsker Express (29 kr.)</span>
+            </p>
+
+            <p><strong>Dato:</strong>
+                <span th:text="${#temporals.format(session.pickUp, 'dd-MM-yyyy')}"></span>
+            </p>
+
+            <p><strong>Tidspunkt:</strong>
+                <span th:text="${#temporals.format(session.pickUp, 'HH:mm')}"></span>
+            </p>
+        </div>
+
         <div class="customer-info">
             <form th:action="@{/checkout/contact-info}" method="post">
-                <h2>Kontaktinformation</h2>
-                <p class="checkout-step">Trin 2 af 3</p>
-
                 <div class="create-group">
                     <label>Fornavn</label>
                     <input type="text" name="firstName" th:value="${currentUser != null} ? ${currentUser.firstName} : ''" required>
@@ -77,6 +99,7 @@
             <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr</p>
         </div>
     </aside>
+    </div>
     </div>
 </main>
 

@@ -11,26 +11,15 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div class="checkout-container">
-    <section>
-        <div class="step-info">
+    <div class="checkout-wrapper">
+        <h1>Checkout</h1>
+    <div class="step-info">
         <h2>Gennemse og betal</h2>
         <p class="checkout-step">Trin 3 af 3</p>
-        </div>
+    </div>
 
-        <div class="customer-info">
-            <h3>Kontaktinformation</h3>
-            <a th:href="@{/checkout/contact-info}">Ret</a>
-
-            <p><strong><span th:text="${session.checkoutUser.firstName} + ' ' + ${session.checkoutUser.lastName}"></span></strong></p>
-            <p><span th:text="${session.checkoutUser.phoneNumber}"></span></p>
-            <p><span th:text="${session.checkoutUser.email}"></span></p>
-
-            <div th:if="${session.deliveryMethod == 'delivery'}">
-                <p><span th:text="${session.checkoutUser.street}"></span></p>
-                <p><span th:text="${session.checkoutUser.zipCode} + ' ' + ${session.checkoutUser.city}"></span></p>
-            </div>
-        </div>
+    <div class="checkout-container">
+    <section>
 
         <div class="delivery-info">
             <h3>Levering</h3>
@@ -50,6 +39,20 @@
             </p>
         </div>
 
+        <div class="customer-info">
+            <h3>Kontaktinformation</h3>
+            <a th:href="@{/checkout/contact-info}">Ret</a>
+
+            <p>Navn: <span th:text="${session.checkoutUser.firstName} + ' ' + ${session.checkoutUser.lastName}"></span></p>
+            <p>Telefon: <span th:text="${session.checkoutUser.phoneNumber}"></span></p>
+            <p>Email: <span th:text="${session.checkoutUser.email}"></span></p>
+
+            <div th:if="${session.deliveryMethod == 'delivery'}">
+                <p><span th:text="${session.checkoutUser.street}"></span></p>
+                <p><span th:text="${session.checkoutUser.zipCode} + ' ' + ${session.checkoutUser.city}"></span></p>
+            </div>
+        </div>
+
         <div class="payment">
             <form th:action="@{/checkout/payment}" method="post">
                 <h3>Betaling</h3>
@@ -57,20 +60,22 @@
                 <div class="payment-method">
                     <h4>Vælg betalingsmetode:</h4>
 
-                    <div th:if="${session.checkoutUser.userId != 0}" class="payment-option">
-                        <input type="radio" id="pay-now" name="paymentMethod" value="pay-now" required>
+                    <div th:if="${session.checkoutUser.userId != null}" class="payment-option">
+                        <input type="radio" id="pay-now" name="paymentMethod" value="pay-now" th:checked="${session.deliveryMethod == 'delivery'}" th:disabled="${session.currentUser == null}" required>
                         <label for="pay-now">
                             <strong>Betal nu med din konto</strong>
                             <p>Din nuværende saldo: <span th:text="${session.checkoutUser.balance}"></span> kr.</p>
                             <p>Total pris: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
                             <p>Saldo efter køb: <span th:text="${userBalanceAfterPurchase}"></span> kr.</p>
+                            <span th:if="${session.deliveryMethod == 'delivery'}" class="required-badge">Påkrævet for hjemmelevering</span>
                         </label>
                     </div>
 
-                    <div class="payment-option">
-                        <input type="radio" id="pay-pickup" name="paymentMethod" value="pay-pickup" required checked>
+                    <div th:if="${session.deliveryMethod == 'pickup'}" class="payment-option">
+                        <input type="radio" id="pay-pickup" name="paymentMethod" value="pay-pickup"  th:checked="${session.checkoutUser.userId == 0 or session.deliveryMethod == 'pickup'}" required checked>
                         <label for="pay-pickup">
                             <strong>Betal ved afhentning i butik</strong>
+                            <p class="payment-description">Kontant eller kortbetaling i butikken</p>
                         </label>
                     </div>
                 </div>
@@ -103,6 +108,7 @@
             </p>
         </div>
     </aside>
+    </div>
     </div>
 </main>
 
