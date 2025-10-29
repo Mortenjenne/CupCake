@@ -46,7 +46,7 @@ public class UserController
             ctx.redirect("/");
         } catch (DatabaseException e)
         {
-            ctx.attribute("errorMessage", e.getMessage());
+            ctx.attribute("errorMessage", "Forkert email eller password");
             ctx.render("login");
         }
     }

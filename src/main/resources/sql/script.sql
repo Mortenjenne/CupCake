@@ -95,23 +95,23 @@ INSERT INTO public.zip_codes (zip_code, city) VALUES
     ON CONFLICT DO NOTHING;
 
 INSERT INTO public.bottoms (bottom_flavour, bottom_price) VALUES
-                                                              ('Chocolate', 5.00),
-                                                              ('Vanilla', 5.00),
-                                                              ('Nutmeg', 5.00),
-                                                              ('Pistacio', 6.00),
-                                                              ('Almond', 7.00)
+                                                              ('Chokolade', 5.00),
+                                                              ('Vanilje', 5.00),
+                                                              ('Muskatnød', 5.00),
+                                                              ('Pistacie', 6.00),
+                                                              ('Mandel', 7.00)
     ON CONFLICT DO NOTHING;
 
 INSERT INTO public.toppings (topping_flavour, topping_price) VALUES
-                                                                 ('Chocolate', 5.00),
-                                                                 ('Blueberry', 5.00),
-                                                                 ('Raspberry', 5.00),
-                                                                 ('Crispy', 6.00),
-                                                                 ('Strawberry', 6.00),
-                                                                 ('Rum/Raisin', 7.00),
-                                                                 ('Orange', 8.00),
-                                                                 ('Lemon', 8.00),
-                                                                 ('Blue cheese', 9.00)
+                                                                 ('Chokolade', 5.00),
+                                                                 ('Blåbær', 5.00),
+                                                                 ('Hindbær', 5.00),
+                                                                 ('Karamel', 6.00),
+                                                                 ('Jordbær', 6.00),
+                                                                 ('Rom/Rosin', 7.00),
+                                                                 ('Appelsin', 8.00),
+                                                                 ('Citron', 8.00),
+                                                                 ('Blåskimmelost', 9.00)
     ON CONFLICT DO NOTHING;
 
 INSERT INTO public.users (firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin, is_guest) VALUES
