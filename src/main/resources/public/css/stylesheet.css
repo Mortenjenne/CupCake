@@ -1483,9 +1483,11 @@ select option {
     text-align: center;
 }
 
+
 .customer-details th:last-child {
     text-align: center;
 }
+
 
 .orders-table tbody tr:hover,
 .customer-details tbody tr:hover {
