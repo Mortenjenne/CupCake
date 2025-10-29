@@ -28,6 +28,7 @@
     --button-hover: #B08B6D; /* Button effects */
     --color-rose-light: #F8B5D2; /* Input & Dropdown fields */
     --color-teal: #596667; /* Links */
+    --bg-overlay-medium: rgb(from #231A12 r g b / 0.4); /* Background overlay */
 
     --color-text-base: palegoldenrod;
 }
@@ -117,26 +118,17 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-    background:
-            linear-gradient(
-                    to bottom,
-                    #231A12 0%,    /* Almost black brown top */
-                    #422C22 10%,   /* Dark chocolate chestnut */
-                    #61372B 25%,   /* Deep earthy red-brown */
-                    #7A503B 40%,   /* Dark muted terracotta */
-                    #947160 50%,   /* Smoky beige mid */
-                    #596667 60%,   /* Dark teal-grey */
-                    #7A563D 75%,   /* Tan warmth, muted */
-                    #5C4432 90%,   /* Cocoa brown */
-                    #4C382C 100%   /* Footer brown */
-            ),
-            repeating-linear-gradient(
-                    45deg,
-                    rgba(255, 255, 255, 0.02) 0px,
-                    rgba(255, 255, 255, 0.02) 1px,
-                    rgba(0, 0, 0, 0.02) 2px,
-                    transparent 4px
-            );
+    background: linear-gradient(
+            to bottom,
+            #231A12 0%, /* Almost black brown top */ #422C22 10%, /* Dark chocolate chestnut */ #61372B 25%, /* Deep earthy red-brown */ #7A503B 40%, /* Dark muted terracotta */ #947160 50%, /* Smoky beige mid */ #596667 60%, /* Dark teal-grey */ #7A563D 75%, /* Tan warmth, muted */ #5C4432 90%, /* Cocoa brown */ #4C382C 100% /* Footer brown */
+    ),
+    repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.02) 0px,
+            rgba(255, 255, 255, 0.02) 1px,
+            rgba(0, 0, 0, 0.02) 2px,
+            transparent 4px
+    );
     background-blend-mode: overlay;
     background-attachment: fixed;
     color: var(--color-text-base);
@@ -280,16 +272,16 @@ button:hover {
     -moz-appearance: none;
 
     width: 100%;
-    padding: .8rem 3rem .8rem 1rem;
+
+    padding: .8rem 3rem .8rem 1rem; /* plads til pilen */
+
     border: 2px solid rgb(from #231A12 r g b / 0.4);
     border-radius: 5px;
-    background:
-        /* pil (inline SVG) */
-            url("data:image/svg+xml;utf8,\
+    background: /* pil (inline SVG) */ url("data:image/svg+xml;utf8,\
     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
       <path d='M7 10l5 5 5-5' fill='none' stroke='palegoldenrod' stroke-width='2' stroke-linecap='round'/>\
     </svg>") no-repeat right .9rem center / 1rem,
-            rgb(from #231A12 r g b / 0.4);
+    rgb(from #231A12 r g b / 0.4);
     color: var(--color-text-base);
     font: inherit;
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
@@ -351,7 +343,7 @@ select option {
     margin: 0;
 }
 
-.cupcake-creator button{
+.cupcake-creator button {
     border: 2px solid rgb(from #231A12 r g b / 0.4);
     border-radius: 5px;
     width: min(140px, 90vw);
@@ -546,6 +538,209 @@ select option {
 .rowQuantity p {
     margin-bottom: 0.4rem;
 }
+
+
+/*------ CHECKOUT PAGES CSS ------*/
+
+.checkout-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.checkout-container h1 {
+    margin-bottom: 1rem;
+}
+
+.step-info {
+    text-align: center;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.step-info h2 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.checkout-step {
+    font-size: var(--font-small);
+    opacity: 0.8;
+    margin-bottom: 0;
+}
+
+.checkout-container {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.checkout-container section {
+    flex: 1 1 65%;
+    min-width: 0;
+}
+
+.checkout-container .delivery,
+.checkout-container .delivery-info,
+.checkout-container .customer-info,
+.checkout-container .payment {
+    background: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.checkout-container .checkout-summary {
+    flex: 0 0 320px;
+    background: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 20px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+}
+
+.checkout-container .checkout-summary > p,
+.checkout-summary .summary-total p {
+    margin-bottom: 0;
+    text-align: right;
+}
+
+.checkout-container .total-price {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.checkout-container .order-card,
+.checkout-summary .order-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.checkout-container .cupcake-summary,
+.checkout-summary .cupcake-summary {
+    position: relative;
+    width: 70px;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.checkout-container .cupcake-summary img,
+.checkout-summary .cupcake-summary img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.checkout-container .bottom-img-small,
+.checkout-summary .bottom-img-small {
+    z-index: 1;
+    transform: translateY(8%);
+}
+
+.checkout-container .topping-img-small,
+.checkout-summary .topping-img-small {
+    z-index: 2;
+    transform: translateY(-30%);
+}
+
+.checkout-container .order-card-info,
+.checkout-summary .order-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.checkout-container .order-card-info p,
+.checkout-summary .order-card-info p {
+    margin: 0.3rem 0;
+    font-size: 0.85rem;
+    line-height: 1.3;
+}
+
+.checkout-container .checkout-summary > p {
+    border-top: 1px solid rgba(227, 216, 224, 0.3);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    font-weight: bold;
+    text-align: right;
+}
+
+.delivery-method h3 {
+    margin-bottom: 1.5rem;
+}
+
+.delivery-datetime h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.delivery-option.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.delivery-option.disabled input,
+.delivery-option.disabled label {
+    cursor: not-allowed;
+}
+
+.disabled-text {
+    font-size: var(--font-small);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.required-badge {
+    display: inline-block;
+    background: var(--bg-overlay-medium);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: var(--font-small);
+    margin-top: 0.5rem;
+}
+
+.delivery-date-picker{
+    display: flex;
+    flex-direction: column;
+}
+
+.delivery-date-picker input[type="date"]{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 5px;
+    width: 20%;
+
+}
+
+.delivery-date-picker input[type="date"]:focus {
+    outline: none;
+    border-color: var(--bg-overlay-medium);
+}
+
+.delivery-date-picker {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.delivery-time {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.delivery-time-picker select {
 
 /*------ Login BODY CSS ------*/
 .login-container {
@@ -756,6 +951,87 @@ select option {
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
+.group-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.group-body{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.group-body-element{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.edit-checkout {
+    background-color: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    color: var(--color-text-base);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+}
+
+.input-group label {
+    margin-top: 0.5rem;
+}
+
+.button-group{
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.checkout-button {
+    background-color: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    color: var(--color-text-base);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.checkout-button:hover {
+    border-color: var(--button-hover);
+    background-color: rgb(from #231A12 r g b / 0.6);
+}
+
+/* Hover/focus states */
+.delivery-time-picker select:hover {
+    border-color: var(--button-hover);
+}
+
+.delivery-time-picker select:focus {
+    outline: none;
+    border-color: var(--bg-overlay-medium);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
+}
+
+.delivery-time-picker select:required:invalid {
+    color: color-mix(in srgb, var(--color-text-base) 60%, white);
+}
+
+.delivery-time-picker select option[disabled][selected] {
 .admin-cupcake-select select:hover {
     border-color: var(--button-hover);
 }
@@ -776,6 +1052,72 @@ select option {
 
 select option {
     background-color: rgb(from #231A12 r g b / 0.4);
+}
+
+.delivery-time-picker select option {
+    background-color: rgb(from #231A12 r g b / 0.7); /* darker translucent brown */
+    color: var(--color-text-base);
+}
+
+.customer-info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group input {
+    width: 100%;
+    appearance: none;
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 8px;
+    padding: .8rem 1rem;
+    background: rgb(from #231A12 r g b / 0.25);
+    color: var(--color-text-base);
+    font: inherit;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.input-group input::placeholder {
+    color: color-mix(in srgb, var(--color-text-base) 65%, white);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--button-hover);
+    background-color: rgb(from #231A12 r g b / 0.35);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
+}
+
+.payment-description {
+    font-size: var(--font-small);
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
+.checkout-confirmed-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-complete {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 968px) {
+    .checkout-container {
+        flex-direction: column;
+    }
+
+    .checkout-container .checkout-summary {
+        position: static;
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 .admin-cupcake-select select option {
@@ -882,7 +1224,6 @@ address p,
     width: 15%;
     min-width: 120px;
 }
-
 
 
 .opening-hours {

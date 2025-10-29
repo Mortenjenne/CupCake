@@ -12,39 +12,41 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <section class="ordercomplete">
-        <h1>Vi har modtaget din ordre!</h1>
-        <h2>Tak fordi du valgte Olsker Cupcakes</h2>
-    </section>
+    <div class="checkout-confirmed-body">
+        <div class="order-complete">
+            <h1>Vi har modtaget din ordre!</h1>
+            <h2>Tak fordi du valgte Olsker Cupcakes</h2>
+        </div>
 
-    <section class="order-info">
-        <h3>Ordredetaljer</h3>
-        <p><strong>Ordrenummer:</strong> <span th:text="${session.completedOrder.orderId}"></span></p>
-        <p><strong>Bestilt den:</strong> <span th:text="${#temporals.format(session.completedOrder.orderDate, 'dd-MM-yyyy HH:mm')}"></span></p>
-        <p><strong>Afhentningsdato:</strong> <span th:text="${#temporals.format(session.completedOrder.pickUpDate, 'dd-MM-yyyy HH:mm')}"></span></p>
-
-        <h3>Afhentning</h3>
-        <p th:if="${session.deliveryMethod == 'pickup'}">Afhent i butikken i åbningstiden.</p>
-        <p th:if="${session.deliveryMethod == 'delivery'}">Leveres med Olsker Express</p>
-
-        <h3>Dine varer</h3>
-        <div th:each="orderLine : ${session.completedOrder.orderlines}">
-            <div class="order-item">
-                <p><span th:text="${orderLine.cupcake.bottom.name}"></span> +
-                    <span th:text="${orderLine.cupcake.topping.name}"></span></p>
-                <p>Antal: <span th:text="${orderLine.quantity}"></span></p>
-                <p>Pris: <span th:text="${orderLine.orderLinePrice}"></span> kr.</p>
+        <div class="group-body-element">
+            <div class="group-body-element">
+                <h3>Ordredetaljer</h3>
+                <p><strong>Ordrenummer:</strong> <span th:text="${session.completedOrder.orderId}"></span></p>
+                <p><strong>Bestilt den:</strong> <span
+                        th:text="${#temporals.format(session.completedOrder.orderDate, 'dd-MM-yyyy HH:mm')}"></span></p>
             </div>
-            <hr>
-        </div>
+            <div class="group-body-element">
+                <h3 th:if="${session.deliveryMethod == 'pickup'}">Afhentning</h3>
+                <h3 th:if="${session.deliveryMethod == 'delivery'}">Levering</h3>
 
-        <h3>Total</h3>
-        <p><strong>Samlet pris:</strong> <span th:text="${session.completedOrder.totalPrice}"></span> kr.</p>
-
-        <div class="back-home">
-            <a th:href="@{/}" class="button">Tilbage til forsiden</a>
+                <p th:if="${session.deliveryMethod == 'pickup'}">
+                    <strong>Afhent i butikken: </strong>
+                    <span th:text="${#temporals.format(session.completedOrder.pickUpDate, 'dd-MM-yyyy HH:mm')}"></span>
+                </p>
+                <p th:if="${session.deliveryMethod == 'delivery'}">
+                    Leveres med Olsker Express
+                    <span th:text="${#temporals.format(session.completedOrder.pickUpDate, 'dd-MM-yyyy HH:mm')}"></span>
+                </p>
+            </div>
+            <div class="group-body-element">
+                <h3>Total</h3>
+                <p><strong>Samlet pris:</strong> <span th:text="${session.completedOrder.totalPrice}"></span> kr.</p>
+            </div>
+            <div class="back-home">
+                <a th:href="@{/}" class="checkout-button">Tilbage til forsiden</a>
+            </div>
         </div>
-    </section>
+    </div>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
