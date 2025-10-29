@@ -12,31 +12,29 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <section>
+        <h1 th:unless="${session.currentUser.isAdmin}"> HOV! <br> Du har vist ikke adgang til den her side!</h1>
+        <section th:if="${session.currentUser.isAdmin}" class="admin-cupcake-body">
 
-        <div class="admin-cupcake-body window-styling">
-
-            <div class="admin-create-cupcake">
+            <div class="admin-cupcake">
+                <h5>Opret ny bund</h5>
                 <form method="post" th:action="@{/createBottom}">
-                    <p>Opret ny bund</p>
                     <input type="text" name="bottomCreateFlavour" placeholder="Indtast smag" >
                     <input type="text" name="bottomCreatePrice" placeholder="Indtast pris" >
                     <button type="submit">Tilføj bund</button>
                 </form>
 
+                <h5>Opret ny topping</h5>
                 <form method="post" th:action="@{/createTopping}">
-                    <p>Opret ny topping</p>
                     <input type="text" name="toppingCreateFlavour" placeholder="Indtast smag">
                     <input type="text" name="toppingCreatePrice" placeholder="Indtast pris">
                     <button type="submit">Tilføj topping</button>
                 </form>
             </div>
 
-            <div class="admin-update-cupcake">
-                <p>Opdater topping/bund</p>
-
+            <div class="admin-cupcake">
+                <h5>Opdater bund</h5>
                 <form method="post" th:action="@{/updateBottom}">
-                    <div class="cupcake-creator-select">
+                    <div class="admin-cupcake-select">
                         <select id="bottomSelect" name="bottomId" required>
                             <option value="" disabled selected>Vælg Bund</option>
                             <option th:each="b : ${bottoms}"
@@ -44,15 +42,16 @@
                                     th:text="${b.name}">
                             </option>
                         </select>
-                        <input type="text" name="bottomUpdateFlavour" placeholder="indsæt nyt navn">
-                        <input type="text" name="bottomUpdatePrice" placeholder="indsæt ny pris eg. 5.5">
-                        <button type="submit">Opdater</button>
-                        <p th:value="${cupcakeErrorMesssage}"></p>
                     </div>
+                    <input type="text" name="bottomUpdateFlavour" placeholder="indsæt nyt navn">
+                    <input type="text" name="bottomUpdatePrice" placeholder="indsæt ny pris eg. 5.5">
+                    <button type="submit">Opdater</button>
+                    <p th:value="${cupcakeErrorMesssage}"></p>
                 </form>
 
+                <h5>Opdater topping</h5>
                 <form method="post" th:action="@{/updateTopping}">
-                    <div class="cupcake-creator-select">
+                    <div class="admin-cupcake-select">
                         <select id="toppingSelect" name="toppingId" required>
                             <option value="" disabled selected>Vælg Topping</option>
                             <option th:each="t : ${toppings}"
@@ -60,18 +59,19 @@
                                     th:text="${t.name}">
                             </option>
                         </select>
-                        <input type="text" name="toppingUpdateFlavour" placeholder="Indsæt nyt navn"
-                               th:value="${newToppingFlavour}">
-                        <input type="text" name="toppingUpdatePrice" placeholder="Indsæt ny pris eg. 5.5"
-                               th:value="${newToppingPrice}">
-                        <button type="submit">Opdater</button>
                     </div>
+                    <input type="text" name="toppingUpdateFlavour" placeholder="Indsæt nyt navn"
+                           th:value="${newToppingFlavour}">
+                    <input type="text" name="toppingUpdatePrice" placeholder="Indsæt ny pris eg. 5.5"
+                           th:value="${newToppingPrice}">
+                    <button type="submit">Opdater</button>
                 </form>
             </div>
 
-            <div class="admin-delete-cupcake">
+            <div class="admin-cupcake">
+                <h5>Slet bund</h5>
                 <form method="post" th:action="@{/deleteBottom}">
-                    <div class="cupcake-creator-select">
+                    <div class="admin-cupcake-select">
                         <select id="bottomSelectDelete" name="bottomId" required>
                             <option value="" disabled selected>Vælg Bund</option>
                             <option th:each="b : ${bottoms}"
@@ -79,13 +79,14 @@
                                     th:text="${b.name}">
                             </option>
                         </select>
-                        <button type="submit">Slet bund</button>
-                        <p th:value="${cupcakeErrorMesssage}"></p>
                     </div>
+                    <button type="submit">Slet bund</button>
+                    <p th:value="${cupcakeErrorMesssage}"></p>
                 </form>
 
+                <h5>Slet topping</h5>
                 <form method="post" th:action="@{/deleteTopping}">
-                    <div class="cupcake-creator-select">
+                    <div class="admin-cupcake-select">
                         <select id="toppingSelectDelete" name="toppingId" required>
                             <option value="" disabled selected>Vælg Topping</option>
                             <option th:each="t : ${toppings}"
@@ -93,14 +94,12 @@
                                     th:text="${t.name}">
                             </option>
                         </select>
-                        <button type="submit">Slet topping</button>
                     </div>
+                    <button type="submit">Slet topping</button>
                 </form>
             </div>
 
-        </div>
-
-    </section>
+        </section>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
