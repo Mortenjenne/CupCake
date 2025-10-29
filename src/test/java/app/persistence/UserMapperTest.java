@@ -192,11 +192,11 @@ class UserMapperTest
         assertEquals("peter@test.dk", newUser.getEmail());
         assertEquals(4, newUser.getUserId());
         assertEquals(0.0, newUser.getBalance());
-        assertFalse(newUser.isGuest()); // NEW: Test is_guest
+        assertFalse(newUser.isGuest());
     }
 
     @Test
-    void testCreateGuestUser() throws DatabaseException // NEW TEST
+    void testCreateGuestUser() throws DatabaseException
     {
         User guestUser = userMapper.createGuestUser(
                 "Guest",
@@ -225,7 +225,7 @@ class UserMapperTest
         assertEquals(2000, user.getZipCode());
         assertEquals("Frederiksberg", user.getCity());
         assertEquals(100.0, user.getBalance());
-        assertFalse(user.isGuest()); // NEW
+        assertFalse(user.isGuest());
     }
 
     @Test
@@ -297,15 +297,15 @@ class UserMapperTest
     }
 
     @Test
-    void testUpdateGuestUserBalance() throws DatabaseException // NEW TEST
+    void testUpdateGuestUserBalance() throws DatabaseException
     {
         User guest = userMapper.createGuestUser("Test", "Guest", "testguest@test.dk", 12341234, "Street", 2000);
 
         boolean result = userMapper.updateUserBalance(guest.getUserId(), 100.0);
 
-        assertFalse(result); // Should fail because is_guest = true
+        assertFalse(result);
         User retrieved = userMapper.getUserById(guest.getUserId());
-        assertEquals(0.0, retrieved.getBalance()); // Balance unchanged
+        assertEquals(0.0, retrieved.getBalance());
     }
 
     @Test
@@ -317,7 +317,7 @@ class UserMapperTest
         assertEquals(3, user.getUserId());
         assertEquals("Admin", user.getFirstName());
         assertTrue(user.isAdmin());
-        assertFalse(user.isGuest()); // NEW
+        assertFalse(user.isGuest());
     }
 
     @Test
@@ -335,12 +335,12 @@ class UserMapperTest
     }
 
     @Test
-    void testGuestCannotLogin() throws DatabaseException // NEW TEST
+    void testGuestCannotLogin() throws DatabaseException
     {
         userMapper.createGuestUser("Cannot", "Login", "nologin@test.dk", 11112222, "Street", 2000);
 
         assertThrows(DatabaseException.class,
-                () -> userMapper.login("nologin@test.dk", null)); // Guest has no password
+                () -> userMapper.login("nologin@test.dk", null));
     }
 
     @Test
