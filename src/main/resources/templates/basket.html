@@ -26,9 +26,11 @@
                     <div class="cupcake-box-basket">
                         <img class="bottom-img"
                              th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${o.cupcake.bottom.slug})}"
+                             th:attr="onerror=|this.onerror=null;this.src='@{/images/cupcakes/bottoms/bottom_placeholder.png}'|"
                              alt="bottom">
                         <img class="topping-img"
                              th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${o.cupcake.topping.slug})}"
+                             th:attr="onerror=|this.onerror=null;this.src='@{/images/cupcakes/toppings/topping_placeholder.png}'|"
                              alt="topping">
                     </div>
                     <div class="cupcake-card-info">

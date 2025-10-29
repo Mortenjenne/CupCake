@@ -97,9 +97,11 @@
             <div class="cupcake-summary">
                 <img class="bottom-img-small"
                      th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${orderLine.cupcake.bottom.slug})}"
+                     th:attr="onerror=|this.onerror=null;this.src='@{/images/cupcakes/bottoms/bottom_placeholder.png}'|"
                      alt="bottom">
                 <img class="topping-img-small"
                      th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${orderLine.cupcake.topping.slug})}"
+                     th:attr="onerror=|this.onerror=null;this.src='@{/images/cupcakes/toppings/topping_placeholder.png}'|"
                      alt="topping">
             </div>
         </div>
