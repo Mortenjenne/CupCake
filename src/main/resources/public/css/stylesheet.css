@@ -1293,6 +1293,273 @@ select option {
     margin-bottom: 3rem;
 }
 
+/*------ ADMIN VIEWS CSS (Orders & Customers) ------*/
+
+.orders-view,
+.customer-info,
+.customer-view {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.orders-view h1,
+.customer-info h1,
+.customer-view h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.orders-view h2,
+.customer-info h2,
+.customer-view h2 {
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Search Section */
+.order-search,
+.customer-search {
+    background: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.order-search h2,
+.customer-search h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-form select,
+.search-form input[type="text"] {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 8px;
+    padding: .8rem 1rem;
+    background: rgb(from #231A12 r g b / 0.25);
+    color: var(--color-text-base);
+    font: inherit;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.search-form select {
+    min-width: 200px;
+    background-image: url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
+      <path d='M7 10l5 5 5-5' fill='none' stroke='palegoldenrod' stroke-width='2' stroke-linecap='round'/>\
+    </svg>");
+    background-repeat: no-repeat;
+    background-position: right .9rem center;
+    background-size: 1rem;
+    padding-right: 3rem;
+}
+
+.search-form input[type="text"] {
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-form input[type="text"]::placeholder {
+    color: color-mix(in srgb, var(--color-text-base) 65%, white);
+}
+
+.search-form select:hover,
+.search-form input[type="text"]:hover {
+    border-color: var(--button-hover);
+}
+
+.search-form select:focus,
+.search-form input[type="text"]:focus {
+    outline: none;
+    border-color: var(--button-hover);
+    background-color: rgb(from #231A12 r g b / 0.35);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
+}
+
+.search-button,
+.reset-button {
+    background-color: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-weight: var(--fw-semibold);
+    color: var(--color-text-base);
+    text-decoration: none;
+    transition: transform .06s ease, border-color .15s ease, background-color .15s ease;
+    cursor: pointer;
+    display: inline-block;
+    font: inherit;
+}
+
+.search-button:hover,
+.reset-button:hover {
+    border-color: var(--button-hover);
+    background-color: rgb(from #231A12 r g b / 0.55);
+}
+
+.search-button:active,
+.reset-button:active {
+    transform: translateY(1px);
+}
+
+/* Success/Error Messages */
+.success-message,
+.error-message {
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.success-message {
+    background: #1a5f3033;
+    border: 1px solid #b5ffb5;
+    color: #dcffdc;
+}
+
+.error-message {
+    background: #5f1a1a33;
+    border: 1px solid #ffb5b5;
+    color: #ffd5d5;
+}
+
+.success-message p,
+.error-message p {
+    margin: 0;
+}
+
+
+.orders-table,
+.customer-details {
+    background: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+}
+
+.customer-details h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.orders-table table,
+.customer-details table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-small);
+}
+
+.orders-table th,
+.customer-details th {
+    background: rgb(from #231A12 r g b / 0.3);
+    padding: 1rem;
+    text-align: left;
+    font-weight: var(--fw-semibold);
+    border-bottom: 2px solid var(--bg-overlay-medium);
+    white-space: nowrap;
+}
+
+.orders-table td,
+.customer-details td {
+    padding: 1rem;
+    border-bottom: 1px solid rgb(from #231A12 r g b / 0.2);
+}
+
+.orders-table tbody tr:hover,
+.customer-details tbody tr:hover {
+    background: rgb(from #231A12 r g b / 0.2);
+}
+
+/* Status badges */
+.status-unpaid,
+.status-paid {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 1rem;
+    font-size: var(--font-xsmall);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+}
+
+.status-unpaid {
+    background: #5f1a1a66;
+    border: 1px solid #ffb5b5;
+    color: #ffd5d5;
+}
+
+.status-paid {
+    background: #1a5f3066;
+    border: 1px solid #b5ffb5;
+    color: #dcffdc;
+}
+
+/* Action buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.action-buttons form {
+    margin: 0;
+}
+
+.action-btn,
+.icon-button {
+    background: rgb(from #231A12 r g b / 0.4);
+    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    border-radius: 6px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: border-color .15s ease, background-color .15s ease, transform .06s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn img,
+.icon-button img {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.action-btn:hover,
+.icon-button:hover {
+    border-color: var(--button-hover);
+    background-color: rgb(from #231A12 r g b / 0.55);
+}
+
+.action-btn:active,
+.icon-button:active {
+    transform: translateY(1px);
+}
+
+.delete-btn:hover {
+    border-color: #ff6b6b;
+    background-color: #5f1a1a66;
+}
+
+.paid-btn:hover {
+    border-color: #6bff6b;
+    background-color: #1a5f3066;
+}
+
 /*------ MEDIA CSS ------*/
 
 @media (prefers-contrast: more) {
