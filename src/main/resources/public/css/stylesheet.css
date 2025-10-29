@@ -550,6 +550,7 @@ select option {
 /*------ Login BODY CSS ------*/
 .login-container {
     display: flex;
+    width: min(700px, 90%);
     flex-direction: column;
     align-items: center;
     margin-inline: auto;
@@ -563,10 +564,8 @@ select option {
     gap: 1rem;
 }
 
-
-.login-email-field input,
-.login-password-field input,
-.login-input {
+.login-field input,
+.login-input, .login-form input {
     width: 100%;
     appearance: none;
     border: 2px solid rgb(from #231A12 r g b / 0.4);
