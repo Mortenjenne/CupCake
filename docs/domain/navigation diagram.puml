@@ -1,0 +1,32 @@
+@startuml
+title Cupcake Shop – Navigation Diagram
+
+[*] --> Index
+
+Index --> AuthProcess : Login / Create Account
+Index --> CreateCupcake : Start Ordering (Guest)
+
+AuthProcess --> LoggedIn : Login Success / Account Created
+AuthProcess --> Index : Cancel
+
+state LoggedIn {
+  LoggedIn --> CreateCupcake : Start Ordering
+  CreateCupcake --> MyPage : View Profile / Orders / Balance
+  MyPage --> CreateCupcake : Start Ordering
+}
+
+' Guest & Logged-in shared flow
+CreateCupcake --> Basket : Add to Basket
+Basket --> Checkout : Checkout
+Checkout --> Payment : Enter Payment Info
+Checkout --> Payment : Payment Info [LoggedIn]
+Payment --> OrderConfirmed : Payment Complete
+OrderConfirmed --> Index : Return to Index
+
+' Admin flows
+state LoggedIn_isAdmin{
+Index -> CupcakeEditor : Add Flavours
+Index --> Orders : See Active & Previous Orders
+Index -> Customers : See Customers in System
+}
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+|Guest|
+start
+:Browse Cupcakes;
+if (Login or Create Account?) then (Login)
+  |LoggedInUser|
+  :Authenticate;
+  if (Success?) then (yes)
+    :Go to Browsing as Logged-in User;
+  else (no)
+    |Guest|
+    :Continue as Guest;
+  endif
+else (Guest)
+  :Continue Browsing as Guest;
+endif
+
+|Guest|
+:Select Cupcakes;
+:Add to Basket;
+
+|LoggedInUser|
+:Optionally View MyPage / Orders;
+
+|Guest|
+:Proceed to Basket;
+|System|
+:Calculate Total;
+|Guest|
+:Proceed to Checkout;
+
+|System|
+:Request Payment Info;
+
+|Guest|
+:Enter Payment Info;
+
+|System|
+:Process Payment;
+if (Payment Successful?) then (yes)
+  :Confirm Order;
+else (no)
+  |Guest|
+  :Show Error / Retry Payment;
+  - Retry Loop
+endif
+
+stop
+@enduml
