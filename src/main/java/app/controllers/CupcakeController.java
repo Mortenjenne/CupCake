@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.entities.Bottom;
 import app.entities.Topping;
+import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.services.CupcakeService;
 import io.javalin.Javalin;
@@ -34,12 +35,24 @@ public class CupcakeController
 
     private void showCupcakes(Context ctx) throws DatabaseException
     {
+        User currentUser = ctx.sessionAttribute("currentUser");
+
+        if (currentUser == null)
+        {
+            ctx.attribute("errorMessage", "Du skal være logget ind for at se denne side");
+            ctx.redirect("/login");
+            return;
+        }
+
+        validateCurrentUserIsAdmin(ctx, currentUser);
+
         var model = new HashMap<String, Object>();
 
         model.put("bottoms", cupcakeService.getAllBottoms());
         model.put("toppings", cupcakeService.getAllToppings());
 
         ctx.render("cupcakes.html", model);
+
     }
 
     private void createBottom(Context ctx) throws DatabaseException
@@ -154,5 +167,14 @@ public class CupcakeController
         cupcakeService.deleteToppingFlavour(cupcakeService.getToppingById(toppingId));
 
         ctx.redirect("/cupcakes");
+    }
+
+    private void validateCurrentUserIsAdmin(Context ctx, User currentUser)
+    {
+        if (currentUser == null || !currentUser.isAdmin())
+        {
+            ctx.attribute("errorMessage", "Du har ikke adgang til denne side");
+            ctx.redirect("/");
+        }
     }
 }
