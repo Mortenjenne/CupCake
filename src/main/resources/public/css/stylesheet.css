@@ -1293,7 +1293,7 @@ select option {
     margin-bottom: 3rem;
 }
 
-/*------ ADMIN VIEWS CSS (Orders & Customers) ------*/
+/*------ ADMIN / CUSTOMER VIEWS CSS (Orders & Customers) ------*/
 
 .orders-view,
 .customer-info,
@@ -1515,14 +1515,15 @@ select option {
     align-items: center;
 }
 
+
 .action-buttons form {
     margin: 0;
 }
 
 .action-btn,
 .icon-button {
-    background: rgb(from #231A12 r g b / 0.4);
-    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    background: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
     border-radius: 6px;
     padding: 0.5rem;
     cursor: pointer;
