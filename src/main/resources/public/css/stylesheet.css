@@ -1318,7 +1318,6 @@ select option {
     margin-bottom: 1rem;
 }
 
-/* Search Section */
 .order-search,
 .customer-search {
     background: var(--bg-overlay-medium);
@@ -1415,7 +1414,6 @@ select option {
     transform: translateY(1px);
 }
 
-/* Success/Error Messages */
 .success-message,
 .error-message {
     margin-bottom: 1.5rem;
@@ -1478,6 +1476,15 @@ select option {
 .customer-details td {
     padding: 1rem;
     border-bottom: 1px solid rgb(from #231A12 r g b / 0.2);
+    vertical-align: middle;
+}
+
+.customer-details td:last-child {
+    text-align: center;
+}
+
+.customer-details th:last-child {
+    text-align: center;
 }
 
 .orders-table tbody tr:hover,
@@ -1485,7 +1492,6 @@ select option {
     background: rgb(from #231A12 r g b / 0.2);
 }
 
-/* Status badges */
 .status-unpaid,
 .status-paid {
     display: inline-block;
@@ -1508,13 +1514,11 @@ select option {
     color: #dcffdc;
 }
 
-/* Action buttons */
 .action-buttons {
     display: flex;
     gap: 0.5rem;
     align-items: center;
 }
-
 
 .action-buttons form {
     margin: 0;
