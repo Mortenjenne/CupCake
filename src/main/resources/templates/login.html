@@ -12,39 +12,38 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div class="login-container">
-        <h1>Log ind eller opret en konto</h1>
+    <div class="login-container"></div>
+    <h1>Log ind på din konto, eller opret en</h1>
+    <form th:action="@{/login}" method="post">
 
-        <form th:action="@{/login}" method="post" class="login-form">
-            <div class="login-field">
-                <input class="login-input" type="text" placeholder="Email" id="email" name="email">
-            </div>
-
-            <div class="login-field">
-                <input class="login-input" type="password" placeholder="Kodeord" id="password" name="password">
-            </div>
-
-            <button type="submit">Log in</button>
-        </form>
-
-        <div th:if="${errorMessage != null}" class="error-succes-label">
-            <p id="error-message" class="error"
-               th:if="${errorMessage != null}"
-               th:text="${errorMessage}">
-            </p>
+        <div class="login-container">
+        <label for="email">Indtast email</label>
+        <input type="text" placeholder="Indtast email" id="email" name="email">
         </div>
 
-        <div th:if="${session.succesMessage}" class="error-succes-label">
-            <p class="success" th:if="${session.succesMessage}" th:text="${session.succesMessage}"></p>
+        <div class="login-container">
+        <label for="password">Indtast password</label>
+        <input type="password" placeholder="Indtast password" id="password" name="password">
         </div>
-
-        <div class="createaccount-link">
-            <label for="createuser">Ingen Konto?</label>
-            <a th:href="@{/create-user}" id="createuser">Opret en her!</a>
-        </div>
+        <button type="submit">Log in</button>
+    </form>
+    <div class="error-succes-label">
+    <p id="error-message" class="error"
+       th:if="${errorMessage != null}"
+       th:text="${errorMessage}">
+    </p>
     </div>
-</main>
+    <div class="error-succes-label">
+        <p class="success" th:if="${session.succesMessage}" th:text="${session.succesMessage}"></p>
+    </div>
 
+    <div class="createaccount-link">
+        <label for="createuser">No account? Create user below</label>
+        <a th:href="@{/create-user}" id="createuser">Create user</a>
+    </div>
+
+
+</main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
 

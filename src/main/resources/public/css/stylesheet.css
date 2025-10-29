@@ -251,8 +251,6 @@ button:hover {
     padding-bottom: 0.5rem;
 }
 
-
-/*------ Index Cupcake Creator CSS ------*/
 .cupcake-creator form {
     display: flex;
     flex-direction: row;
@@ -260,21 +258,21 @@ button:hover {
     padding: 1rem clamp(4rem, 6vw, 8rem);
 }
 
+/* Custom select-container */
 .cupcake-creator-select {
     position: relative;
     display: inline-block;
     width: min(250px, 90vw);
 }
 
+/* Selve <select> */
 .cupcake-creator-select select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 
     width: 100%;
-
     padding: .8rem 3rem .8rem 1rem; /* plads til pilen */
-
     border: 2px solid rgb(from #231A12 r g b / 0.4);
     border-radius: 5px;
     background: /* pil (inline SVG) */ url("data:image/svg+xml;utf8,\
@@ -287,6 +285,7 @@ button:hover {
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
+/* Hover/focus states */
 .cupcake-creator-select select:hover {
     border-color: var(--button-hover);
 }
@@ -310,7 +309,7 @@ select option {
 }
 
 .cupcake-creator-select select option {
-    background-color: rgb(from #231A12 r g b / 0.7);
+    background-color: rgb(from #231A12 r g b / 0.7); /* darker translucent brown */
     color: var(--color-text-base);
 }
 
@@ -527,6 +526,7 @@ select option {
     cursor: pointer;
 }
 
+
 .rowQuantity {
     display: flex;
     justify-content: center;
@@ -538,7 +538,6 @@ select option {
 .rowQuantity p {
     margin-bottom: 0.4rem;
 }
-
 
 /*------ CHECKOUT PAGES CSS ------*/
 
@@ -741,211 +740,19 @@ select option {
 }
 
 .delivery-time-picker select {
-
-/*------ Login BODY CSS ------*/
-.login-container {
-    display: flex;
-    width: min(700px, 90%);
-    flex-direction: column;
-    align-items: center;
-    margin-inline: auto;
-    padding: 1.25rem 1.5rem;
-    gap: 1rem;
-}
-
-.login-form {
-    width: 80%;
-    display: grid;
-    gap: 1rem;
-}
-
-.login-field input,
-.login-input, .login-form input {
-    width: 100%;
-    appearance: none;
-    border: 2px solid rgb(from #231A12 r g b / 0.4);
-    border-radius: 8px;
-    padding: .8rem 1rem;
-    background: rgb(from #231A12 r g b / 0.25);
-    color: var(--color-text-base);
-    font: inherit;
-    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
-}
-
-.login-input::placeholder {
-    color: color-mix(in srgb, var(--color-text-base) 65%, white);
-}
-
-.login-input:focus {
-    outline: none;
-    border-color: var(--button-hover);
-    background-color: rgb(from #231A12 r g b / 0.35);
-    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
-}
-
-.login-container button {
-    background-color: rgb(from #231A12 r g b / 0.4);
-    border: 2px solid rgb(from #231A12 r g b / 0.4);
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
-    font-weight: var(--fw-semibold);
-    color: var(--color-text-base);
-    transition: transform .06s ease, border-color .15s ease, background-color .15s ease;
-}
-.login-container button:hover {
-    border-color: var(--button-hover);
-    background-color: rgb(from #231A12 r g b / 0.55);
-}
-.login-container button:active {
-    transform: translateY(1px);
-}
-
-.error-succes-label {
-    width: auto;
-    max-width: 600px;
-    margin-inline: auto;
-}
-
-.error {
-    background: #5f1a1a33;
-    border: 1px solid #ffb5b5;
-    color: #ffd5d5;
-    padding: .6rem .8rem;
-    border-radius: 6px;
-}
-
-.success {
-    background: #1a5f3033;
-    border: 1px solid #b5ffb5;
-    color: #dcffdc;
-    padding: .6rem .8rem;
-    border-radius: 6px;
-}
-
-.createaccount-link {
-    display: flex;
-    gap: .5rem;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-small);
-}
-.createaccount-link a:hover {
-    text-decoration: underline;
-}
-
-
-.tooltip {
-    visibility: hidden;
-    background: #333;
-    color: #fff;
-    padding: 8px;
-    border-radius: 6px;
-    position: absolute;
-    width: 200px;
-    font-size: var(--font-small);
-    z-index: 10;
-}
-
-.login-field:hover .tooltip {
-    visibility: visible;
-}
-
-/*------ CUPCAKES.HTML CSS ------*/
-.admin-cupcake-body{
-    width: 80%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-.admin-cupcake-body h5{
-    margin-bottom: 0.5rem;
-}
-
-.admin-cupcake{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    width: 30%;
-}
-
-.admin-cupcake form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 50%;
-    width: 75%;
-    gap: 0.5rem;
-}
-
-.admin-cupcake form button{
-    align-items: center;
-}
-
-.admin-cupcake-body input{
-    width: 90%;
-    appearance: none;
-    border: 2px solid rgb(from #231A12 r g b / 0.4);
-    border-radius: 8px;
-    padding: .8rem 1rem;
-    background: rgb(from #231A12 r g b / 0.25);
-    color: var(--color-text-base);
-    font: inherit;
-    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
-}
-
-.admin-cupcake-body input::placeholder{
-    color: color-mix(in srgb, var(--color-text-base) 65%, white);
-}
-
-.admin-cupcake-body input:focus{
-    outline: none;
-    border-color: var(--button-hover);
-    background-color: rgb(from #231A12 r g b / 0.35);
-    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
-}
-
-.admin-cupcake-body button{
-    background-color: rgb(from #231A12 r g b / 0.4);
-    border: 2px solid rgb(from #231A12 r g b / 0.4);
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
-    font-weight: var(--fw-semibold);
-    color: var(--color-text-base);
-    transition: transform .06s ease, border-color .15s ease, background-color .15s ease;
-}
-
-.admin-cupcake-body button:hover{
-    border-color: var(--button-hover);
-    background-color: rgb(from #231A12 r g b / 0.55);
-}
-
-.admin-cupcake-body button:active{
-    transform: translateY(1px);
-}
-
-.admin-cupcake-select {
-    position: relative;
-    display: inline-block;
-    width: 90%;
-}
-
-.admin-cupcake-select select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 
-    width: 100%;
+    width: 20%;
     padding: .8rem 3rem .8rem 1rem;
-    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    border: 2px solid var(--bg-overlay-medium);
     border-radius: 5px;
-    background:
-        /* pil (inline SVG) */
-            url("data:image/svg+xml;utf8,\
+    background: /* pil (inline SVG) */ url("data:image/svg+xml;utf8,\
     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
       <path d='M7 10l5 5 5-5' fill='none' stroke='palegoldenrod' stroke-width='2' stroke-linecap='round'/>\
     </svg>") no-repeat right .9rem center / 1rem,
-            rgb(from #231A12 r g b / 0.4);
+    rgb(from #231A12 r g b / 0.4);
     color: var(--color-text-base);
     font: inherit;
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
@@ -1032,21 +839,6 @@ select option {
 }
 
 .delivery-time-picker select option[disabled][selected] {
-.admin-cupcake-select select:hover {
-    border-color: var(--button-hover);
-}
-
-.admin-cupcake-select select:focus {
-    outline: none;
-    border-color: rgb(from #231A12 r g b / 0.4);
-    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
-}
-
-.admin-cupcake-select select:required:invalid {
-    color: color-mix(in srgb, var(--color-text-base) 60%, white);
-}
-
-.admin-cupcake-select select option[disabled][selected] {
     color: color-mix(in srgb, var(--color-text-base) 60%, white);
 }
 
@@ -1120,10 +912,6 @@ select option {
     }
 }
 
-.admin-cupcake-select select option {
-    background-color: rgb(from #231A12 r g b / 0.7);
-    color: var(--color-text-base);
-}
 
 /* FOOTER */
 
