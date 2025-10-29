@@ -4,7 +4,6 @@
     <meta charset="UTF-8"/>
     <title>Olsker Cupcakes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
     <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
 </head>
 <body>
@@ -21,10 +20,18 @@
                 <input class="login-input" type="email" id="email" name="email"
                        th:value="${email}" placeholder="Email" required>
             </div>
+
             <div class="login-field">
                 <input class="login-input" type="password" id="password1" name="password1"
                        placeholder="Kodeord" required>
+                <div class="tooltip">
+                    Kodeord skal indeholde:<br>
+                    • Min. 8 karakterer<br>
+                    • Min. 1 stort bogstav<br>
+                    • Min. 1 tal
+                </div>
             </div>
+
             <div class="login-field">
                 <input class="login-input" type="password" id="password2" name="password2"
                        placeholder="Gentag kodeord" required>
@@ -57,14 +64,14 @@
             <button type="submit">Opret Bruger</button>
 
         </form>
-    </div>
 
-    <!-- Fejl / succes beskeder i samme wrapper som login -->
-    <div th:if="${errorMessage != null}" class="error-succes-label">
-        <p id="error-message" class="error" th:text="${errorMessage}"></p>
-    </div>
-    <div th:if="${session.succesMessage}" class="error-succes-label">
-        <p class="success" th:text="${session.succesMessage}"></p>
+        <div th:if="${errorMessage != null}" class="error-succes-label">
+            <p id="error-message" class="error" th:text="${errorMessage}"></p>
+        </div>
+        <div th:if="${session.succesMessage}" class="error-succes-label">
+            <p class="success" th:text="${session.succesMessage}"></p>
+        </div>
+
     </div>
 
 </main>
