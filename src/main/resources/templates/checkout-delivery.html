@@ -22,7 +22,7 @@
         <div class="delivery">
             <form th:action="@{/checkout/delivery}" method="post">
                 <div class="delivery-method">
-                    <h3>Vælg leveringsmetode</h3>
+                    <h3 class="group-title">Vælg leveringsmetode</h3>
 
                     <div class="delivery-option">
                         <input type="radio" id="pickup" name="deliveryMethod" value="pickup" required checked>
@@ -45,20 +45,24 @@
 
                 <div class="delivery-datetime">
                     <h3>Vælg afhentningsdato og tid</h3>
-                    <p class="info-text">Butikkens åbningstider: Tir-Fre 12:30-17:30, Lør-Søn 10:00-18:00, Man lukket</p>
+                    <p class="info-text">Butikkens åbningstider:</p>
+                    <p class="info-text">Mandag - LUKKET</p>
+                    <p class="info-text">Tirsdag - Fredag 12:30-17:30</p>
+                    <p class="info-text">Lørdag - Søndag 10:00-18:00</p>
 
                     <div class="delivery-date-picker">
-                        <label for="pickup-date">Vælg dato</label>
+                        <label for="pickup-date">Vælg dato:</label>
                         <input type="date"
                                id="pickup-date"
                                name="pickupDate"
                                min="2025-10-28"
                                max="2026-11-26"
+                               placeholder="Vælg en dato"
                                required>
                     </div>
 
                     <div class="delivery-time">
-                        <label for="pickup-time">Vælg tidspunkt</label>
+                        <label for="pickup-time">Vælg tidspunkt:</label>
                         <div class="delivery-time-picker">
                         <select id="pickup-time" name="pickupTime" required>
                             <option value="">Vælg tid</option>

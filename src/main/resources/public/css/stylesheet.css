@@ -709,6 +709,26 @@ select option {
     margin-top: 0.5rem;
 }
 
+.delivery-date-picker{
+    display: flex;
+    flex-direction: column;
+}
+
+.delivery-date-picker input[type="date"]{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 5px;
+    width: 20%;
+
+}
+
+.delivery-date-picker input[type="date"]:focus {
+    outline: none;
+    border-color: var(--bg-overlay-medium);
+}
+
 .delivery-date-picker {
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -725,8 +745,8 @@ select option {
     -moz-appearance: none;
 
     width: 20%;
-    padding: .8rem 3rem .8rem 1rem; /* plads til pilen */
-    border: 2px solid rgb(from #231A12 r g b / 0.4);
+    padding: .8rem 3rem .8rem 1rem;
+    border: 2px solid var(--bg-overlay-medium);
     border-radius: 5px;
     background: /* pil (inline SVG) */ url("data:image/svg+xml;utf8,\
     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
@@ -736,6 +756,55 @@ select option {
     color: var(--color-text-base);
     font: inherit;
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.group-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.group-body{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.group-body-element{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.edit-checkout {
+    background-color: var(--bg-overlay-medium);
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    color: var(--color-text-base);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+}
+
+.input-group label {
+    margin-top: 0.5rem;
+}
+
+.button-group{
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .checkout-button {
@@ -761,7 +830,7 @@ select option {
 
 .delivery-time-picker select:focus {
     outline: none;
-    border-color: rgb(from #231A12 r g b / 0.4);
+    border-color: var(--bg-overlay-medium);
     box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
 }
 
@@ -782,10 +851,52 @@ select option {
     color: var(--color-text-base);
 }
 
+.customer-info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group input {
+    width: 100%;
+    appearance: none;
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 8px;
+    padding: .8rem 1rem;
+    background: rgb(from #231A12 r g b / 0.25);
+    color: var(--color-text-base);
+    font: inherit;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.input-group input::placeholder {
+    color: color-mix(in srgb, var(--color-text-base) 65%, white);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--button-hover);
+    background-color: rgb(from #231A12 r g b / 0.35);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-darkest-brown) 25%, transparent);
+}
+
 .payment-description {
     font-size: var(--font-small);
     margin-top: 0.5rem;
     opacity: 0.8;
+}
+
+.checkout-confirmed-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-complete {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 3rem;
 }
 
 @media (max-width: 968px) {

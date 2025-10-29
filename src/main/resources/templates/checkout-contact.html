@@ -13,93 +13,109 @@
 <main>
     <div class="checkout-wrapper">
         <h1>Checkout</h1>
-    <div class="step-info">
-        <h2>Kontaktinformation</h2>
-        <p class="checkout-step">Trin 2 af 3</p>
-    </div>
-    <div class="checkout-container">
-    <section>
-
-        <div class="delivery-info">
-            <h3>Levering</h3>
-            <a th:href="@{/checkout/delivery}">Ret</a>
-
-            <p><strong>Leveringsmetode:</strong>
-                <span th:if="${session.deliveryMethod == 'pickup'}">Afhent i butik (0 kr.)</span>
-                <span th:if="${session.deliveryMethod == 'delivery'}">Hjemmelevering med Olsker Express (29 kr.)</span>
-            </p>
-
-            <p><strong>Dato:</strong>
-                <span th:text="${#temporals.format(session.pickUp, 'dd-MM-yyyy')}"></span>
-            </p>
-
-            <p><strong>Tidspunkt:</strong>
-                <span th:text="${#temporals.format(session.pickUp, 'HH:mm')}"></span>
-            </p>
+        <div class="step-info">
+            <h2>Kontaktinformation</h2>
+            <p class="checkout-step">Trin 2 af 3</p>
         </div>
+        <div class="checkout-container">
+            <section>
 
-        <div class="customer-info">
-            <form th:action="@{/checkout/contact-info}" method="post">
-                <div class="create-group">
-                    <label>Fornavn</label>
-                    <input type="text" name="firstName" th:value="${currentUser != null} ? ${currentUser.firstName} : ''" required>
-                </div>
+                <div class="delivery-info">
+                    <h3 class="group-title">Levering</h3>
+                    <div class="group-body">
+                        <div class="group-body-element">
+                            <p><strong>Leveringsmetode:</strong>
+                                <span th:if="${session.deliveryMethod == 'pickup'}">Afhent i butik (0 kr.)</span>
+                                <span th:if="${session.deliveryMethod == 'delivery'}">Hjemmelevering med Olsker Express (29 kr.)</span>
+                            </p>
 
-                <div class="create-group">
-                    <label>Efternavn</label>
-                    <input type="text" name="lastName" th:value="${currentUser != null} ? ${currentUser.lastName} : ''" required>
-                </div>
+                            <p><strong>Dato:</strong>
+                                <span th:text="${#temporals.format(session.pickUp, 'dd-MM-yyyy')}"></span>
+                            </p>
 
-                <div class="create-group">
-                    <label for="phoneNumber">Telefonnummer</label>
-                    <input type="text" id="phoneNumber" name="phoneNumber" th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
-                </div>
-
-                <div class="create-group">
-                    <label>Email</label>
-                    <input type="email" name="email" th:value="${currentUser != null} ? ${currentUser.email} : ''" required>
-                </div>
-
-                <div th:if="${deliveryMethod == 'delivery'}">
-                    <h3>Leveringsadresse</h3>
-
-                    <div class="create-group">
-                        <label>Adresse</label>
-                        <input type="text" name="street" th:value="${currentUser != null} ? ${currentUser.street} : ''" required>
-                    </div>
-
-                    <div class="create-group">
-                        <label>By</label>
-                        <input type="text" name="city" th:value="${currentUser != null} ? ${currentUser.city} : ''" required>
-                    </div>
-
-                    <div class="create-group">
-                        <label>Postnummer</label>
-                        <input type="text" name="zipCode" th:value="${currentUser != null} ? ${currentUser.zipCode} : ''" required>
+                            <p><strong>Tidspunkt:</strong>
+                                <span th:text="${#temporals.format(session.pickUp, 'HH:mm')}"></span>
+                            </p>
+                        </div>
+                        <div class="edit-group">
+                            <a class="edit-checkout" th:href="@{/checkout/delivery}">Ret</a>
+                        </div>
                     </div>
                 </div>
 
-                <div class="button-group">
-                    <a th:href="@{/checkout/delivery}" class="button-secondary">Tilbage</a>
-                    <button class="checkout-button" type="submit">Fortsæt til betaling</button>
+                <div class="customer-info">
+                    <h3 class="group-title">Indtast kontaktinformation</h3>
+                    <div class="customer-info-group">
+                    <form th:action="@{/checkout/contact-info}" method="post">
+                        <div class="input-group">
+                            <label>Fornavn</label>
+                            <input type="text" name="firstName"
+                                   th:value="${currentUser != null} ? ${currentUser.firstName} : ''" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Efternavn</label>
+                            <input type="text" name="lastName"
+                                   th:value="${currentUser != null} ? ${currentUser.lastName} : ''" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="phoneNumber">Telefonnummer</label>
+                            <input type="text" id="phoneNumber" name="phoneNumber"
+                                   th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" name="email"
+                                   th:value="${currentUser != null} ? ${currentUser.email} : ''" required>
+                        </div>
+
+                        <div th:if="${deliveryMethod == 'delivery'}">
+                            <h3>Leveringsadresse</h3>
+
+                            <div class="input-group">
+                                <label>Adresse</label>
+                                <input type="text" name="street"
+                                       th:value="${currentUser != null} ? ${currentUser.street} : ''" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label>By</label>
+                                <input type="text" name="city"
+                                       th:value="${currentUser != null} ? ${currentUser.city} : ''" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Postnummer</label>
+                                <input type="text" name="zipCode"
+                                       th:value="${currentUser != null} ? ${currentUser.zipCode} : ''" required>
+                            </div>
+                        </div>
+
+                     </div>
+
+                        <div class="button-group">
+                            <a th:href="@{/checkout/delivery}" class="checkout-button">Tilbage</a>
+                            <button class="checkout-button" type="submit">Fortsæt til betaling</button>
+                        </div>
+
+                        <p id="error-message" class="error"
+                           th:if="${errorMessage != null}"
+                           th:text="${errorMessage}">
+                        </p>
+                    </form>
                 </div>
+            </section>
 
-                <p id="error-message" class="error"
-                   th:if="${errorMessage != null}"
-                   th:text="${errorMessage}">
-                </p>
-            </form>
+            <aside class="checkout-summary">
+                <h3>Din bestilling</h3>
+                <div th:replace="fragments :: orderLinePostCard"></div>
+                <div class="summary-total">
+                    <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr</p>
+                </div>
+            </aside>
         </div>
-    </section>
-
-    <aside class="checkout-summary">
-        <h3>Din bestilling</h3>
-        <div th:replace="fragments :: orderLinePostCard"></div>
-        <div class="summary-total">
-            <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr</p>
-        </div>
-    </aside>
-    </div>
     </div>
 </main>
 
