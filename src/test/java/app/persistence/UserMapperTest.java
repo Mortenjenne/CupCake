@@ -33,7 +33,6 @@ class UserMapperTest
             {
                 try (Statement stmt = testConnection.createStatement())
                 {
-                    // DROP tables in correct order
                     stmt.execute("DROP TABLE IF EXISTS test.orderlines CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.orders CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.users CASCADE");
@@ -41,7 +40,6 @@ class UserMapperTest
                     stmt.execute("DROP TABLE IF EXISTS test.bottoms CASCADE");
                     stmt.execute("DROP TABLE IF EXISTS test.toppings CASCADE");
 
-                    // CREATE tables with EXPLICIT structure
                     stmt.execute("""
                     CREATE TABLE test.zip_codes (
                         zip_code integer PRIMARY KEY,
@@ -135,7 +133,6 @@ class UserMapperTest
         {
             try (Statement stmt = testConnection.createStatement())
             {
-                // Clear all data in correct order
                 stmt.execute("DELETE FROM test.orderlines");
                 stmt.execute("DELETE FROM test.orders");
                 stmt.execute("DELETE FROM test.users");
@@ -143,27 +140,23 @@ class UserMapperTest
                 stmt.execute("DELETE FROM test.bottoms");
                 stmt.execute("DELETE FROM test.toppings");
 
-                // Reset sequences
                 stmt.execute("SELECT setval('test.users_user_id_seq', 1)");
                 stmt.execute("SELECT setval('test.orders_order_id_seq', 1)");
                 stmt.execute("SELECT setval('test.orderlines_orderline_id_seq', 1)");
                 stmt.execute("SELECT setval('test.bottoms_bottom_id_seq', 1)");
                 stmt.execute("SELECT setval('test.toppings_topping_id_seq', 1)");
 
-                // Insert test data
                 stmt.execute("INSERT INTO test.zip_codes (zip_code, city) VALUES " +
                         "(1000, 'Copenhagen'), " +
                         "(2000, 'Frederiksberg'), " +
                         "(2100, 'København Ø'), " +
                         "(8000, 'Aarhus C')");
 
-                // NOTE: is_guest added to match new schema
                 stmt.execute("INSERT INTO test.users (user_id, firstname, lastname, email, password, phonenumber, street, zip_code, balance, admin, is_guest) VALUES " +
                         "(1, 'Hans', 'Hansen', 'hans@test.dk', 'password123', 12345678, 'Testvej 1', 2000, 100.0, false, false), " +
                         "(2, 'Jens', 'Jensen', 'jens@test.dk', 'password456', 87654321, 'Prøvevej 2', 2100, 200.0, false, false), " +
                         "(3, 'Admin', 'Adminson', 'admin@test.dk', 'admin123', 11111111, 'Adminvej 3', 8000, 0.0, true, false)");
 
-                // Sync sequence after manual inserts
                 stmt.execute("SELECT setval('test.users_user_id_seq', COALESCE((SELECT MAX(user_id)+1 FROM test.users), 1), false)");
             }
         }
@@ -199,11 +192,11 @@ class UserMapperTest
         assertEquals("peter@test.dk", newUser.getEmail());
         assertEquals(4, newUser.getUserId());
         assertEquals(0.0, newUser.getBalance());
-        assertFalse(newUser.isGuest()); // NEW: Test is_guest
+        assertFalse(newUser.isGuest());
     }
 
     @Test
-    void testCreateGuestUser() throws DatabaseException // NEW TEST
+    void testCreateGuestUser() throws DatabaseException
     {
         User guestUser = userMapper.createGuestUser(
                 "Guest",
@@ -232,7 +225,7 @@ class UserMapperTest
         assertEquals(2000, user.getZipCode());
         assertEquals("Frederiksberg", user.getCity());
         assertEquals(100.0, user.getBalance());
-        assertFalse(user.isGuest()); // NEW
+        assertFalse(user.isGuest());
     }
 
     @Test
@@ -304,15 +297,15 @@ class UserMapperTest
     }
 
     @Test
-    void testUpdateGuestUserBalance() throws DatabaseException // NEW TEST
+    void testUpdateGuestUserBalance() throws DatabaseException
     {
         User guest = userMapper.createGuestUser("Test", "Guest", "testguest@test.dk", 12341234, "Street", 2000);
 
         boolean result = userMapper.updateUserBalance(guest.getUserId(), 100.0);
 
-        assertFalse(result); // Should fail because is_guest = true
+        assertFalse(result);
         User retrieved = userMapper.getUserById(guest.getUserId());
-        assertEquals(0.0, retrieved.getBalance()); // Balance unchanged
+        assertEquals(0.0, retrieved.getBalance());
     }
 
     @Test
@@ -324,7 +317,7 @@ class UserMapperTest
         assertEquals(3, user.getUserId());
         assertEquals("Admin", user.getFirstName());
         assertTrue(user.isAdmin());
-        assertFalse(user.isGuest()); // NEW
+        assertFalse(user.isGuest());
     }
 
     @Test
@@ -342,12 +335,12 @@ class UserMapperTest
     }
 
     @Test
-    void testGuestCannotLogin() throws DatabaseException // NEW TEST
+    void testGuestCannotLogin() throws DatabaseException
     {
         userMapper.createGuestUser("Cannot", "Login", "nologin@test.dk", 11112222, "Street", 2000);
 
         assertThrows(DatabaseException.class,
-                () -> userMapper.login("nologin@test.dk", null)); // Guest has no password
+                () -> userMapper.login("nologin@test.dk", null));
     }
 
     @Test
