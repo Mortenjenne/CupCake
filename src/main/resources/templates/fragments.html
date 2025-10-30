@@ -33,7 +33,7 @@
                 <div th:if="${session.currentUser != null}" class="user-actions">
                     <!-- EMAIL here -->
                     <span class="username" th:text="${session.currentUser.email}"></span>
-                    <a href="mypage.html" th:href="@{/mypage}" class="icon-link">
+                    <a href="mypage.html" th:href="@{/user/orders}" class="icon-link">
                         <img src="/images/mypage-w.svg" alt="Min side" th:src="@{/images/mypage-w.svg}">
                         <span>Min side</span>
                     </a>
@@ -97,9 +97,11 @@
             <div class="cupcake-summary">
                 <img class="bottom-img-small"
                      th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${orderLine.cupcake.bottom.slug})}"
+                     th:attr="onerror=|this.onerror=null;this.src='@{/images/cupcakes/bottoms/bottom_placeholder.png}'|"
                      alt="bottom">
                 <img class="topping-img-small"
                      th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${orderLine.cupcake.topping.slug})}"
+                     th:attr="onerror=|this.onerror=null;this.src='@{/images/cupcakes/toppings/topping_placeholder.png}'|"
                      alt="topping">
             </div>
         </div>
