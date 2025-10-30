@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Olsker Cupcakes - Om os</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <section class="about-body">
+        <section class="text-box">
+            <div class="hero">
+                <h1 class="text-box-title">Vi er Olsker Cupcakes</h1>
+                <img th:src="@{/images/owners.png}" alt="Jonas Møller and Emil Vang inside Olsker Cupcakes"
+                     id="image-owners">
+                <h1 class="text-box-title">Lidt om os</h1>
+                <p class="text-element">
+                    Hej! Vi er <strong>Jonas Møller</strong> og <strong>Emil Vang</strong> — to barndomsvenner fra
+                    København
+                    med en fælles kærlighed til håndværk, god smag og bæredygtig livsstil.
+                    Efter mange år i storbyen, med jobs i små caféer og kreative madprojekter, længtes vi efter et liv
+                    tættere på naturen.
+                    Det førte os til <em>Bornholm</em> – mere præcist Olsker – hvor vi fandt et gammelt bageri med
+                    historie
+                    i væggene og duften af potentiale i luften.
+                </p>
+                <p class="text-element">
+                    I dag driver vi <strong>Olsker Cupcakes</strong> som et lille, dybdeøkologisk bageri, hvor alt
+                    bliver
+                    lavet fra bunden – med lokale råvarer, omtanke for miljøet og et glimt i øjet.
+                    Vores mål er simpelt: at bringe lidt mere glæde og kvalitet ind i hverdagen – én cupcake ad gangen.
+                </p>
+            </div>
+
+            <section class="text-box">
+                <h2 class="text-box-title">Vores Filosofi</h2>
+                <p class="text-element">
+                    Hos <strong>Olsker Cupcakes</strong> tror vi på, at god smag starter med gode råvarer. Vi bruger kun
+                    <em>økologiske ingredienser</em> fra lokale landbrug og samarbejder tæt med producenter, der deler
+                    vores
+                    værdier.
+                    Hver kage er et lille håndværk, skabt med respekt for naturen og med fokus på enkelhed og ærlighed.
+                </p>
+                <p class="text-element">
+                    Vi går ikke op i pynt for pyntens skyld. Vores cupcakes er rene i udtrykket – men rige i smag.
+                    Du kan selv sammensætte din cupcake med <strong>valgfri bund og topping</strong>, så du får præcis
+                    den
+                    smagsoplevelse, du drømmer om.
+                </p>
+                <p class="text-element">
+                    For os handler bæredygtighed ikke kun om råvarer, men også om rytme. Vi bager i små portioner,
+                    undgår
+                    madspild og bruger komposterbare emballager.
+                    Alt sammen for at sikre, at hver cupcake efterlader et så lille fodaftryk som muligt.
+                </p>
+            </section>
+
+            <section class="text-box">
+                <h2 class="text-box-title">Håndværket Bag Cupcakesene</h2>
+                <p class="text-element">
+                    Vi ser bagning som et møde mellem tradition og innovation. Jonas står for den tekniske del —
+                    præcision,
+                    hævetider og perfekte teksturer —
+                    mens Emil elsker at eksperimentere med nye smage, farver og visuelle udtryk.
+                </p>
+                <p class="text-element">
+                    Vores bunde bliver rørt i hånden, smørret piskes nænsomt, og hver topping laves frisk hver morgen.
+                    Vi bruger bornholmsk smør, æg fra fritgående høns og bær plukket på øen.
+                    Resultatet er cupcakes med en ægte smag af Bornholm – og et strejf af København i stilen.
+                </p>
+            </section>
+
+            <section class="text-box-img">
+                <img th:src="@{/images/storefront.png}" alt="Olsker Cupcakes storefront" id="image-storefront">
+                <div class="text-box-img-text">
+                    <h2 class="text-box-title">Et Bornholmsk Eventyr</h2>
+                    <p class="text-element">
+                        Da vi flyttede til Olsker i 2022, kendte vi ingen. Men vi blev hurtigt taget imod med åbne arme.
+                        Vores første måned solgte vi cupcakes direkte fra et lille vindue i bageriet, mens duften
+                        spredte
+                        sig
+                        ned gennem byen.
+                        I dag leverer vi til hele Nordbornholm og har kunder, der vender tilbage uge efter uge for at
+                        hente
+                        deres yndlingskombinationer.
+                    </p>
+                    <p class="text-element">
+                        Bornholm har lært os tålmodighed og nærvær – og vi forsøger at lade den stemning gennemsyre alt,
+                        vi
+                        laver.
+                    </p>
+                </div>
+            </section>
+
+            <section class="text-box">
+                <h2 class="text-box-title">Fællesskab & Fremtid</h2>
+                <p class="text-element">
+                    Olsker Cupcakes er ikke kun et bageri – det er et samlingspunkt. Vi elsker at møde folk, der deler
+                    vores
+                    passion for smag og håndværk.
+                    Fremover drømmer vi om at arrangere <strong>bageworkshops, lokale events og samarbejder</strong> med
+                    andre bornholmske producenter.
+                </p>
+                <p class="text-element">
+                    Vi arbejder også på et <em>sæsonbaseret sortiment</em>, hvor vi lader naturen bestemme, hvad der
+                    skal på
+                    menuen.
+                    Jordbær i juni, æbler i oktober – og måske en saltkaramel med tang fra kysten til vinter.
+                </p>
+                <p class="text-element">
+                    For os handler det hele om <strong>fællesskab, kvalitet og glæden ved at skabe noget ægte</strong>.
+                </p>
+            </section>
+
+            <section class="text-box-img">
+                <div class="text-box-img-text">
+                    <h2 class="text-box-title">Kig Forbi – og Smag Bornholm i Hver Bid</h2>
+                    <p class="text-element">
+                        Du finder os midt i Olsker, et stenkast fra kirken på bakken.
+                        Bestil dine cupcakes online, betal med din konto og hent dem i butikken, når du alligevel er på
+                        tur
+                        rundt på øen.
+                    </p>
+                    <p class="text-element contact-info">
+                        <strong>Olsker Cupcakes</strong><br>
+                        Olsker Hovedgade 12, 3770 Allinge<br>
+                        +45 55 12 34 56<br>
+                        <a href="mailto:kontakt@olskercupcakes.dk">kontakt@olskercupcakes.dk</a>
+                    </p>
+                </div>
+                <img th:src="@{/images/employee.png}" alt="Employee serving cupcakes inside Olsker Cupcakes"
+                     id="image-employee">
+            </section>
+        </section>
+    </section>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>
