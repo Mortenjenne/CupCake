@@ -45,8 +45,12 @@
            th:text="${errorMessage}">
         </p>
 
-        <div class="back-home">
+        <div th:if="${session.currentUser.isAdmin}" class="back-home">
             <a href="orders.html" th:href="@{/orders}" class="checkout-button">Tilbage til ordrer</a>
+        </div>
+
+        <div th:unless="${session.currentUser.isAdmin}" class="back-home">
+            <a href="orders.html" th:href="@{/user/orders}" class="checkout-button">Tilbage til ordrer</a>
         </div>
     </div>
 </main>
