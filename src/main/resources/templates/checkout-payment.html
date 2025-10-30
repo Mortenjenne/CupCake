@@ -102,13 +102,13 @@
                             <a th:href="@{/checkout/contact-info}" class="checkout-button">Tilbage</a>
                             <button class="checkout-button" type="submit">Gennemfør bestilling</button>
                         </div>
+                    </form>
+                </div>
 
                         <p id="error-message" class="error"
                            th:if="${errorMessage != null}"
                            th:text="${errorMessage}">
                         </p>
-                    </form>
-                </div>
             </section>
 
             <aside class="checkout-summary">
