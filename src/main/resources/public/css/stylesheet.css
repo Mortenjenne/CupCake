@@ -805,7 +805,7 @@ address,
     flex-direction: column;
     justify-content: center;
     gap: 0.5rem;
-    width: 20%;
+    width: 15%;
     min-width: 200px;
     font-style: normal;
     font-size: var(--font-small);
