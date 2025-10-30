@@ -45,7 +45,7 @@ public class OrderController
         {
             List<Order> userOrders = orderService.getAllUserOrders(userDTO);
             List<Order> unpaidOrders = orderService.sortOrdersByPaymentStatus(userOrders, false);
-            List<Order> paidOrders = orderService.sortOrdersByPaymentStatus(unpaidOrders, true);
+            List<Order> paidOrders = orderService.sortOrdersByPaymentStatus(userOrders, true);
             loadErrorAndSuccesMessage(ctx);
             ctx.attribute("unpaidOrders", unpaidOrders);
             ctx.attribute("paidOrders", paidOrders);
