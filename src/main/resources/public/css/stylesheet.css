@@ -1218,7 +1218,6 @@ address p,
     background-color: rgb(from #231A12 r g b / 0.6);
 }
 
-/* Hover/focus states */
 .delivery-time-picker select:hover {
     border-color: var(--button-hover);
 }
@@ -1292,6 +1291,10 @@ select option {
     justify-content: center;
     align-content: center;
     margin-bottom: 3rem;
+}
+
+.checkout-container #error-message{
+    margin-top: 1rem;
 }
 
 /*------ ADMIN / CUSTOMER VIEWS CSS (Orders & Customers) ------*/
