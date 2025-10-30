@@ -143,7 +143,7 @@ public class AdminController
             if (orderService.deleteOrder(orderId, currentUser.getUserId(), false))
             {
                 ctx.redirect("/orders");
-                ctx.attribute("successMesage", "Du har slette ordren med id " + orderId);
+                ctx.attribute("successMessage", "Du har slette ordren med id " + orderId);
             }
             else
             {
@@ -280,7 +280,6 @@ public class AdminController
         {
             double newBalance = Double.parseDouble(ctx.formParam("newBalance"));
             int userId = Integer.parseInt(ctx.formParam("userId"));
-
             userService.addBalance(userId, newBalance);
 
             ctx.sessionAttribute("successMessage", "Balance opdateret!");
@@ -332,7 +331,6 @@ public class AdminController
         {
             ctx.attribute("errorMessage", "Du har ikke adgang til denne side");
             ctx.redirect("/");
-            return;
         }
     }
 
