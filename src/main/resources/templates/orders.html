@@ -4,7 +4,6 @@
     <meta charset="UTF-8"/>
     <title>Ordre - Olsker Cupcakes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
     <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
 </head>
 <body>
@@ -16,32 +15,59 @@
         <h1 th:if="${session.currentUser.isAdmin}">Alle Ordre</h1>
         <h1 th:unless="${session.currentUser.isAdmin}">Mine Ordre</h1>
 
-    <div th:if="${successMessage}" class="success-message">
-        <p th:text="${successMessage}"></p>
-    </div>
+        <div th:if="${session.currentUser.isAdmin}" class="order-search">
+            <h2>Søg efter ordre</h2>
+            <form method="get" th:action="@{/orders/search}">
+                <div class="search-form">
+                    <select name="searchType" required>
+                        <option value="">Vælg søgetype</option>
+                        <option value="id" th:selected="${searchType == 'id'}">Ordre ID</option>
+                        <option value="name" th:selected="${searchType == 'name'}">Kundenavn</option>
+                        <option value="email" th:selected="${searchType == 'email'}">Email</option>
+                    </select>
 
-    <div th:if="${errorMessage}" class="error-message">
-        <p th:text="${errorMessage}"></p>
-    </div>
+                    <input type="text"
+                           name="searchQuery"
+                           th:value="${searchQuery}"
+                           placeholder="Indtast søgeord..."
+                           required>
 
-        <div th:if="${orders != null and !orders.isEmpty()}" class="orders-table">
+                    <button class="search-button" type="submit">Søg</button>
+                    <a th:href="@{/orders}" class="reset-button">Nulstil</a>
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${successMessage}" class="success-message">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <!-- UNPAID Orders -->
+        <h2>Ikke betalt</h2>
+        <div th:if="${unpaidOrders != null and !unpaidOrders.isEmpty()}" class="orders-table">
             <table>
                 <thead>
-                <th>Ordre Id</th>
-                <th th:if="session.currentUser.isAdmin">Kunde</th>
-                <th th:if="session.currentUser.isAdmin">Email</th>
-                <th>Ordre dato</th>
-                <th>Afhentnings dato</th>
-                <th>Total pris</th>
-                <th>Status</th>
-                <th>Handlinger</th>
+                <tr>
+                    <th>Ordre Id</th>
+                    <th th:if="${session.currentUser.isAdmin}">Kunde</th>
+                    <th th:if="${session.currentUser.isAdmin}">Email</th>
+                    <th>Ordre dato</th>
+                    <th>Afhentnings dato</th>
+                    <th>Total pris</th>
+                    <th>Status</th>
+                    <th>Handlinger</th>
+                </tr>
                 </thead>
                 <tbody>
-                <tr th:each="order : ${orders}">
+                <tr th:each="order : ${unpaidOrders}">
                     <td th:text="${order.orderId}"></td>
-                <td th:if="${session.currentUser.isAdmin}">
-                    <span th:text="${order.userDTO.firstName + ' ' + order.userDTO.lastName}"></span>
-                </td>
+                    <td th:if="${session.currentUser.isAdmin}">
+                        <span th:text="${order.userDTO.firstName + ' ' + order.userDTO.lastName}"></span>
+                    </td>
                     <td th:if="${session.currentUser.isAdmin}">
                         <span th:text="${order.userDTO.email}"></span>
                     </td>
@@ -49,8 +75,7 @@
                     <td th:text="${#temporals.format(order.pickUpDate, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${order.totalPrice + ' kr.'}"></td>
                     <td>
-                        <span th:if="${order.paid}" class="status-paid">Betalt</span>
-                        <span th:unless="${order.paid}" class="status-unpaid">Ikke betalt</span>
+                        <span class="status-unpaid">Ikke betalt</span>
                     </td>
                     <td class="action-buttons">
                         <a th:href="@{/orders/details/{id}(id=${order.orderId})}"
@@ -58,13 +83,16 @@
                             <img th:src="@{/images/view-w.svg}" alt="Se detaljer"/>
                         </a>
 
-                        <form th:if="${session.currentUser.isAdmin and !order.paid}" method="post" th:action="@{/orders/mark-paid/{id}(id=${order.orderId})}">
+                        <form th:if="${session.currentUser.isAdmin}" method="post"
+                              th:action="@{/orders/mark-paid/{id}(id=${order.orderId})}">
                             <button type="submit" class="action-btn paid-btn" title="Marker som betalt">
                                 <img th:src="@{/images/check-w.svg}" alt="Marker betalt"/>
                             </button>
                         </form>
 
-                        <form th:if="${session.currentUser.isAdmin}" method="post" th:action="@{/orders/delete/{id}(id=${order.orderId})}" onclick="confirm('Er du sikker på du vil slette ordren?')">
+                        <form th:if="${session.currentUser.isAdmin}" method="post"
+                              th:action="@{/orders/delete/{id}(id=${order.orderId})}"
+                              onsubmit="return confirm('Er du sikker på du vil slette ordren?')">
                             <button type="submit" class="action-btn delete-btn" title="Slet ordre">
                                 <img th:src="@{/images/delete-w.svg}" alt="Slet"/>
                             </button>
@@ -74,6 +102,62 @@
                 </tbody>
             </table>
         </div>
+        <p th:if="${unpaidOrders == null or unpaidOrders.isEmpty()}">
+            Ingen ubetalte ordre
+        </p>
+
+        <!-- PAID Orders -->
+        <h2>Betalt</h2>
+        <div th:if="${paidOrders != null and !paidOrders.isEmpty()}" class="orders-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>Ordre Id</th>
+                    <th th:if="${session.currentUser.isAdmin}">Kunde</th>
+                    <th th:if="${session.currentUser.isAdmin}">Email</th>
+                    <th>Ordre dato</th>
+                    <th>Afhentnings dato</th>
+                    <th>Total pris</th>
+                    <th>Status</th>
+                    <th>Handlinger</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${paidOrders}">
+                    <td th:text="${order.orderId}"></td>
+                    <td th:if="${session.currentUser.isAdmin}">
+                        <span th:text="${order.userDTO.firstName + ' ' + order.userDTO.lastName}"></span>
+                    </td>
+                    <td th:if="${session.currentUser.isAdmin}">
+                        <span th:text="${order.userDTO.email}"></span>
+                    </td>
+                    <td th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(order.pickUpDate, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${order.totalPrice + ' kr.'}"></td>
+                    <td>
+                        <span class="status-paid">Betalt</span>
+                    </td>
+                    <td class="action-buttons">
+                        <a th:href="@{/orders/details/{id}(id=${order.orderId})}"
+                           class="action-btn view-btn">
+                            <img th:src="@{/images/view-w.svg}" alt="Se detaljer"/>
+                        </a>
+
+                        <form th:if="${session.currentUser.isAdmin}" method="post"
+                              th:action="@{/orders/delete/{id}(id=${order.orderId})}"
+                              onsubmit="return confirm('Er du sikker på du vil slette ordren?')">
+                            <button type="submit" class="action-btn delete-btn" title="Slet ordre">
+                                <img th:src="@{/images/delete-w.svg}" alt="Slet"/>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p th:if="${paidOrders == null or paidOrders.isEmpty()}">
+            Ingen betalte ordre
+        </p>
     </div>
 </main>
 

@@ -23,25 +23,64 @@ public class OrderController
     public void addRoutes(Javalin app)
     {
       app.get("/orders", ctx -> showOrderPage(ctx));
+      app.get("/user/orders", ctx -> showUserOrderPage(ctx));
+    }
+
+    private void showUserOrderPage(Context ctx)
+    {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        UserDTO userDTO = new UserDTO(
+                currentUser.getUserId(),
+                currentUser.getFirstName(),
+                currentUser.getLastName(),
+                currentUser.getEmail(),
+                currentUser.getPhoneNumber(),
+                currentUser.getStreet(),
+                currentUser.getZipCode(),
+                currentUser.getCity(),
+                currentUser.getBalance()
+        );
+
+        try
+        {
+            List<Order> userOrders = orderService.getAllUserOrders(userDTO);
+            List<Order> unpaidOrders = orderService.sortOrdersByPaymentStatus(userOrders, false);
+            List<Order> paidOrders = orderService.sortOrdersByPaymentStatus(unpaidOrders, true);
+            loadErrorAndSuccesMessage(ctx);
+            ctx.attribute("unpaidOrders", unpaidOrders);
+            ctx.attribute("paidOrders", paidOrders);
+            ctx.render("orders");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+            ctx.attribute("unpaidOrders", new ArrayList<>());
+            ctx.attribute("paidOrders", new ArrayList<>());
+            ctx.redirect("/orders");
+        }
     }
 
     private void showOrderPage(Context ctx)
     {
         User currentUser = ctx.sessionAttribute("currentUser");
+        int adminId = currentUser.getUserId();
         validateCurrentUserIsAdmin(ctx, currentUser);
 
         try
         {
-            List<Order> orders = orderService.getAllOrders(currentUser.getUserId());
+            List<Order> unpaidOrders = orderService.getAllOrdersByStatusNotPaid(adminId);
+            List<Order> paidOrders = orderService.getAllOrdersByStatusPaid(adminId);
             loadErrorAndSuccesMessage(ctx);
-            ctx.attribute("orders", orders);
-            ctx.render("orders.html");
+            ctx.attribute("unpaidOrders", unpaidOrders);
+            ctx.attribute("paidOrders", paidOrders);
+            ctx.render("orders");
         }
         catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
-            ctx.attribute("orders", new ArrayList<>());
-            ctx.render("orders.html");
+            ctx.attribute("unpaidOrders", new ArrayList<>());
+            ctx.attribute("paidOrders", new ArrayList<>());
+            ctx.redirect("/orders");
         }
     }
 
@@ -51,7 +90,6 @@ public class OrderController
         {
             ctx.attribute("errorMessage", "Du har ikke adgang til denne side");
             ctx.redirect("/");
-            return;
         }
     }
 

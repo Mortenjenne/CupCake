@@ -8,9 +8,7 @@ import app.exceptions.DatabaseException;
 import app.persistence.OrderLineMapper;
 import app.persistence.OrderMapper;
 import app.persistence.UserMapper;
-
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,22 +17,45 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService
 {
     private OrderMapper orderMapper;
+    private OrderLineMapper orderLineMapper;
     private UserMapper userMapper;
 
-    public OrderServiceImpl(OrderMapper orderMapper, UserMapper userMapper)
+    public OrderServiceImpl(OrderMapper orderMapper, OrderLineMapper orderLineMapper, UserMapper userMapper)
     {
         this.orderMapper = orderMapper;
+        this.orderLineMapper = orderLineMapper;
         this.userMapper = userMapper;
     }
 
     @Override
-    public Order createOrder(int userId, List<OrderLine> orderLines, LocalDateTime pickUpDate, boolean payNow) throws DatabaseException
+    public Order createOrder(UserDTO userDTO, List<OrderLine> orderLines, LocalDateTime pickUpDate, boolean payNow) throws DatabaseException
     {
-        User user = userMapper.getUserById(userId);
-        UserDTO userDTO = buildUserDTO(user);
         double totalPrice = calculateTotalPrice(orderLines);
+        int userId = userDTO.getUserId();
 
-        validateUserBalance(payNow, user, totalPrice);
+        if (userId == 0)
+        {
+            if (payNow)
+            {
+                throw new DatabaseException("Gæster kan kun betale ved afhentning");
+            }
+
+        } else
+        {
+            User user = userMapper.getUserById(userId);
+
+            if (payNow)
+            {
+                if (user.getBalance() < totalPrice) {
+                    throw new DatabaseException("Utilstrækkelig saldo. Dit beløb: " + user.getBalance() +
+                            " kr. Ordretotal: " + totalPrice + " kr.");
+                }
+                double newUserBalance = user.getBalance() - totalPrice;
+                userMapper.updateUserBalance(userId, newUserBalance);
+            }
+
+            userDTO = buildUserDTO(user);
+        }
 
         Order order = new Order(
                 0,
@@ -46,14 +67,8 @@ public class OrderServiceImpl implements OrderService
                 totalPrice
         );
 
-        if(payNow)
-        {
-            double newUserBalance = user.getBalance() - totalPrice;
-            userMapper.updateUserBalance(userId, newUserBalance);
-        }
         return orderMapper.createOrder(order);
-        }
-
+    }
 
     @Override
     public List<Order> getAllUserOrders(UserDTO userDTO) throws DatabaseException
@@ -118,67 +133,52 @@ public class OrderServiceImpl implements OrderService
     }
 
     @Override
-    public double getTotalRevenue(int adminId) throws DatabaseException
+    public Order getOrderById(int orderId, int userId) throws DatabaseException
     {
-        validateUserIsAdmin(adminId);
-        List<Order> orders = orderMapper.getAllOrders();
-
-        if (orders == null)
-        {
-            return 0.0;
-        }
-        return orders.stream()
-                .filter(Order::isPaid)
-                .mapToDouble(Order::getTotalPrice)
-                .sum();
+        return orderMapper.getOrderByOrderId(orderId, userId);
     }
 
     @Override
-    public double getMonthlyRevenue(int adminId, YearMonth month) throws DatabaseException
+    public List<OrderLine> getAllOrderLinesByOrderId(int orderId) throws DatabaseException
     {
-        validateUserIsAdmin(adminId);
-        List<Order> orders = orderMapper.getAllOrders();
-
-        if (orders == null)
-        {
-            return 0.0;
-        }
-
-        return orders.stream()
-                .filter(Order::isPaid)
-                .filter(order -> YearMonth.from(order.getOrderDate()).equals(month))
-                .mapToDouble(Order::getTotalPrice)
-                .sum();
+        return orderLineMapper.getOrderLinesByOrderId(orderId);
     }
 
     @Override
-    public double getAverageOrderValue(int adminId) throws DatabaseException
+    public List<Order> searchOrdersByOrderId(int orderId) throws DatabaseException
     {
-        validateUserIsAdmin(adminId);
-        List<Order> orders = orderMapper.getAllOrders();
-
-        if (orders == null || orders.isEmpty())
-        {
-            return 0.0;
-        }
-
-        List<Order> paidOrders = orders.stream()
-                .filter(Order::isPaid)
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getOrderId() == orderId)
                 .collect(Collectors.toList());
-
-        if (paidOrders.isEmpty())
-        {
-            return 0.0;
-        }
-
-        double totalRevenue = paidOrders.stream()
-                .mapToDouble(Order::getTotalPrice)
-                .sum();
-
-        return totalRevenue / paidOrders.size();
     }
 
-    private List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException
+    @Override
+    public List<Order> searchOrdersByName(String name) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getUserDTO().getFirstName().toLowerCase().contains(name.toLowerCase())
+                        || order.getUserDTO().getLastName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> searchOrdersByEmail(String email) throws DatabaseException
+    {
+        return orderMapper.getAllOrders().stream()
+                .filter(order -> order.getUserDTO().getEmail().toLowerCase().contains(email))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> sortOrdersByPaymentStatus(List<Order> orders, boolean paid)
+    {
+        return orders.stream()
+                .filter(order -> order.isPaid() == paid)
+                .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public List<Order> getAllOrdersByStatus(boolean paid) throws DatabaseException
     {
         return orderMapper.getAllOrders().stream()
                 .filter(order -> order.isPaid() == paid)

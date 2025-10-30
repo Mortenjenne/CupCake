@@ -11,24 +11,18 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div class="checkout-wrapper">
+        <h1>Checkout</h1>
+    <div class="step-info">
+        <h2>Levering</h2>
+        <p class="checkout-step">Trin 1 af 3</p>
+    </div>
+    <div class="checkout-container">
     <section>
-        <div class="customer-info">
-            <h2>Faktureringsadresse</h2>
-            <a th:href="@{/checkout/contact-info}">Ret</a>
-
-            <p><strong><span th:text="${session.checkoutUser.firstName} + ' ' + ${session.checkoutUser.lastName}"></span></strong></p>
-            <p><span th:text="${session.checkoutUser.street}"></span></p>
-            <p><span th:text="${session.checkoutUser.zipCode} + ' ' + ${session.checkoutUser.city}"></span></p>
-            <p><span th:text="${session.checkoutUser.phoneNumber}"></span></p>
-            <p><span th:text="${session.checkoutUser.email}"></span></p>
-        </div>
-
         <div class="delivery">
-            <form action="/checkout/delivery/action" method="post">
-                <h2>Levering</h2>
-
+            <form th:action="@{/checkout/delivery}" method="post">
                 <div class="delivery-method">
-                    <h3>Vælg leveringsmetode</h3>
+                    <h3 class="group-title">Vælg leveringsmetode</h3>
 
                     <div class="delivery-option">
                         <input type="radio" id="pickup" name="deliveryMethod" value="pickup" required checked>
@@ -40,31 +34,36 @@
                     </div>
 
                     <div class="delivery-option">
-                        <input type="radio" id="home-delivery" name="deliveryMethod" value="delivery" required>
+                        <input type="radio" id="home-delivery" name="deliveryMethod" value="delivery" th:disabled="${session.currentUser == null}" required>
                         <label for="home-delivery">
                             <strong>Hjemmelevering med Olsker Express</strong>
-                            <span class="delivery-price">29 kr.</span>
+                            <span class="delivery-price">29 kr. <span th:if="${session.currentUser == null}" class="disabled-text">(Kræver login)</span></span>
                             <p class="delivery-description">Få leveret hurtigst muligt</p>
                         </label>
                     </div>
                 </div>
 
                 <div class="delivery-datetime">
-                    <h3>Vælg afhentningsdato og -tid</h3>
-                    <p class="info-text">Butikkens åbningstider: Tir-Fre 12:30-17:30, Lør-Søn 10:00-18:00, Man lukket</p>
+                    <h3>Vælg afhentningsdato og tid</h3>
+                    <p class="info-text">Butikkens åbningstider:</p>
+                    <p class="info-text">Mandag - LUKKET</p>
+                    <p class="info-text">Tirsdag - Fredag 12:30-17:30</p>
+                    <p class="info-text">Lørdag - Søndag 10:00-18:00</p>
 
-                    <div class="create-group">
-                        <label for="pickup-date">Vælg dato</label>
+                    <div class="delivery-date-picker">
+                        <label for="pickup-date">Vælg dato:</label>
                         <input type="date"
                                id="pickup-date"
                                name="pickupDate"
                                min="2025-10-28"
                                max="2026-11-26"
+                               placeholder="Vælg en dato"
                                required>
                     </div>
 
-                    <div class="create-group">
-                        <label for="pickup-time">Vælg tidspunkt</label>
+                    <div class="delivery-time">
+                        <label for="pickup-time">Vælg tidspunkt:</label>
+                        <div class="delivery-time-picker">
                         <select id="pickup-time" name="pickupTime" required>
                             <option value="">Vælg tid</option>
                             <optgroup label="Tirsdag - Fredag (12:30-17:00)">
@@ -98,12 +97,13 @@
                                 <option value="17:30">17:30</option>
                             </optgroup>
                         </select>
+                        </div>
                         <small>Bemærk: Sidste afhentning er 30 min før lukketid. Mandag er butikken lukket.</small>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button type="submit">Fortsæt til betaling</button>
+                    <button class="checkout-button" type="submit">Fortsæt til kontaktinfo</button>
                 </div>
 
                 <p id="error-message" class="error"
@@ -114,25 +114,15 @@
         </div>
     </section>
 
-    <aside class="summary-info">
+    <aside class="checkout-summary">
         <h3>Din bestilling</h3>
-        <a th:href="@{/checkout/contact-info}">Ret</a>
-
-        <div th:each="orderLine : ${session.cart.orderLines}">
-            <div class="summary-info">
-                <img th:src="@{/images/bottom_almond.png}" alt="Cupcake image"/>
-                <p><span th:text="${orderLine.cupcake.bottom.name}"></span> +
-                    <span th:text="${orderLine.cupcake.topping.name}"></span></p>
-                <p>Antal: <span th:text="${orderLine.quantity}"></span></p>
-                <p>Pris: <span th:text="${orderLine.orderlinePrice}"></span> kr.</p>
-                <hr>
-            </div>
-        </div>
-
+        <div th:replace="fragments :: orderLinePostCard"></div>
         <div class="summary-info">
-            <p>Subtotal: <span th:text="${session.cart.totalPrice}"></span> kr.</p>
+            <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
         </div>
     </aside>
+    </div>
+    </div>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>

@@ -4,7 +4,6 @@
     <meta charset="UTF-8"/>
     <title>Olsker Cupcakes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
     <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
 </head>
 <body>
@@ -12,59 +11,72 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div class="createuser-container">
+    <div class="login-container">
         <h1>Opret bruger</h1>
 
-        <h2>Udfyld venligst:</h2>
+        <form th:action="@{/create-user}" method="post" class="login-form">
 
-        <form th:action="@{/create-user}" method="post">
+            <div class="login-field">
+                <input class="login-input" type="email" id="email" name="email"
+                       th:value="${email}" placeholder="Email" required>
+            </div>
 
-            <div class="create-group">
-                <label for="email">Indtast email</label>
-                <input type="email" th:value="${email}" id="email" name="email" placeholder="Indtast email" required>
+            <div class="login-field">
+                <input class="login-input" type="password" id="password1" name="password1"
+                       placeholder="Kodeord" required>
+                <div class="tooltip">
+                    Kodeord skal indeholde:<br>
+                    • Min. 8 karakterer<br>
+                    • Min. 1 stort bogstav<br>
+                    • Min. 1 tal
+                </div>
             </div>
-            <div class="create-group">
-                <label for="password1">Password:</label>
-                <input type="password" id="password1" name="password1" placeholder="Indtast password" required>
-                <input type="password" id="password2" name="password2" placeholder="Indtast password igen" required>
+
+            <div class="login-field">
+                <input class="login-input" type="password" id="password2" name="password2"
+                       placeholder="Gentag kodeord" required>
             </div>
-            <hr>
-            <div class="create-group">
-                <label for="firstname">Fornavn:</label>
-                <input type="text" th:value="${firstName}" id="firstname" name="firstName" placeholder="Indtast fornavn" required>
+            <div class="login-field">
+                <input class="login-input" type="text" id="firstname" name="firstName"
+                       th:value="${firstName}" placeholder="Fornavn" required>
             </div>
-            <div class="create-group">
-                <label for="lastname">Efternavn:</label>
-                <input type="text" th:value="${lastName}" id="lastname" name="lastName" placeholder="Indtast efternavn" required>
+            <div class="login-field">
+                <input class="login-input" type="text" id="lastname" name="lastName"
+                       th:value="${lastName}" placeholder="Efternavn" required>
             </div>
-            <div class="create-group">
-                <label for="street">Gade:</label>
-                <input type="text" th:value="${street}" id="street" name="street" placeholder="Indtast gade" required>
+            <div class="login-field">
+                <input class="login-input" type="text" id="street" name="street"
+                       th:value="${street}" placeholder="Gade" required>
             </div>
-            <div class="create-group">
-                <label for="zipcode">Postnr:</label>
-                <input type="text" th:value="${zipCode}" id="zipcode" name="zipCode" placeholder="Indtast postnummer" required>
+            <div class="login-field">
+                <input class="login-input" type="text" id="zipcode" name="zipCode"
+                       th:value="${zipCode}" placeholder="Postnummer" required>
             </div>
-            <div class="create-group">
-                <label for="city">By:</label>
-                <input type="text" id="city" th:value="${city}" name="city" placeholder="Indtast by" required>
+            <div class="login-field">
+                <input class="login-input" type="text" id="city" name="city"
+                       th:value="${city}" placeholder="By" required>
             </div>
-            <div class="create-group">
-                <label for="phone">Indtast telefon nummer</label>
-                <input type="text" th:value="${phone}" id="phone" name="phone" placeholder="Indtast telefon nummer" required>
+            <div class="login-field">
+                <input class="login-input" type="text" id="phone" name="phone"
+                       th:value="${phone}" placeholder="Telefon" required>
             </div>
-            <p id="error-message" class="error"
-               th:if="${errorMessage != null}"
-               th:text="${errorMessage}">
-            </p>
+
             <button type="submit">Opret Bruger</button>
+
         </form>
+
+        <div th:if="${errorMessage != null}" class="error-succes-label">
+            <p id="error-message" class="error" th:text="${errorMessage}"></p>
+        </div>
+        <div th:if="${session.succesMessage}" class="error-succes-label">
+            <p class="success" th:text="${session.succesMessage}"></p>
+        </div>
+
     </div>
 
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
-
 
 </body>
 </html>

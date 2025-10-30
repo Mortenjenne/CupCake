@@ -6,7 +6,6 @@ import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,6 +63,24 @@ public class UserServiceImpl implements UserService
         String hashedPassword = BCrypt.hashpw(createUserRequestDTO.getPassword1(), BCrypt.gensalt());
 
         return userMapper.createUser(createUserRequestDTO.getFirstName(), createUserRequestDTO.getLastName(), createUserRequestDTO.getEmail(), hashedPassword, phoneNumber, createUserRequestDTO.getStreet(), zipCode, createUserRequestDTO.getCity());
+    }
+
+    @Override
+    public User registerGuestUser(String firstName, String lastName, String email,
+                                int phoneNumber, String city, String street, int zipCode) throws DatabaseException
+    {
+        validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
+
+        User guestUser = checkIfGuestExists(email);
+        if(guestUser != null)
+        {
+            return guestUser;
+        }
+        else
+        {
+            return userMapper.createGuestUser(firstName, lastName, email,
+                    phoneNumber, street, zipCode);
+        }
     }
 
     @Override
@@ -217,5 +234,18 @@ public class UserServiceImpl implements UserService
                 user.getCity(),
                 user.getBalance()
         );
+    }
+
+    private User checkIfGuestExists(String email)
+    {
+        try
+        {
+            User guest = userMapper.getUserByEmail(email);
+            return guest;
+        }
+        catch (DatabaseException e)
+        {
+            return null;
+        }
     }
 }

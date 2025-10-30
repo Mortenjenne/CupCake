@@ -7,6 +7,8 @@ import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.util.ArrayList;
+
 public class UserController
 {
     private UserService userService;
@@ -45,7 +47,7 @@ public class UserController
             ctx.redirect("/");
         } catch (DatabaseException e)
         {
-            ctx.attribute("errorMessage", e.getMessage());
+            ctx.attribute("errorMessage", "Forkert email eller password");
             ctx.render("login");
         }
     }
@@ -90,7 +92,7 @@ public class UserController
     { ctx.render("createuser"); }
 
     private void showLoginPage(Context ctx)
-    { ctx.render("login"); }
+    {ctx.render("login"); }
 
     private void showAboutPage(Context ctx)
     { ctx.render("about"); }
