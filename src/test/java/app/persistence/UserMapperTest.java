@@ -248,6 +248,18 @@ class UserMapperTest
     }
 
     @Test
+    void testGetUserByEmailWithUpperCase() throws DatabaseException
+    {
+        User user = userMapper.getUserByEmail("JENS@TEST.DK");
+
+        assertNotNull(user);
+        assertEquals(2, user.getUserId());
+        assertEquals("Jens", user.getFirstName());
+        assertEquals("Jensen", user.getLastName());
+        assertEquals(200.0, user.getBalance());
+    }
+
+    @Test
     void testGetUserByEmailNotFound()
     {
         assertThrows(DatabaseException.class,
@@ -312,6 +324,18 @@ class UserMapperTest
     void testLogin() throws DatabaseException
     {
         User user = userMapper.login("admin@test.dk", "admin123");
+
+        assertNotNull(user);
+        assertEquals(3, user.getUserId());
+        assertEquals("Admin", user.getFirstName());
+        assertTrue(user.isAdmin());
+        assertFalse(user.isGuest());
+    }
+
+    @Test
+    void testLoginWithUpperCase() throws DatabaseException
+    {
+        User user = userMapper.login("ADMIN@TEST.DK", "admin123");
 
         assertNotNull(user);
         assertEquals(3, user.getUserId());
