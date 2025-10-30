@@ -17,11 +17,13 @@
 
         <form th:action="@{/login}" method="post" class="login-form">
             <div class="login-field">
-                <input class="login-input" type="text" placeholder="Email" id="email" name="email">
+                <label for="email">Email</label>
+                <input class="login-input" type="text" placeholder="Indtast email" id="email" name="email">
             </div>
 
             <div class="login-field">
-                <input class="login-input" type="password" placeholder="Kodeord" id="password" name="password">
+                <label for="password">Kodeord</label>
+                <input class="login-input" type="password" placeholder="Indtast kodeord" id="password" name="password">
             </div>
 
             <button type="submit">Log in</button>
