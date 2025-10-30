@@ -1,0 +1,32 @@
+@startuml
+[*] --> Index : Guest arrives
+
+Index --> Index : Browse cupcakes
+Index --> Basket : Add cupcake to basket
+Index --> Login : Choose to login
+Index --> CreateUser : Choose to create user
+Index --> About : Read about business
+
+Login --> Index : Login successful
+CreateUser --> Index : Registration successful
+
+Basket --> Basket : Modify order
+Basket --> Basket : Delete cupcakes
+Basket --> Index : Continue shopping
+Basket --> CheckoutDelivery : Proceed to checkout
+
+
+CheckoutDelivery --> CheckoutDelivery : Choose pickup date and time
+CheckoutDelivery --> Checkout : Select date and time
+CheckoutDelivery --> CheckoutDetails : Confirm delivery options
+CheckoutDelivery --> Basket : Go back to basket
+
+CheckoutDetails --> CheckoutDetails : Enter billing information
+CheckoutDetails --> CheckoutPayment : Submit details
+CheckoutDetails --> CheckoutDelivery : Change delivery options
+
+CheckoutPayment --> OrderComplete : Confirm payment at pickup
+
+OrderComplete --> Index : Return to index
+
+@enduml
