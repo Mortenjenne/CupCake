@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class ShoppingController
 {
     private final ShoppingService shoppingService;
-    private static final String SESSION_CART = "sessionCart";
+    private static final String SESSION_CART = "cart";
 
     public ShoppingController(ShoppingService shoppingService)
     {

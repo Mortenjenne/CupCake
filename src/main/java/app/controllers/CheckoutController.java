@@ -18,6 +18,7 @@ public class CheckoutController
 {
     private OrderService orderService;
     private UserService userService;
+    private static final String SESSION_CART = "cart";
 
     public CheckoutController(OrderService orderService, UserService userService)
     {
@@ -41,15 +42,13 @@ public class CheckoutController
 
     private void showDeliveryPage(Context ctx)
     {
-        ShoppingCart cart = ctx.sessionAttribute("CART");
+        ShoppingCart cart = ctx.sessionAttribute(SESSION_CART);
 
         if (cart == null || cart.getShoppingCart().isEmpty())
         {
-            ctx.redirect("/cart");
+            ctx.redirect("/basket");
             return;
         }
-
-        ctx.sessionAttribute("cart", cart);
 
         if (ctx.sessionAttribute("deliveryPrice") == null)
         {
@@ -64,19 +63,11 @@ public class CheckoutController
         String deliveryMethod = ctx.formParam("deliveryMethod");
         String pickupDate = ctx.formParam("pickupDate");
         String pickupTime = ctx.formParam("pickupTime");
-        DeliveryStrategy deliveryStrategy = null;
+        DeliveryStrategy deliveryStrategy = deliveryMethod.equals("delivery")
+                ? new StandardDelivery()
+                : new PickupDelivery();
 
-        if(deliveryMethod.equals("delivery"))
-        {
-            deliveryStrategy = new StandardDelivery();
-        }
-        else
-        {
-            deliveryStrategy = new PickupDelivery();
-        }
-
-        try
-        {
+        try {
             LocalDate date = LocalDate.parse(pickupDate);
             DayOfWeek dayOfWeek = date.getDayOfWeek();
             LocalTime time = LocalTime.parse(pickupTime);
@@ -93,12 +84,11 @@ public class CheckoutController
             ctx.sessionAttribute("pickUp", pickupDateTime);
             ctx.sessionAttribute("deliveryMethod", deliveryMethod);
 
-            ShoppingCart cart = ctx.sessionAttribute("cart");
+            ShoppingCart cart = ctx.sessionAttribute(SESSION_CART);
             double orderTotalPrice = cart.getTotalOrderPrice() + deliveryPrice;
             ctx.sessionAttribute("orderTotal", getFormattedPrice(orderTotalPrice));
 
             ctx.redirect("/checkout/contact-info");
-
         } catch (Exception e) {
             ctx.attribute("errorMessage", "Der skete en fejl med dato/tid valg");
             ctx.render("checkout-delivery");
@@ -116,7 +106,7 @@ public class CheckoutController
 
         User currentUser = ctx.sessionAttribute("currentUser");
         Double deliveryPrice = ctx.sessionAttribute("deliveryPrice");
-        ShoppingCart cart = ctx.sessionAttribute("cart");
+        ShoppingCart cart = ctx.sessionAttribute(SESSION_CART);
 
         if (deliveryPrice == null)
         {
@@ -213,10 +203,10 @@ public class CheckoutController
             return;
         }
 
-        ShoppingCart cart = ctx.sessionAttribute("cart");
+        ShoppingCart cart = ctx.sessionAttribute(SESSION_CART);
         if (cart == null || cart.getShoppingCart().isEmpty())
         {
-            ctx.redirect("/cart");
+            ctx.redirect("/basket");
             return;
         }
 
@@ -241,7 +231,7 @@ public class CheckoutController
         boolean payNow = "pay-now".equals(paymentMethod);
 
         UserDTO checkoutUser = ctx.sessionAttribute("checkoutUser");
-        ShoppingCart cart = ctx.sessionAttribute("cart");
+        ShoppingCart cart = ctx.sessionAttribute(SESSION_CART);
         LocalDateTime pickupDateTime = ctx.sessionAttribute("pickUp");
         String deliveryMethod = ctx.sessionAttribute("deliveryMethod");
         double deliveryPrice = ctx.sessionAttribute("deliveryPrice");
@@ -286,8 +276,7 @@ public class CheckoutController
             );
             cart.clearShoppingCart();
 
-            ctx.sessionAttribute("cart", cart);
-            ctx.sessionAttribute("CART", new ShoppingCart());
+            ctx.sessionAttribute(SESSION_CART, cart);
             ctx.attribute("userBalanceAfterPurchase", getFormattedPrice(newUserBalance));
             ctx.sessionAttribute("completedOrder", order);
             ctx.redirect("/order/confirmation");
