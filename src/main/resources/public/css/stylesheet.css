@@ -208,6 +208,11 @@ header img {
     gap: clamp(1rem, 2vw, 2rem);
 }
 
+.username {
+    display: flex;
+    align-items: center;
+}
+
 /* TODO .icon-link not scaling in footer */
 .icon-link {
     display: flex;
@@ -1325,6 +1330,15 @@ select option {
         padding: 0 1rem;
     }
 
+    h1 {
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
     /* Header adjustments */
     header nav {
         align-items: flex-start;
@@ -1338,9 +1352,21 @@ select option {
         gap: 0.5rem;
     }
 
+
+    .icon-link span {
+        visibility: hidden;
+    }
+
     .admin-links {
         flex-direction: column;
         gap: 0.5rem;
+    }
+
+    .username {
+        position: absolute;
+        top: 35px;
+        right: 20px;
+        z-index: 20;
     }
 
     /* Main content adjustments */
@@ -1355,6 +1381,12 @@ select option {
         width: 90%;
         margin-top: 2vh;
     }
+
+    .cupcake-box {
+        width: unset;
+        margin-top: unset;
+    }
+
 
     .cupcake-creator form {
         flex-direction: column;
@@ -1395,6 +1427,7 @@ select option {
         flex: 0 0 100%;
         width: 90%;
         align-self: center;
+        padding: 0 7px 0 7px;
     }
 
     .basket-checkout-details-card {
@@ -1406,6 +1439,26 @@ select option {
         max-width: 100%;
         min-height: unset;
         margin: 0 0 1rem 0;
+    }
+
+
+    /*Checkout adjustments*/
+
+    .checkout-container {
+        display: unset;
+    }
+
+    .checkout-container .checkout-summary {
+        position: absolute;
+        visibility: hidden;
+    }
+
+    .input-group {
+        width: unset;
+    }
+
+    .delivery-time-picker select {
+        width: unset;
     }
 
     /* Footer adjustments */
@@ -1421,6 +1474,14 @@ select option {
     .footer-about {
         width: 100%;
         min-width: unset;
+    }
+
+    .hours-row {
+        width: 65%
+    }
+
+    .footer-contact {
+        text-align: left;
     }
 
     /* Login form adjustments */

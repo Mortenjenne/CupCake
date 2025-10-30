@@ -72,7 +72,7 @@ public class ShoppingController
         List<Topping> toppings = shoppingService.getAllToppings();
 
         // Add 12 different combinations
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 4; i++) {
             Bottom bottom = bottoms.get(i % bottoms.size());
             Topping topping = toppings.get(i % toppings.size());
             int quantity = (i % 5) + 1; // quantities from 1-5
