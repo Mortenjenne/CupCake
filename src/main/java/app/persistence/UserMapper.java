@@ -250,10 +250,10 @@ public class UserMapper
         return result;
     }
 
-    public List<UserDTO> getAllUsers() throws DatabaseException
+    public List<User> getAllUsers() throws DatabaseException
     {
         String sql = "SELECT users.*, zip_codes.city FROM users JOIN zip_codes ON users.zip_code = zip_codes.zip_code";
-        List<UserDTO> users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -262,7 +262,7 @@ public class UserMapper
 
             while (rs.next())
             {
-                users.add(new UserDTO(
+                users.add(new User(
                         rs.getInt("user_id"),
                         rs.getString("firstname"),
                         rs.getString("lastname"),
@@ -271,7 +271,9 @@ public class UserMapper
                         rs.getString("street"),
                         rs.getInt("zip_code"),
                         rs.getString("city"),
-                        rs.getDouble("balance")
+                        rs.getDouble("balance"),
+                        rs.getBoolean("admin"),
+                        rs.getBoolean("is_guest")
                 ));
             }
         }
