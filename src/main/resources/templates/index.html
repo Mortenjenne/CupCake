@@ -33,22 +33,15 @@
         <h4 class="title">Vælg og bestil her</h4>
 
         <section class="cupcake-creator">
-            <div th:if="${succesLabel != null}" class="title">
-                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
-                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
-            </div>
-            <div th:unless="${succesLabel != null}">
-                <br>
-            </div>
             <form method="post" th:action="@{/cart/add}">
 
                 <div class="cupcake-creator-select">
                     <select id="bottomSelect" name="bottomId" required>
                         <option value="" disabled selected hidden>Vælg bund</option>
                         <option th:each="b : ${bottoms}"
-                                th:value="${b.bottomId}"
-                                th:text="${b.name + ' • ' + b.price + ' kr'}"
-                                th:attr="data-img=@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${b.slug})}">
+                        th:value="${b.bottomId}"
+                        th:text="${b.name + ' • ' + b.price + ' kr'}"
+                        th:attr="data-img=@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${b.slug})}">
                         </option>
                     </select>
                 </div>
@@ -58,20 +51,27 @@
                     <select id="toppingSelect" name="toppingId" required>
                         <option value="" disabled selected hidden>Vælg topping</option>
                         <option th:each="t : ${toppings}"
-                                th:value="${t.toppingId}"
-                                th:text="${t.name + ' • ' + t.price + ' kr'}"
-                                th:attr="data-img=@{/images/cupcakes/toppings/topping_{slug}.png(slug=${t.slug})}">
+                        th:value="${t.toppingId}"
+                        th:text="${t.name + ' • ' + t.price + ' kr'}"
+                        th:attr="data-img=@{/images/cupcakes/toppings/topping_{slug}.png(slug=${t.slug})}">
                         </option>
                     </select>
                 </div>
 
                 <input class="cupcake-creator-input" type="number" name="cupcakeQuantity" min="1" placeholder="Antal"
-                       th:value="${cupcakeQuantity}"
-                       required>
+                th:value="${cupcakeQuantity}"
+                required>
 
                 <button class="add-to-basket-index" type="submit">Tilføj til kurv</button>
 
             </form>
+            <div th:if="${succesLabel != null}" class="title">
+                <p th:if="${succesLabel != null}" th:text="${succesLabel}"></p>
+                <p th:if="${session.indexErrorLabel != null}" th:text="${session.indexErrorLabel}"></p>
+            </div>
+            <div th:unless="${succesLabel != null}">
+                <br>
+            </div>
         </section>
 
         <a class="index-basket-button" href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
