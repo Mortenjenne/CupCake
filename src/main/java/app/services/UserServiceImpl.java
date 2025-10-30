@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService
 
         if (name.length() < 2)
         {
-            throw new IllegalArgumentException("Fornavn eller efternavn skal være over 2 tegn");
+            throw new IllegalArgumentException("Fornavn eller efternavn skal minimum være 2 tegn");
         }
     }
 
