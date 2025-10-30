@@ -996,6 +996,7 @@ address p,
     padding: 1.5rem;
     position: sticky;
     top: 2rem;
+    margin-top: 1rem;
 }
 
 .checkout-container .checkout-summary > p,
