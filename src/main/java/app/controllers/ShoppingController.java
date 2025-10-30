@@ -50,37 +50,12 @@ public class ShoppingController
     {
         ShoppingCart cart = getOrCreateCart(ctx);
 
-        if (cart.getShoppingCart().isEmpty()) {
-            populateTestCart(ctx);
-        }
-
         var model = new HashMap<String, Object>();
         model.put("cart", cart);
         model.put("basketTotalPrice", shoppingService.getTotalOrderPrice(cart));
         model.put("basketTotalQuantity", shoppingService.getTotalOrderQuantity(cart));
 
         ctx.render("basket.html", model);
-    }
-
-    //FOR DESIGN TESTING IN BASKET.HTML
-    private void populateTestCart(Context ctx) throws DatabaseException
-    {
-        ShoppingCart cart = getOrCreateCart(ctx);
-
-        // Get all bottoms and toppings
-        List<Bottom> bottoms = shoppingService.getAllBottoms();
-        List<Topping> toppings = shoppingService.getAllToppings();
-
-        // Add 12 different combinations
-        for (int i = 0; i < 4; i++) {
-            Bottom bottom = bottoms.get(i % bottoms.size());
-            Topping topping = toppings.get(i % toppings.size());
-            int quantity = (i % 5) + 1; // quantities from 1-5
-
-            shoppingService.addOrderLineToCart(cart, bottom, topping, quantity);
-        }
-
-        ctx.sessionAttribute("CART", cart);
     }
 
     private void showCheckout(Context ctx)
