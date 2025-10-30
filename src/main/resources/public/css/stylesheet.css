@@ -789,6 +789,68 @@ select option {
     color: var(--color-text-base);
 }
 
+
+/*------ ABOUT.HTML CSS ------*/
+.about-body {
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.text-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.text-box-img{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.text-box-img img {
+    border-radius: 5px;
+}
+
+.text-box-img-text {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem 0;
+    justify-content: center;
+    width: 60%;
+}
+
+.text-box-title {
+    margin-bottom: 1rem;
+}
+
+.hero {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+.hero img{
+    border: 1px solid var(--bg-overlay-medium);
+    border-radius: 5px;
+    margin-bottom: .5rem;
+}
+
+.about-body img {
+    text-align: center;
+    max-width: 1000px;
+    max-height: 600px;
+    object-fit: contain;
+}
+
+
+
 /* FOOTER */
 
 footer {
@@ -1808,5 +1870,32 @@ select option {
 
     .admin-cupcake form {
         width: 100%;
+    }
+
+    /* About.HTML */
+    .about-body img {
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .text-box-title {
+        width: 100%;
+        text-align: center;
+    }
+
+    .hero {
+        margin-bottom: 1rem;
+    }
+
+    .text-box-img {
+        margin-bottom: 1rem;
+    }
+
+    .text-box {
+        margin-bottom: 1rem;
+    }
+
+    .text-box-img-text {
+        width: unset;
     }
 }
