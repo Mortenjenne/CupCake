@@ -29,7 +29,7 @@ public class UserMapper
         {
             ps.setString(1, firstname);
             ps.setString(2, lastname);
-            ps.setString(3, email);
+            ps.setString(3, email.toLowerCase());
             ps.setString(4, password);
             ps.setInt(5, phonenumber);
             ps.setString(6, street);
@@ -77,7 +77,7 @@ public class UserMapper
         {
             ps.setString(1, firstName);
             ps.setString(2, lastName);
-            ps.setString(3, email);
+            ps.setString(3, email.toLowerCase());
             ps.setInt(4, phoneNumber);
             ps.setString(5, street);
             ps.setInt(6, zipCode);
@@ -133,7 +133,7 @@ public class UserMapper
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setString(1, email);
+            ps.setString(1, email.toLowerCase());
             ResultSet rs = ps.executeQuery();
 
             if (rs.next())
@@ -295,7 +295,7 @@ public class UserMapper
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setString(1, email);
+            ps.setString(1, email.toLowerCase());
             ps.setString(2, password);
 
             ResultSet rs = ps.executeQuery();
