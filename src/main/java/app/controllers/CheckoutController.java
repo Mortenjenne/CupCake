@@ -5,8 +5,7 @@ import app.entities.Order;
 import app.entities.ShoppingCart;
 import app.entities.User;
 import app.exceptions.DatabaseException;
-import app.services.OrderService;
-import app.services.UserService;
+import app.services.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -58,6 +57,16 @@ public class CheckoutController
         String deliveryMethod = ctx.formParam("deliveryMethod");
         String pickupDate = ctx.formParam("pickupDate");
         String pickupTime = ctx.formParam("pickupTime");
+        DeliveryStrategy deliveryStrategy = null;
+
+        if(deliveryMethod.equals("delivery"))
+        {
+            deliveryStrategy = new StandardDelivery();
+        }
+        else
+        {
+            deliveryStrategy = new PickupDelivery();
+        }
 
         try
         {
@@ -72,6 +81,7 @@ public class CheckoutController
 
             LocalDateTime pickupDateTime = LocalDateTime.of(date, time);
 
+            ctx.sessionAttribute("deliveryPrice",deliveryStrategy.getDeliveryPrice());
             ctx.sessionAttribute("pickUp", pickupDateTime);
             ctx.sessionAttribute("deliveryMethod", deliveryMethod);
             ctx.redirect("/checkout/contact-info");
@@ -204,6 +214,7 @@ public class CheckoutController
         ShoppingCart cart = ctx.sessionAttribute("cart");
         LocalDateTime pickupDateTime = ctx.sessionAttribute("pickUp");
         String deliveryMethod = ctx.sessionAttribute("deliveryMethod");
+        double deliveryTotal = ctx.sessionAttribute("deliveryPrice");
 
         if(!validateOrderDetails(ctx, checkoutUser, cart, pickupDateTime, deliveryMethod))
         {

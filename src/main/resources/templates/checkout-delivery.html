@@ -118,6 +118,8 @@
         <h3>Din bestilling</h3>
         <div th:replace="fragments :: orderLinePostCard"></div>
         <div class="summary-info">
+            <p>Levering pris: <span th:text="${session.deliveryPrice}"></span> kr.</p>
+            <hr>
             <p>Subtotal: <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
         </div>
     </aside>
