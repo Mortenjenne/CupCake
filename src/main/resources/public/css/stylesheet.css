@@ -1691,6 +1691,68 @@ select option {
     color: color-mix(in srgb, var(--color-text-base) 65%, white);
 }
 
+/*------ ORDER DETAILS CSS ------*/
+
+.order-detail-card {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
+}
+.orders-table h3 {
+    margin-bottom: 2rem;
+}
+
+.order-detail-cupcake {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: grid;
+    place-items: center;
+    margin-top: 0.5rem;
+    flex-shrink: 0;
+}
+
+.order-detail-cupcake img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.order-detail-bottom {
+    z-index: 1;
+    transform: translateY(10%);
+}
+
+.order-detail-topping {
+    z-index: 2;
+    transform: translateY(-30%);
+}
+
+.order-detail-info {
+    flex: 1;
+    display: flex;
+    min-width: 0;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.order-detail-info p {
+    margin: 0;
+    font-size: var(--font-base);
+}
+
+.order-detail-info p:first-child {
+    margin-top: 0;
+}
+
+.order-detail-info p:last-child {
+    margin-bottom: 0;
+}
+
 
 
 /*------ MEDIA CSS ------*/
