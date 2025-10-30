@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderService
 {
-    public Order createOrder(UserDTO userDTO, List<OrderLine> orderlines, LocalDateTime pickUpDate, boolean payNow) throws DatabaseException;
+    public Order createOrder(UserDTO userDTO, List<OrderLine> orderlines, LocalDateTime pickUpDate, boolean payNow, double deliveryPrice) throws DatabaseException;
     public List<Order> getAllUserOrders(UserDTO userDTO) throws DatabaseException;
 
     public boolean deleteOrder(int orderId, int adminId, boolean refundUser) throws DatabaseException;

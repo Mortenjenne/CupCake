@@ -116,14 +116,11 @@
                 <div th:replace="fragments :: orderLinePostCard"></div>
                 <div class="summary-total">
                     <p><strong>Subtotal:</strong> <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
-                    <p th:if="${session.deliveryMethod == 'delivery'}"><strong>Levering:</strong> 29 kr.</p>
+                    <p>Levering pris: <span th:text="${session.deliveryPrice}"></span> kr.</p>
                     <hr>
                     <p class="total-price">
                         <strong>Total:</strong>
-                        <span th:if="${session.deliveryMethod == 'pickup'}"
-                              th:text="${session.cart.getTotalOrderPrice()}"></span>
-                        <span th:if="${session.deliveryMethod == 'delivery'}"
-                              th:text="${session.cart.getTotalOrderPrice()}"></span>
+                        <span th:text="${session.orderTotal}"></span>
                         kr.
                     </p>
                 </div>
