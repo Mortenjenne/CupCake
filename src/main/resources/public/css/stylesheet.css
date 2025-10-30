@@ -985,6 +985,7 @@ address p,
     border: 2px solid var(--bg-overlay-medium);
     border-radius: 20px;
     padding: 2rem;
+    margin-top: 1rem;
 }
 
 .checkout-container .checkout-summary {
@@ -1296,7 +1297,7 @@ select option {
 /*------ ADMIN / CUSTOMER VIEWS CSS (Orders & Customers) ------*/
 
 .orders-view,
-.customer-info,
+.customer-info-tables,
 .customer-view {
     width: 90%;
     max-width: 1200px;
@@ -1304,14 +1305,14 @@ select option {
 }
 
 .orders-view h1,
-.customer-info h1,
+.customer-info-tables h1,
 .customer-view h1 {
     text-align: center;
     margin-bottom: 2rem;
 }
 
 .orders-view h2,
-.customer-info h2,
+.customer-info-tables h2,
 .customer-view h2 {
     text-align: center;
     margin-top: 2rem;
