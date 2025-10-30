@@ -2,10 +2,8 @@ package app.services;
 
 import app.dto.CreateUserRequestDTO;
 import app.dto.UserDTO;
-import app.entities.Order;
 import app.entities.User;
 import app.exceptions.DatabaseException;
-
 import java.util.List;
 
 public interface UserService

@@ -17,4 +17,11 @@ private LocalDateTime pickUpDate;
 private boolean paid;
 private List<OrderLine> orderlines;
 private double totalPrice;
+
+public String getFormattedPrice()
+{
+    return String.format("%.2f", totalPrice );
 }
+}
+
+

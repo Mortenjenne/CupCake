@@ -103,7 +103,10 @@ public class UserServiceImpl implements UserService
     @Override
     public List<UserDTO> getAllUsers() throws DatabaseException
     {
-        return userMapper.getAllUsers();
+        return userMapper.getAllUsers().stream()
+                .filter(user -> user.isGuest() == false)
+                .map(user -> buildUserDTO(user))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -112,6 +115,7 @@ public class UserServiceImpl implements UserService
         return userMapper.getAllUsers().stream()
                 .filter(user -> user.getFirstName().toLowerCase().contains(name.toLowerCase())
                         || user.getLastName().toLowerCase().contains(name.toLowerCase()))
+                .map(user -> buildUserDTO(user))
                 .collect(Collectors.toList());
     }
 
@@ -120,6 +124,7 @@ public class UserServiceImpl implements UserService
     {
         return userMapper.getAllUsers().stream()
                 .filter(user -> user.getEmail().toLowerCase().contains(email.toLowerCase()))
+                .map(user -> buildUserDTO(user))
                 .collect(Collectors.toList());
     }
 
@@ -128,6 +133,7 @@ public class UserServiceImpl implements UserService
     {
         return userMapper.getAllUsers().stream()
                 .filter(user -> user.getUserId() == userId)
+                .map(user -> buildUserDTO(user))
                 .collect(Collectors.toList());
     }
 

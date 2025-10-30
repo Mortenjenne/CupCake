@@ -5,8 +5,7 @@ import app.entities.Order;
 import app.entities.ShoppingCart;
 import app.entities.User;
 import app.exceptions.DatabaseException;
-import app.services.OrderService;
-import app.services.UserService;
+import app.services.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -44,12 +43,19 @@ public class CheckoutController
     {
         ShoppingCart cart = ctx.sessionAttribute("CART");
 
-        if (cart == null || cart.getShoppingCart().isEmpty()) {
+        if (cart == null || cart.getShoppingCart().isEmpty())
+        {
             ctx.redirect("/cart");
             return;
         }
 
         ctx.sessionAttribute("cart", cart);
+
+        if (ctx.sessionAttribute("deliveryPrice") == null)
+        {
+            ctx.sessionAttribute("deliveryPrice", getFormattedPrice(0.0));
+        }
+
         ctx.render("checkout-delivery");
     }
 
@@ -58,6 +64,16 @@ public class CheckoutController
         String deliveryMethod = ctx.formParam("deliveryMethod");
         String pickupDate = ctx.formParam("pickupDate");
         String pickupTime = ctx.formParam("pickupTime");
+        DeliveryStrategy deliveryStrategy = null;
+
+        if(deliveryMethod.equals("delivery"))
+        {
+            deliveryStrategy = new StandardDelivery();
+        }
+        else
+        {
+            deliveryStrategy = new PickupDelivery();
+        }
 
         try
         {
@@ -71,9 +87,16 @@ public class CheckoutController
             }
 
             LocalDateTime pickupDateTime = LocalDateTime.of(date, time);
+            double deliveryPrice = deliveryStrategy.getDeliveryPrice();
 
+            ctx.sessionAttribute("deliveryPrice", deliveryPrice);
             ctx.sessionAttribute("pickUp", pickupDateTime);
             ctx.sessionAttribute("deliveryMethod", deliveryMethod);
+
+            ShoppingCart cart = ctx.sessionAttribute("cart");
+            double orderTotalPrice = cart.getTotalOrderPrice() + deliveryPrice;
+            ctx.sessionAttribute("orderTotal", getFormattedPrice(orderTotalPrice));
+
             ctx.redirect("/checkout/contact-info");
 
         } catch (Exception e) {
@@ -92,8 +115,17 @@ public class CheckoutController
         }
 
         User currentUser = ctx.sessionAttribute("currentUser");
+        Double deliveryPrice = ctx.sessionAttribute("deliveryPrice");
         ShoppingCart cart = ctx.sessionAttribute("cart");
 
+        if (deliveryPrice == null)
+        {
+            deliveryPrice = 0.0;
+        }
+
+        double orderTotalPrice = cart.getTotalOrderPrice() + deliveryPrice;
+
+        ctx.sessionAttribute("orderTotal", getFormattedPrice(orderTotalPrice));
         ctx.attribute("currentUser", currentUser);
         ctx.attribute("deliveryMethod", deliveryMethod);
         ctx.render("checkout-contact");
@@ -137,7 +169,6 @@ public class CheckoutController
             UserDTO userDTO;
             if(currentUser == null)
             {
-
                 User guestUser = userService.registerGuestUser(
                         firstName,
                         lastName,
@@ -156,13 +187,15 @@ public class CheckoutController
             ctx.sessionAttribute("checkoutUser", userDTO);
             ctx.redirect("/checkout/payment");
 
-        } catch (NumberFormatException e)
+        }
+        catch (NumberFormatException e)
         {
             ctx.attribute("errorMessage","Kun heltal i postnummer og telefonnummer");
             ctx.attribute("currentUser", currentUser);
             ctx.attribute("deliveryMethod", deliveryMethod);
             ctx.render("checkout-contact");
-        } catch (DatabaseException | IllegalArgumentException e)
+        }
+        catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
             ctx.attribute("currentUser", currentUser);
@@ -187,10 +220,17 @@ public class CheckoutController
             return;
         }
 
+        Double deliveryPrice = ctx.sessionAttribute("deliveryPrice");
+        if (deliveryPrice == null) {
+            deliveryPrice = 0.0;
+        }
+
+        double orderTotalPrice = cart.getTotalOrderPrice() + deliveryPrice;
+
         if (checkoutUser.getUserId() != 0)
         {
-            double balanceAfterPurchase = checkoutUser.getBalance() - cart.getTotalOrderPrice();
-            ctx.attribute("userBalanceAfterPurchase", balanceAfterPurchase);
+            double balanceAfterPurchase = checkoutUser.getBalance() - orderTotalPrice;
+            ctx.attribute("userBalanceAfterPurchase", getFormattedPrice(balanceAfterPurchase));
         }
         ctx.render("checkout-payment");
     }
@@ -204,6 +244,10 @@ public class CheckoutController
         ShoppingCart cart = ctx.sessionAttribute("cart");
         LocalDateTime pickupDateTime = ctx.sessionAttribute("pickUp");
         String deliveryMethod = ctx.sessionAttribute("deliveryMethod");
+        double deliveryPrice = ctx.sessionAttribute("deliveryPrice");
+
+        double orderTotalPrice = cart.getTotalOrderPrice() + deliveryPrice;
+        double newUserBalance = checkoutUser.getBalance() - orderTotalPrice;
 
         if(!validateOrderDetails(ctx, checkoutUser, cart, pickupDateTime, deliveryMethod))
         {
@@ -212,22 +256,20 @@ public class CheckoutController
 
         if (payNow)
         {
-            double totalPrice = cart.getTotalOrderPrice();
-
             if (checkoutUser.getUserId() == 0)
             {
                 ctx.attribute("errorMessage", "Gæster kan kun betale ved afhentning");
-                ctx.attribute("userBalanceAfterPurchase", 0);
+                ctx.attribute("userBalanceAfterPurchase", getFormattedPrice(0));
                 ctx.render("checkout-payment");
                 return;
             }
 
-            if (checkoutUser.getBalance() < totalPrice)
+            if (checkoutUser.getBalance() < orderTotalPrice)
             {
                 ctx.attribute("errorMessage",
                         String.format("Du har ikke penge nok på din konto. Din saldo: %.2f kr. Pris: %.2f kr. Vælg 'betal ved afhentning' eller kontakt os for at indsætte penge.",
-                                checkoutUser.getBalance(), totalPrice));
-                ctx.attribute("userBalanceAfterPurchase", checkoutUser.getBalance() - totalPrice);
+                                checkoutUser.getBalance(), orderTotalPrice));
+                ctx.attribute("userBalanceAfterPurchase", getFormattedPrice(newUserBalance));
                 ctx.render("checkout-payment");
                 return;
             }
@@ -239,19 +281,21 @@ public class CheckoutController
                     checkoutUser,
                     cart.getShoppingCart(),
                     pickupDateTime,
-                    payNow
+                    payNow,
+                    deliveryPrice
             );
             cart.clearShoppingCart();
 
             ctx.sessionAttribute("cart", cart);
             ctx.sessionAttribute("CART", new ShoppingCart());
+            ctx.attribute("userBalanceAfterPurchase", getFormattedPrice(newUserBalance));
             ctx.sessionAttribute("completedOrder", order);
             ctx.redirect("/order/confirmation");
 
         } catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
-            ctx.attribute("userBalanceAfterPurchase", checkoutUser.getBalance() - cart.getTotalOrderPrice());
+            ctx.attribute("userBalanceAfterPurchase", getFormattedPrice(newUserBalance));
             ctx.render("checkout-payment");
         }
     }
@@ -324,5 +368,10 @@ public class CheckoutController
             return false;
         }
         return true;
+    }
+
+    private String getFormattedPrice(double price)
+    {
+        return String.format("%.2f", price);
     }
 }

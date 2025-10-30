@@ -28,9 +28,10 @@ public class OrderServiceImpl implements OrderService
     }
 
     @Override
-    public Order createOrder(UserDTO userDTO, List<OrderLine> orderLines, LocalDateTime pickUpDate, boolean payNow) throws DatabaseException
+    public Order createOrder(UserDTO userDTO, List<OrderLine> orderLines, LocalDateTime pickUpDate, boolean payNow, double deliveryPrice) throws DatabaseException
     {
-        double totalPrice = calculateTotalPrice(orderLines);
+        double orderPrice = calculateTotalPrice(orderLines);
+        double totalPrice = orderPrice + deliveryPrice;
         int userId = userDTO.getUserId();
 
         if (userId == 0)
