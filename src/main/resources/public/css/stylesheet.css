@@ -1146,7 +1146,7 @@ address p,
     -moz-appearance: none;
 
     width: 20%;
-    padding: .8rem 3rem .8rem 1rem;
+    padding: .5rem .5rem .5rem .5rem;
     border: 2px solid var(--bg-overlay-medium);
     border-radius: 5px;
     background: /* pil (inline SVG) */ url("data:image/svg+xml;utf8,\
@@ -1157,6 +1157,18 @@ address p,
     color: var(--color-text-base);
     font: inherit;
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.delivery-date-picker-field {
+    height: 35px;
+    background: var(--bg-overlay-medium);
+    border-color: var(--bg-overlay-medium);
+    color: var(--color-text-base);
+    padding: 2px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(88%) sepia(16%) saturate(439%) hue-rotate(13deg) brightness(90%);
 }
 
 .group-title{
@@ -1289,18 +1301,24 @@ select option {
 .checkout-confirmed-body {
     display: flex;
     flex-direction: column;
+    padding: 2rem;
 }
 
 .order-complete {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-content: center;
+    align-items: center;
     margin-bottom: 3rem;
 }
 
 .checkout-container #error-message{
     margin-top: 1rem;
+}
+
+.back-home {
+    display: flex;
+    justify-content: center;
 }
 
 /*------ ADMIN / CUSTOMER VIEWS CSS (Orders & Customers) ------*/
@@ -1737,7 +1755,11 @@ select option {
     }
 
     .delivery-time-picker select {
-        width: unset;
+        width: 80%;
+    }
+
+    .delivery-date-picker input[type="date"] {
+        width: 80%;
     }
 
     /* Footer adjustments */
