@@ -1657,6 +1657,42 @@ select option {
     background-color: #1a5f3066;
 }
 
+/*------ EDIT CUSTOMER ------*/
+
+.edit-customer-view{
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-customer-view h1, h2{
+    margin-bottom: 2rem;
+}
+
+.customer-info nh:last-child{
+    margin-top: 2rem;
+}
+
+.edit-form input[type="number"] {
+    border: 2px solid var(--bg-overlay-medium);
+    border-radius: 8px;
+    padding: .8rem 1rem;
+    background: rgb(from #231A12 r g b / 0.25);
+    color: var(--color-text-base);
+    font: inherit;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.edit-form input[type="number"] {
+    flex: 1;
+    min-width: 80px;
+}
+
+.edit-form input[type="number"]::placeholder {
+    color: color-mix(in srgb, var(--color-text-base) 65%, white);
+}
+
+
+
 /*------ MEDIA CSS ------*/
 
 @media (prefers-contrast: more) {
