@@ -85,7 +85,7 @@ public class StatisticServiceImpl implements StatisticService
     private void validateUserIsAdmin(int adminId) throws DatabaseException
     {
         User admin = userMapper.getUserById(adminId);
-        if(!admin.isAdmin())
+        if (!admin.isAdmin())
         {
             throw new DatabaseException("Denne handling kan kun tilgås af en adminstrator. Log venligst ind med en adminstrator bruger");
         }

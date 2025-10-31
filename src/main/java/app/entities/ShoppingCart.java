@@ -18,17 +18,22 @@ public class ShoppingCart
 
     public void addOrderLineToCart(Cupcake cupcake, int quantity)
     {
-        if (cupcake == null || quantity < 0) {
+        if (cupcake == null || quantity < 0)
+        {
             throw new IllegalArgumentException("Cupcake eller mængde kan ikke være tom eller 0");
         }
         boolean newQuantity = false;
-        for (OrderLine o : shoppingCart) {
-            if (o.getCupcake().equals(cupcake)) {
+        for (OrderLine o : shoppingCart)
+        {
+            if (o.getCupcake().equals(cupcake))
+            {
                 o.setQuantity(o.getQuantity() + quantity);
+                o.setOrderLinePrice(o.getOrderLinePrice() + (cupcake.getCupcakePrice() * quantity));
                 newQuantity = true;
             }
         }
-        if (!newQuantity) {
+        if (!newQuantity)
+        {
             this.shoppingCart.add(new OrderLine(cupcake, quantity));
         }
     }
@@ -40,17 +45,21 @@ public class ShoppingCart
 
     public void removeOneFromCupcakeQuantity(OrderLine orderLine)
     {
-        if (orderLine.getQuantity() == 1) {
+        if (orderLine.getQuantity() == 1)
+        {
             removeOrderLineFromCart(orderLine);
         }
-        else {
+        else
+        {
             orderLine.setQuantity((orderLine.getQuantity() - 1));
+            orderLine.setOrderLinePrice(orderLine.getCupcake().getCupcakePrice() * orderLine.getQuantity());
         }
     }
 
     public void addOneToCupcakeQuantity(OrderLine orderLine)
     {
         orderLine.setQuantity((orderLine.getQuantity() + 1));
+        orderLine.setOrderLinePrice(orderLine.getCupcake().getCupcakePrice() * orderLine.getQuantity());
     }
 
     public double getTotalOrderPrice()

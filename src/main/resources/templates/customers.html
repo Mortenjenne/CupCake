@@ -47,41 +47,43 @@
             </div>
 
             <div class="customer-details">
-            <h3>Dine kunder:</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Kunde id</th>
-                    <th>Navn</th>
-                    <th>Efternavn</th>
-                    <th>Mail</th>
-                    <th>Telefon</th>
-                    <th>Adresse</th>
-                    <th>Postnummer</th>
-                    <th>By</th>
-                    <th>Balance</th>
-                    <th>Rediger balance</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="customer : ${customers}">
-                    <td th:text="${customer.userId}"></td>
-                    <td th:text="${customer.firstName}"></td>
-                    <td th:text="${customer.lastName}"></td>
-                    <td th:text="${customer.email}"></td>
-                    <td th:text="${customer.phoneNumber}"></td>
-                    <td th:text="${customer.street}"></td>
-                    <td th:text="${customer.zipCode}"></td>
-                    <td th:text="${customer.city}"></td>
-                    <td th:text="${customer.balance}"></td>
-                    <td>
-                        <form method="get" th:action="@{/customers/edit/{id}(id=${customer.userId})}">
-                            <button type="submit" id="icon-button" class="icon-button"><img id="edit" th:src="@{/images/edit-w.svg}"></button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                <h3>Dine kunder:</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Kunde id</th>
+                        <th>Navn</th>
+                        <th>Efternavn</th>
+                        <th>Mail</th>
+                        <th>Telefon</th>
+                        <th>Adresse</th>
+                        <th>Postnummer</th>
+                        <th>By</th>
+                        <th>Balance</th>
+                        <th>Rediger balance</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customer : ${customers}">
+                        <td th:text="${customer.userId}"></td>
+                        <td th:text="${customer.firstName}"></td>
+                        <td th:text="${customer.lastName}"></td>
+                        <td th:text="${customer.email}"></td>
+                        <td th:text="${customer.phoneNumber}"></td>
+                        <td th:text="${customer.street}"></td>
+                        <td th:text="${customer.zipCode}"></td>
+                        <td th:text="${customer.city}"></td>
+                        <td th:text="${customer.balance}"></td>
+                        <td>
+                            <form method="get" th:action="@{/customers/edit/{id}(id=${customer.userId})}">
+                                <button type="submit" id="icon-button" class="icon-button"><img id="edit"
+                                                                                                th:src="@{/images/edit-w.svg}">
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

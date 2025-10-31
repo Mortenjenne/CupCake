@@ -8,6 +8,7 @@ import app.exceptions.DatabaseException;
 import app.persistence.OrderLineMapper;
 import app.persistence.OrderMapper;
 import app.persistence.UserMapper;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -41,13 +42,15 @@ public class OrderServiceImpl implements OrderService
                 throw new DatabaseException("Gæster kan kun betale ved afhentning");
             }
 
-        } else
+        }
+        else
         {
             User user = userMapper.getUserById(userId);
 
             if (payNow)
             {
-                if (user.getBalance() < totalPrice) {
+                if (user.getBalance() < totalPrice)
+                {
                     throw new DatabaseException("Utilstrækkelig saldo. Dit beløb: " + user.getBalance() +
                             " kr. Ordretotal: " + totalPrice + " kr.");
                 }
@@ -90,7 +93,7 @@ public class OrderServiceImpl implements OrderService
     {
         validateUserIsAdmin(adminId);
 
-        if(refundUser)
+        if (refundUser)
         {
             refundUserTotalOrderPrice(orderId);
         }
@@ -195,7 +198,7 @@ public class OrderServiceImpl implements OrderService
                 .findFirst()
                 .orElseThrow(() -> new DatabaseException("Ordre ikke fundet"));
 
-        if(orderToCancel.isPaid())
+        if (orderToCancel.isPaid())
         {
             int userId = orderToCancel.getUserDTO().getUserId();
             User user = userMapper.getUserById(userId);
@@ -207,7 +210,7 @@ public class OrderServiceImpl implements OrderService
     private void validateUserIsAdmin(int adminId) throws DatabaseException
     {
         User admin = userMapper.getUserById(adminId);
-        if(!admin.isAdmin())
+        if (!admin.isAdmin())
         {
             throw new DatabaseException("Denne handling kan kun tilgås af en adminstrator. Log venligst ind med en adminstrator bruger");
         }

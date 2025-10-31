@@ -10,7 +10,8 @@ import io.javalin.rendering.template.JavalinThymeleaf;
 
 import java.util.logging.Logger;
 
-public class Main {
+public class Main
+{
 
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
@@ -21,10 +22,12 @@ public class Main {
 
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance(USER, PASSWORD, URL, DB);
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         // Initializing Javalin and Jetty webserver
 
-        Javalin app = Javalin.create(config -> {
+        Javalin app = Javalin.create(config ->
+        {
             config.staticFiles.add("/public");
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
             config.staticFiles.add("/templates");
@@ -38,10 +41,10 @@ public class Main {
 
         BottomMapper bottomMapper = new BottomMapper(connectionPool);
         ToppingMapper toppingMapper = new ToppingMapper(connectionPool);
-        ShoppingService shoppingService = new ShoppingServiceImpl(bottomMapper,toppingMapper);
+        ShoppingService shoppingService = new ShoppingServiceImpl(bottomMapper, toppingMapper);
         ShoppingController shoppingController = new ShoppingController(shoppingService);
 
-        CupcakeService cupcakeService = new CupcakeServiceImpl(bottomMapper,toppingMapper);
+        CupcakeService cupcakeService = new CupcakeServiceImpl(bottomMapper, toppingMapper);
         CupcakeController cupcakeController = new CupcakeController(cupcakeService);
 
         OrderLineMapper orderLineMapper = new OrderLineMapper(connectionPool);

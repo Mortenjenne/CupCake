@@ -138,20 +138,20 @@ public class UserMapper
 
             if (rs.next())
             {
-                 return new User(
-                    rs.getInt("user_id"),
-                    rs.getString("firstname"),
-                    rs.getString("lastname"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getInt("phonenumber"),
-                    rs.getString("street"),
-                    rs.getInt("zip_code"),
-                    rs.getString("city"),
-                    rs.getDouble("balance"),
-                    rs.getBoolean("admin"),
-                    rs.getBoolean("is_guest")
-            );
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getInt("phonenumber"),
+                        rs.getString("street"),
+                        rs.getInt("zip_code"),
+                        rs.getString("city"),
+                        rs.getDouble("balance"),
+                        rs.getBoolean("admin"),
+                        rs.getBoolean("is_guest")
+                );
             }
             else
             {

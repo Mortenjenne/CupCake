@@ -11,7 +11,8 @@ public class Topping
     private String name;
     private double price;
 
-    public String getSlug() {
+    public String getSlug()
+    {
         if (name == null) return "";
         return name
                 .toLowerCase()

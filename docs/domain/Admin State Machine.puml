@@ -9,11 +9,11 @@ Index --> ViewOrders : Select view orders
 Index --> ViewCustomer : Select view users
 Index --> [*] : Logout
 
-ManageCupcakes --> ManageCupcakes : View cupcake list
-ManageCupcakes --> AddCupcake : Click add new
-ManageCupcakes --> EditCupcake : Select cupcake to edit
-ManageCupcakes --> DeleteCupcake : Select cupcake to delete
-ManageCupcakes --> Index : Go back
+ManageCupcakes ---> ManageCupcakes : View cupcake list
+ManageCupcakes ---> AddCupcake : Click add new
+ManageCupcakes ---> EditCupcake : Select cupcake to edit
+ManageCupcakes ---> DeleteCupcake : Select cupcake to delete
+ManageCupcakes ---> Index : Go back
 
 AddCupcake --> AddCupcake : Enter cupcake details
 AddCupcake --> ManageCupcakes : Save cupcake

@@ -46,64 +46,64 @@
                 <div class="customer-info">
                     <h3 class="group-title">Indtast kontaktinformation</h3>
                     <div class="customer-info-group">
-                    <form th:action="@{/checkout/contact-info}" method="post">
-                        <div class="input-group">
-                            <label>Fornavn</label>
-                            <input type="text" name="firstName"
-                                   th:value="${currentUser != null} ? ${currentUser.firstName} : ''" required>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Efternavn</label>
-                            <input type="text" name="lastName"
-                                   th:value="${currentUser != null} ? ${currentUser.lastName} : ''" required>
-                        </div>
-
-                        <div class="input-group">
-                            <label for="phoneNumber">Telefonnummer</label>
-                            <input type="text" id="phoneNumber" name="phoneNumber"
-                                   th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" name="email"
-                                   th:value="${currentUser != null} ? ${currentUser.email} : ''" required>
-                        </div>
-
-                        <div th:if="${deliveryMethod == 'delivery'}">
-                            <h3>Leveringsadresse</h3>
-
+                        <form th:action="@{/checkout/contact-info}" method="post">
                             <div class="input-group">
-                                <label>Adresse</label>
-                                <input type="text" name="street"
-                                       th:value="${currentUser != null} ? ${currentUser.street} : ''" required>
+                                <label>Fornavn</label>
+                                <input type="text" name="firstName"
+                                       th:value="${currentUser != null} ? ${currentUser.firstName} : ''" required>
                             </div>
 
                             <div class="input-group">
-                                <label>By</label>
-                                <input type="text" name="city"
-                                       th:value="${currentUser != null} ? ${currentUser.city} : ''" required>
+                                <label>Efternavn</label>
+                                <input type="text" name="lastName"
+                                       th:value="${currentUser != null} ? ${currentUser.lastName} : ''" required>
                             </div>
 
                             <div class="input-group">
-                                <label>Postnummer</label>
-                                <input type="text" name="zipCode"
-                                       th:value="${currentUser != null} ? ${currentUser.zipCode} : ''" required>
+                                <label for="phoneNumber">Telefonnummer</label>
+                                <input type="text" id="phoneNumber" name="phoneNumber"
+                                       th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
                             </div>
-                        </div>
 
-                     </div>
+                            <div class="input-group">
+                                <label>Email</label>
+                                <input type="email" name="email"
+                                       th:value="${currentUser != null} ? ${currentUser.email} : ''" required>
+                            </div>
 
-                        <div class="button-group">
-                            <a th:href="@{/checkout/delivery}" class="checkout-button">Tilbage</a>
-                            <button class="checkout-button" type="submit">Fortsæt til betaling</button>
-                        </div>
+                            <div th:if="${deliveryMethod == 'delivery'}">
+                                <h3>Leveringsadresse</h3>
 
-                        <p id="error-message" class="error"
-                           th:if="${errorMessage != null}"
-                           th:text="${errorMessage}">
-                        </p>
+                                <div class="input-group">
+                                    <label>Adresse</label>
+                                    <input type="text" name="street"
+                                           th:value="${currentUser != null} ? ${currentUser.street} : ''" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>By</label>
+                                    <input type="text" name="city"
+                                           th:value="${currentUser != null} ? ${currentUser.city} : ''" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Postnummer</label>
+                                    <input type="text" name="zipCode"
+                                           th:value="${currentUser != null} ? ${currentUser.zipCode} : ''" required>
+                                </div>
+                            </div>
+
+                    </div>
+
+                    <div class="button-group">
+                        <a th:href="@{/checkout/delivery}" class="checkout-button">Tilbage</a>
+                        <button class="checkout-button" type="submit">Fortsæt til betaling</button>
+                    </div>
+
+                    <p id="error-message" class="error"
+                       th:if="${errorMessage != null}"
+                       th:text="${errorMessage}">
+                    </p>
                     </form>
                 </div>
             </section>

@@ -40,7 +40,8 @@
             </div>
             <div class="group-body-element">
                 <h3>Total</h3>
-                <p><strong>Samlet pris:</strong> <span th:text="${session.completedOrder.getFormattedPrice()}"></span> kr.</p>
+                <p><strong>Samlet pris:</strong> <span th:text="${session.completedOrder.getFormattedPrice()}"></span>
+                    kr.</p>
             </div>
             <div class="back-home">
                 <a th:href="@{/}" class="checkout-button">Tilbage til forsiden</a>

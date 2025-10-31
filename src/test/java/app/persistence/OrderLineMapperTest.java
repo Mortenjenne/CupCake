@@ -52,76 +52,76 @@ class OrderLineMapperTest
                     stmt.execute("DROP TABLE IF EXISTS test.toppings CASCADE");
 
                     stmt.execute("""
-                        CREATE TABLE test.zip_codes (
-                            zip_code integer PRIMARY KEY,
-                            city varchar NOT NULL
-                        )
-                    """);
+                                CREATE TABLE test.zip_codes (
+                                    zip_code integer PRIMARY KEY,
+                                    city varchar NOT NULL
+                                )
+                            """);
 
                     stmt.execute("""
-                        CREATE TABLE test.users (
-                            user_id serial PRIMARY KEY,
-                            firstname varchar NOT NULL,
-                            lastname varchar NOT NULL,
-                            email varchar NOT NULL UNIQUE,
-                            password varchar,
-                            phonenumber integer NOT NULL,
-                            street varchar,
-                            zip_code integer,
-                            balance double precision NOT NULL DEFAULT 0,
-                            admin boolean NOT NULL DEFAULT false,
-                            is_guest boolean NOT NULL DEFAULT false,
-                            created_at timestamp with time zone NOT NULL DEFAULT now(),
-                            FOREIGN KEY (zip_code) REFERENCES test.zip_codes(zip_code)
-                                ON DELETE NO ACTION ON UPDATE CASCADE
-                        )
-                    """);
+                                CREATE TABLE test.users (
+                                    user_id serial PRIMARY KEY,
+                                    firstname varchar NOT NULL,
+                                    lastname varchar NOT NULL,
+                                    email varchar NOT NULL UNIQUE,
+                                    password varchar,
+                                    phonenumber integer NOT NULL,
+                                    street varchar,
+                                    zip_code integer,
+                                    balance double precision NOT NULL DEFAULT 0,
+                                    admin boolean NOT NULL DEFAULT false,
+                                    is_guest boolean NOT NULL DEFAULT false,
+                                    created_at timestamp with time zone NOT NULL DEFAULT now(),
+                                    FOREIGN KEY (zip_code) REFERENCES test.zip_codes(zip_code)
+                                        ON DELETE NO ACTION ON UPDATE CASCADE
+                                )
+                            """);
 
                     stmt.execute("""
-                        CREATE TABLE test.orders (
-                            order_id serial PRIMARY KEY,
-                            user_id integer NOT NULL,
-                            order_date timestamp with time zone NOT NULL DEFAULT now(),
-                            pickup_date timestamp with time zone NOT NULL,
-                            paid boolean NOT NULL DEFAULT false,
-                            price_total double precision NOT NULL,
-                            FOREIGN KEY (user_id) REFERENCES test.users(user_id)
-                                ON DELETE CASCADE ON UPDATE CASCADE
-                        )
-                    """);
+                                CREATE TABLE test.orders (
+                                    order_id serial PRIMARY KEY,
+                                    user_id integer NOT NULL,
+                                    order_date timestamp with time zone NOT NULL DEFAULT now(),
+                                    pickup_date timestamp with time zone NOT NULL,
+                                    paid boolean NOT NULL DEFAULT false,
+                                    price_total double precision NOT NULL,
+                                    FOREIGN KEY (user_id) REFERENCES test.users(user_id)
+                                        ON DELETE CASCADE ON UPDATE CASCADE
+                                )
+                            """);
 
                     stmt.execute("""
-                        CREATE TABLE test.bottoms (
-                            bottom_id serial PRIMARY KEY,
-                            bottom_flavour varchar NOT NULL UNIQUE,
-                            bottom_price double precision NOT NULL
-                        )
-                    """);
+                                CREATE TABLE test.bottoms (
+                                    bottom_id serial PRIMARY KEY,
+                                    bottom_flavour varchar NOT NULL UNIQUE,
+                                    bottom_price double precision NOT NULL
+                                )
+                            """);
 
                     stmt.execute("""
-                        CREATE TABLE test.toppings (
-                            topping_id serial PRIMARY KEY,
-                            topping_flavour varchar NOT NULL UNIQUE,
-                            topping_price double precision NOT NULL
-                        )
-                    """);
+                                CREATE TABLE test.toppings (
+                                    topping_id serial PRIMARY KEY,
+                                    topping_flavour varchar NOT NULL UNIQUE,
+                                    topping_price double precision NOT NULL
+                                )
+                            """);
 
                     stmt.execute("""
-                        CREATE TABLE test.orderlines (
-                            orderline_id serial PRIMARY KEY,
-                            order_id integer NOT NULL,
-                            topping_id integer NOT NULL,
-                            bottom_id integer NOT NULL,
-                            quantity integer NOT NULL,
-                            orderline_price double precision NOT NULL,
-                            FOREIGN KEY (order_id) REFERENCES test.orders(order_id)
-                                ON DELETE CASCADE ON UPDATE CASCADE,
-                            FOREIGN KEY (topping_id) REFERENCES test.toppings(topping_id)
-                                ON DELETE NO ACTION ON UPDATE CASCADE,
-                            FOREIGN KEY (bottom_id) REFERENCES test.bottoms(bottom_id)
-                                ON DELETE NO ACTION ON UPDATE CASCADE
-                        )
-                    """);
+                                CREATE TABLE test.orderlines (
+                                    orderline_id serial PRIMARY KEY,
+                                    order_id integer NOT NULL,
+                                    topping_id integer NOT NULL,
+                                    bottom_id integer NOT NULL,
+                                    quantity integer NOT NULL,
+                                    orderline_price double precision NOT NULL,
+                                    FOREIGN KEY (order_id) REFERENCES test.orders(order_id)
+                                        ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (topping_id) REFERENCES test.toppings(topping_id)
+                                        ON DELETE NO ACTION ON UPDATE CASCADE,
+                                    FOREIGN KEY (bottom_id) REFERENCES test.bottoms(bottom_id)
+                                        ON DELETE NO ACTION ON UPDATE CASCADE
+                                )
+                            """);
                 }
             }
             catch (SQLException e)
@@ -398,7 +398,8 @@ class OrderLineMapperTest
         List<OrderLine> orderLines = new ArrayList<>();
         orderLines.add(new OrderLine(invalidCupcake, 1));
 
-        assertThrows(SQLException.class, () -> {
+        assertThrows(SQLException.class, () ->
+        {
             try (Connection connection = connectionPool.getConnection())
             {
                 connection.setAutoCommit(false);

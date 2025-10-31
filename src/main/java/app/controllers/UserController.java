@@ -43,9 +43,10 @@ public class UserController
         try
         {
             User user = userService.authenticate(email, password);
-            ctx.sessionAttribute("currentUser",user);
+            ctx.sessionAttribute("currentUser", user);
             ctx.redirect("/");
-        } catch (DatabaseException e)
+        }
+        catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", "Forkert email eller password");
             ctx.render("login");
@@ -69,9 +70,10 @@ public class UserController
         try
         {
             userService.registerUser(createUserRequestDTO);
-            ctx.sessionAttribute("succesMessage","Du har oprettet en bruger! Log på med email og password");
+            ctx.sessionAttribute("succesMessage", "Du har oprettet en bruger! Log på med email og password");
             ctx.redirect("login");
-        } catch (DatabaseException | IllegalArgumentException e)
+        }
+        catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
             keepFormValues(
@@ -89,13 +91,19 @@ public class UserController
     }
 
     private void showCreateUserPage(Context ctx)
-    { ctx.render("createuser"); }
+    {
+        ctx.render("createuser");
+    }
 
     private void showLoginPage(Context ctx)
-    {ctx.render("login"); }
+    {
+        ctx.render("login");
+    }
 
     private void showAboutPage(Context ctx)
-    { ctx.render("about"); }
+    {
+        ctx.render("about");
+    }
 
     private void keepFormValues(Context ctx, String email, String firstName, String lastName, String street, String zipCode, String city, String phone)
     {

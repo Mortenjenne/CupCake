@@ -7,9 +7,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class Cupcake
 {
-private Bottom bottom;
-private Topping topping;
-private double cupcakePrice;
+    private Bottom bottom;
+    private Topping topping;
+    private double cupcakePrice;
 
     public Cupcake(Bottom bottom, Topping topping)
     {

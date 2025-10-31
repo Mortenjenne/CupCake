@@ -67,7 +67,8 @@ public class CheckoutController
                 ? new StandardDelivery()
                 : new PickupDelivery();
 
-        try {
+        try
+        {
             LocalDate date = LocalDate.parse(pickupDate);
             DayOfWeek dayOfWeek = date.getDayOfWeek();
             LocalTime time = LocalTime.parse(pickupTime);
@@ -89,7 +90,9 @@ public class CheckoutController
             ctx.sessionAttribute("orderTotal", getFormattedPrice(orderTotalPrice));
 
             ctx.redirect("/checkout/contact-info");
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             ctx.attribute("errorMessage", "Der skete en fejl med dato/tid valg");
             ctx.render("checkout-delivery");
         }
@@ -157,7 +160,7 @@ public class CheckoutController
             userService.validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
 
             UserDTO userDTO;
-            if(currentUser == null)
+            if (currentUser == null)
             {
                 User guestUser = userService.registerGuestUser(
                         firstName,
@@ -169,7 +172,8 @@ public class CheckoutController
                         zipCode
                 );
                 userDTO = userService.getUserById(guestUser.getUserId());
-            } else
+            }
+            else
             {
                 userDTO = userService.getUserById(currentUser.getUserId());
             }
@@ -180,7 +184,7 @@ public class CheckoutController
         }
         catch (NumberFormatException e)
         {
-            ctx.attribute("errorMessage","Kun heltal i postnummer og telefonnummer");
+            ctx.attribute("errorMessage", "Kun heltal i postnummer og telefonnummer");
             ctx.attribute("currentUser", currentUser);
             ctx.attribute("deliveryMethod", deliveryMethod);
             ctx.render("checkout-contact");
@@ -211,7 +215,8 @@ public class CheckoutController
         }
 
         Double deliveryPrice = ctx.sessionAttribute("deliveryPrice");
-        if (deliveryPrice == null) {
+        if (deliveryPrice == null)
+        {
             deliveryPrice = 0.0;
         }
 
@@ -239,7 +244,7 @@ public class CheckoutController
         double orderTotalPrice = cart.getTotalOrderPrice() + deliveryPrice;
         double newUserBalance = checkoutUser.getBalance() - orderTotalPrice;
 
-        if(!validateOrderDetails(ctx, checkoutUser, cart, pickupDateTime, deliveryMethod))
+        if (!validateOrderDetails(ctx, checkoutUser, cart, pickupDateTime, deliveryMethod))
         {
             return;
         }
@@ -281,7 +286,8 @@ public class CheckoutController
             ctx.sessionAttribute("completedOrder", order);
             ctx.redirect("/order/confirmation");
 
-        } catch (DatabaseException e)
+        }
+        catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
             ctx.attribute("userBalanceAfterPurchase", getFormattedPrice(newUserBalance));
@@ -303,7 +309,7 @@ public class CheckoutController
             return false;
         }
 
-        if(date.isBefore(LocalDate.now()))
+        if (date.isBefore(LocalDate.now()))
         {
             ctx.attribute("errorMessage", "Du kan ikke lægge ordre tilbage i tiden");
             ctx.render("checkout-delivery");
@@ -345,13 +351,13 @@ public class CheckoutController
             return false;
         }
 
-        if(pickupDateTime == null)
+        if (pickupDateTime == null)
         {
             ctx.redirect("/checkout/delivery");
             return false;
         }
 
-        if(deliveryMethod == null || deliveryMethod.isEmpty())
+        if (deliveryMethod == null || deliveryMethod.isEmpty())
         {
             ctx.redirect("/checkout/delivery");
             return false;

@@ -7,6 +7,7 @@ import app.exceptions.DatabaseException;
 import app.services.ShoppingService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
 import java.util.HashMap;
 
 public class ShoppingController
@@ -35,7 +36,7 @@ public class ShoppingController
 
         model.put("bottoms", shoppingService.getAllBottoms());
         model.put("toppings", shoppingService.getAllToppings());
-        model.put("cart", getOrCreateCart(ctx)); // bruges til Thymeleaf
+        model.put("cart", getOrCreateCart(ctx));
 
         String label = ctx.sessionAttribute("succesLabel");
         if (label != null)

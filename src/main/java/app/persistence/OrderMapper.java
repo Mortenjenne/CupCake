@@ -206,8 +206,8 @@ public class OrderMapper
         boolean result = false;
         String sql = "DELETE FROM orders WHERE order_id = ?";
 
-        try(Connection connection = connectionPool.getConnection();
-        PreparedStatement ps = connection.prepareStatement(sql))
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setInt(1, orderId);
             int rowsAffected = ps.executeUpdate();
@@ -216,7 +216,8 @@ public class OrderMapper
             {
                 result = true;
             }
-        } catch (SQLException e)
+        }
+        catch (SQLException e)
         {
             throw new DatabaseException("Kunne ikke slette en ordre");
         }

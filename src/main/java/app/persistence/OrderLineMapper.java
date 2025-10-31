@@ -26,8 +26,10 @@ public class OrderLineMapper
     {
         String sql = "INSERT INTO orderlines (order_id, topping_id, bottom_id, quantity, orderline_price) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            for (OrderLine line : orderLines) {
+        try (PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            for (OrderLine line : orderLines)
+            {
                 ps.setInt(1, orderId);
                 ps.setInt(2, line.getCupcake().getTopping().getToppingId());
                 ps.setInt(3, line.getCupcake().getBottom().getBottomId());
@@ -44,12 +46,14 @@ public class OrderLineMapper
         String sql = "SELECT ol.orderline_id, ol.topping_id, ol.bottom_id, ol.quantity, ol.orderline_price, t.topping_flavour, t.topping_price, b.bottom_flavour, b.bottom_price FROM orderlines ol JOIN toppings t ON t.topping_id = ol.topping_id JOIN bottoms b ON b.bottom_id = ol.bottom_id WHERE ol.order_id = ?";
 
         try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
             ps.setInt(1, orderId);
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
+            while (rs.next())
+            {
                 Topping topping = new Topping(
                         rs.getInt("topping_id"),
                         rs.getString("topping_flavour"),
@@ -76,7 +80,8 @@ public class OrderLineMapper
                 );
             }
         }
-        catch (SQLException e) {
+        catch (SQLException e)
+        {
             throw new DatabaseException("Fejl ved hentning af ordrelinjer" + e.getMessage());
         }
         return orderLines;

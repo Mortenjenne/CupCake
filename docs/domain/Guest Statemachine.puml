@@ -17,7 +17,6 @@ Basket --> CheckoutDelivery : Proceed to checkout
 
 
 CheckoutDelivery --> CheckoutDelivery : Choose pickup date and time
-CheckoutDelivery --> Checkout : Select date and time
 CheckoutDelivery --> CheckoutDetails : Confirm delivery options
 CheckoutDelivery --> Basket : Go back to basket
 

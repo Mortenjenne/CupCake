@@ -3,6 +3,7 @@ package app.services;
 import app.dto.CreateUserRequestDTO;
 import app.exceptions.DatabaseException;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceImplTest

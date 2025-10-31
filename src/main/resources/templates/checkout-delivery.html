@@ -13,115 +13,118 @@
 <main>
     <div class="checkout-wrapper">
         <h1>Checkout</h1>
-    <div class="step-info">
-        <h2>Levering</h2>
-        <p class="checkout-step">Trin 1 af 3</p>
-    </div>
-    <div class="checkout-container">
-    <section>
-        <div class="delivery">
-            <form th:action="@{/checkout/delivery}" method="post">
-                <div class="delivery-method">
-                    <h3 class="group-title">Vælg leveringsmetode</h3>
-
-                    <div class="delivery-option">
-                        <input type="radio" id="pickup" name="deliveryMethod" value="pickup" required checked>
-                        <label for="pickup">
-                            <strong>Afhent i butik</strong>
-                            <span class="delivery-price">0 kr.</span>
-                            <p class="delivery-description">Afhent din ordre i vores butik i Olsker</p>
-                        </label>
-                    </div>
-
-                    <div class="delivery-option">
-                        <input type="radio" id="home-delivery" name="deliveryMethod" value="delivery" th:disabled="${session.currentUser == null}" required>
-                        <label for="home-delivery">
-                            <strong>Hjemmelevering med Olsker Express</strong>
-                            <span class="delivery-price">29 kr. <span th:if="${session.currentUser == null}" class="disabled-text">(Kræver login)</span></span>
-                            <p class="delivery-description">Få leveret hurtigst muligt</p>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="delivery-datetime">
-                    <h3>Vælg afhentningsdato og tid</h3>
-                    <p class="info-text">Butikkens åbningstider:</p>
-                    <p class="info-text">Mandag - LUKKET</p>
-                    <p class="info-text">Tirsdag - Fredag 12:30-17:30</p>
-                    <p class="info-text">Lørdag - Søndag 10:00-18:00</p>
-
-                    <div class="delivery-date-picker">
-                        <label for="pickup-date">Vælg dato:</label>
-                        <input class="delivery-date-picker-field" type="date"
-                               id="pickup-date"
-                               name="pickupDate"
-                               min="2025-10-28"
-                               max="2026-11-26"
-                               placeholder="Vælg en dato"
-                               required>
-                    </div>
-
-                    <div class="delivery-time">
-                        <label for="pickup-time">Vælg tidspunkt:</label>
-                        <div class="delivery-time-picker">
-                        <select id="pickup-time" name="pickupTime" required>
-                            <option value="">Vælg tid</option>
-                            <optgroup label="Tirsdag - Fredag (12:30-17:00)">
-                                <option value="12:30">12:30</option>
-                                <option value="13:00">13:00</option>
-                                <option value="13:30">13:30</option>
-                                <option value="14:00">14:00</option>
-                                <option value="14:30">14:30</option>
-                                <option value="15:00">15:00</option>
-                                <option value="15:30">15:30</option>
-                                <option value="16:00">16:00</option>
-                                <option value="16:30">16:30</option>
-                                <option value="17:00">17:00</option>
-                            </optgroup>
-                            <optgroup label="Lørdag - Søndag (10:00-17:30)">
-                                <option value="10:00">10:00</option>
-                                <option value="10:30">10:30</option>
-                                <option value="11:00">11:00</option>
-                                <option value="11:30">11:30</option>
-                                <option value="12:00">12:00</option>
-                                <option value="12:30">12:30</option>
-                                <option value="13:00">13:00</option>
-                                <option value="13:30">13:30</option>
-                                <option value="14:00">14:00</option>
-                                <option value="14:30">14:30</option>
-                                <option value="15:00">15:00</option>
-                                <option value="15:30">15:30</option>
-                                <option value="16:00">16:00</option>
-                                <option value="16:30">16:30</option>
-                                <option value="17:00">17:00</option>
-                                <option value="17:30">17:30</option>
-                            </optgroup>
-                        </select>
-                        </div>
-                        <small>Bemærk: Sidste afhentning er 30 min før lukketid. Mandag er butikken lukket.</small>
-                    </div>
-                </div>
-
-                <div class="button-group">
-                    <button class="checkout-button" type="submit">Fortsæt til kontaktinfo</button>
-                </div>
-
-                <p id="error-message" class="error"
-                   th:if="${errorMessage != null}"
-                   th:text="${errorMessage}">
-                </p>
-            </form>
+        <div class="step-info">
+            <h2>Levering</h2>
+            <p class="checkout-step">Trin 1 af 3</p>
         </div>
-    </section>
+        <div class="checkout-container">
+            <section>
+                <div class="delivery">
+                    <form th:action="@{/checkout/delivery}" method="post">
+                        <div class="delivery-method">
+                            <h3 class="group-title">Vælg leveringsmetode</h3>
 
-        <aside class="checkout-summary">
-            <h3>Din bestilling</h3>
-            <div th:replace="fragments :: orderLinePostCard"></div>
-            <div class="summary-total">
-                <p><strong>Subtotal:</strong> <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
-            </div>
-        </aside>
-    </div>
+                            <div class="delivery-option">
+                                <input type="radio" id="pickup" name="deliveryMethod" value="pickup" required checked>
+                                <label for="pickup">
+                                    <strong>Afhent i butik</strong>
+                                    <span class="delivery-price">0 kr.</span>
+                                    <p class="delivery-description">Afhent din ordre i vores butik i Olsker</p>
+                                </label>
+                            </div>
+
+                            <div class="delivery-option">
+                                <input type="radio" id="home-delivery" name="deliveryMethod" value="delivery"
+                                       th:disabled="${session.currentUser == null}" required>
+                                <label for="home-delivery">
+                                    <strong>Hjemmelevering med Olsker Express</strong>
+                                    <span class="delivery-price">29 kr. <span th:if="${session.currentUser == null}"
+                                                                              class="disabled-text">(Kræver login)</span></span>
+                                    <p class="delivery-description">Få leveret hurtigst muligt</p>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="delivery-datetime">
+                            <h3>Vælg afhentningsdato og tid</h3>
+                            <p class="info-text">Butikkens åbningstider:</p>
+                            <p class="info-text">Mandag - LUKKET</p>
+                            <p class="info-text">Tirsdag - Fredag 12:30-17:30</p>
+                            <p class="info-text">Lørdag - Søndag 10:00-18:00</p>
+
+                            <div class="delivery-date-picker">
+                                <label for="pickup-date">Vælg dato:</label>
+                                <input class="delivery-date-picker-field" type="date"
+                                       id="pickup-date"
+                                       name="pickupDate"
+                                       min="2025-10-28"
+                                       max="2026-11-26"
+                                       placeholder="Vælg en dato"
+                                       required>
+                            </div>
+
+                            <div class="delivery-time">
+                                <label for="pickup-time">Vælg tidspunkt:</label>
+                                <div class="delivery-time-picker">
+                                    <select id="pickup-time" name="pickupTime" required>
+                                        <option value="">Vælg tid</option>
+                                        <optgroup label="Tirsdag - Fredag (12:30-17:00)">
+                                            <option value="12:30">12:30</option>
+                                            <option value="13:00">13:00</option>
+                                            <option value="13:30">13:30</option>
+                                            <option value="14:00">14:00</option>
+                                            <option value="14:30">14:30</option>
+                                            <option value="15:00">15:00</option>
+                                            <option value="15:30">15:30</option>
+                                            <option value="16:00">16:00</option>
+                                            <option value="16:30">16:30</option>
+                                            <option value="17:00">17:00</option>
+                                        </optgroup>
+                                        <optgroup label="Lørdag - Søndag (10:00-17:30)">
+                                            <option value="10:00">10:00</option>
+                                            <option value="10:30">10:30</option>
+                                            <option value="11:00">11:00</option>
+                                            <option value="11:30">11:30</option>
+                                            <option value="12:00">12:00</option>
+                                            <option value="12:30">12:30</option>
+                                            <option value="13:00">13:00</option>
+                                            <option value="13:30">13:30</option>
+                                            <option value="14:00">14:00</option>
+                                            <option value="14:30">14:30</option>
+                                            <option value="15:00">15:00</option>
+                                            <option value="15:30">15:30</option>
+                                            <option value="16:00">16:00</option>
+                                            <option value="16:30">16:30</option>
+                                            <option value="17:00">17:00</option>
+                                            <option value="17:30">17:30</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <small>Bemærk: Sidste afhentning er 30 min før lukketid. Mandag er butikken
+                                    lukket.</small>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="checkout-button" type="submit">Fortsæt til kontaktinfo</button>
+                        </div>
+
+                        <p id="error-message" class="error"
+                           th:if="${errorMessage != null}"
+                           th:text="${errorMessage}">
+                        </p>
+                    </form>
+                </div>
+            </section>
+
+            <aside class="checkout-summary">
+                <h3>Din bestilling</h3>
+                <div th:replace="fragments :: orderLinePostCard"></div>
+                <div class="summary-total">
+                    <p><strong>Subtotal:</strong> <span th:text="${session.cart.getTotalOrderPrice()}"></span> kr.</p>
+                </div>
+            </aside>
+        </div>
     </div>
 </main>
 

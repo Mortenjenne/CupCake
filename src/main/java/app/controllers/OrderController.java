@@ -22,8 +22,8 @@ public class OrderController
 
     public void addRoutes(Javalin app)
     {
-      app.get("/orders", ctx -> showOrderPage(ctx));
-      app.get("/user/orders", ctx -> showUserOrderPage(ctx));
+        app.get("/orders", ctx -> showOrderPage(ctx));
+        app.get("/user/orders", ctx -> showUserOrderPage(ctx));
     }
 
     private void showUserOrderPage(Context ctx)

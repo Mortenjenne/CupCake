@@ -6,6 +6,7 @@ import app.entities.User;
 import app.exceptions.DatabaseException;
 import app.persistence.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,8 @@ public class UserServiceImpl implements UserService
         if (user != null && BCrypt.checkpw(password, user.getPassword()))
         {
             return user;
-        } else
+        }
+        else
         {
             throw new DatabaseException("Forkert email eller password");
         }
@@ -46,7 +48,8 @@ public class UserServiceImpl implements UserService
         {
             zipCode = Integer.parseInt(createUserRequestDTO.getZipCode().trim());
             phoneNumber = Integer.parseInt(createUserRequestDTO.getPhoneNumber().trim());
-        } catch (NumberFormatException e)
+        }
+        catch (NumberFormatException e)
         {
             throw new IllegalArgumentException("Postnummer og telefon skal være gyldige tal");
         }
@@ -67,12 +70,12 @@ public class UserServiceImpl implements UserService
 
     @Override
     public User registerGuestUser(String firstName, String lastName, String email,
-                                int phoneNumber, String city, String street, int zipCode) throws DatabaseException
+                                  int phoneNumber, String city, String street, int zipCode) throws DatabaseException
     {
         validateInput(firstName, lastName, street, zipCode, city, phoneNumber, email);
 
         User guestUser = checkIfGuestExists(email);
-        if(guestUser != null)
+        if (guestUser != null)
         {
             return guestUser;
         }
@@ -137,7 +140,7 @@ public class UserServiceImpl implements UserService
                 .collect(Collectors.toList());
     }
 
-    public void validateInput (String firstName, String lastName, String street, int zipCode, String city, int phoneNumber, String email)
+    public void validateInput(String firstName, String lastName, String street, int zipCode, String city, int phoneNumber, String email)
     {
         validateFirstOrLastName(firstName);
         validateFirstOrLastName(lastName);
@@ -173,6 +176,7 @@ public class UserServiceImpl implements UserService
             throw new IllegalArgumentException("Ikke gyldig email format");
         }
     }
+
     private void validatePassword(String password)
     {
         if (password == null || password.length() < 8)
