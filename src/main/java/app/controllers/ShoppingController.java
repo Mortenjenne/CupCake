@@ -7,13 +7,12 @@ import app.exceptions.DatabaseException;
 import app.services.ShoppingService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
 import java.util.HashMap;
-import java.util.List;
 
 public class ShoppingController
 {
     private final ShoppingService shoppingService;
+    private static final String SESSION_CART = "cart";
 
     public ShoppingController(ShoppingService shoppingService)
     {
@@ -36,13 +35,15 @@ public class ShoppingController
 
         model.put("bottoms", shoppingService.getAllBottoms());
         model.put("toppings", shoppingService.getAllToppings());
-        model.put("cart", getOrCreateCart(ctx));
+        model.put("cart", getOrCreateCart(ctx)); // bruges til Thymeleaf
 
         String label = ctx.sessionAttribute("succesLabel");
-        if (label != null) {
+        if (label != null)
+        {
             model.put("succesLabel", label);
             ctx.sessionAttribute("succesLabel", null);
         }
+
         ctx.render("index.html", model);
     }
 
@@ -78,38 +79,40 @@ public class ShoppingController
 
     private ShoppingCart getOrCreateCart(Context ctx)
     {
-        ShoppingCart cart = ctx.sessionAttribute("CART");
-        if (cart == null) {
+        ShoppingCart cart = ctx.sessionAttribute(SESSION_CART);
+        if (cart == null)
+        {
             cart = new ShoppingCart();
-            ctx.sessionAttribute("CART", cart);
+            ctx.sessionAttribute(SESSION_CART, cart);
         }
         return cart;
     }
 
     private void addToCart(Context ctx)
     {
-        try {
+        try
+        {
             int bottomId = Integer.parseInt(ctx.formParam("bottomId"));
             int toppingId = Integer.parseInt(ctx.formParam("toppingId"));
+            int quantity = Integer.parseInt(ctx.formParam("cupcakeQuantity"));
 
             Bottom bottom = shoppingService.getBottomById(bottomId);
             Topping topping = shoppingService.getToppingById(toppingId);
-
             ShoppingCart cart = getOrCreateCart(ctx);
-
-            int quantity = Integer.parseInt(ctx.formParam("cupcakeQuantity"));
 
             shoppingService.addOrderLineToCart(cart, bottom, topping, quantity);
 
-            ctx.sessionAttribute("CART", cart);
-            ctx.sessionAttribute("succesLabel", "Din ordre er tilføjet til kurven!:)");
+            ctx.sessionAttribute(SESSION_CART, cart);
+            ctx.sessionAttribute("succesLabel", "Din ordre er tilføjet til kurven! :)");
             ctx.redirect("/");
         }
-        catch (NullPointerException e) {
+        catch (NullPointerException e)
+        {
             ctx.sessionAttribute("indexErrorLabel", "Du skal have udfyldt alle felterne");
             ctx.redirect("/");
         }
-        catch (DatabaseException e) {
+        catch (DatabaseException e)
+        {
             ctx.sessionAttribute("indexErrorLabel", "Kunne ikke finde cupcake info");
             ctx.redirect("/");
         }
@@ -121,30 +124,29 @@ public class ShoppingController
         String increaseQuantity = ctx.formParam("increaseQuantity");
         String decreaseQuantity = ctx.formParam("decreaseQuantity");
 
-
-        if (deleteIndexParam != null) {
+        if (deleteIndexParam != null)
+        {
             removeFromCart(ctx);
         }
 
-        if (increaseQuantity != null) {
+        if (increaseQuantity != null)
+        {
             increaseCupcakeQuantity(ctx);
         }
 
-        if (decreaseQuantity != null) {
+        if (decreaseQuantity != null)
+        {
             decreaseCupcakeQuantity(ctx);
         }
-
     }
-
 
     private void removeFromCart(Context ctx)
     {
         ShoppingCart cart = getOrCreateCart(ctx);
         int index = Integer.parseInt(ctx.formParam("index"));
         shoppingService.removeOrderLineFromCart(cart, index);
-        ctx.sessionAttribute("CART", cart);
+        ctx.sessionAttribute(SESSION_CART, cart);
         ctx.redirect("/basket");
-
     }
 
     private void increaseCupcakeQuantity(Context ctx)
@@ -152,7 +154,7 @@ public class ShoppingController
         ShoppingCart cart = getOrCreateCart(ctx);
         int index = Integer.parseInt(ctx.formParam("increaseQuantity"));
         shoppingService.addOneToCupcakeQuantity(cart, index);
-        ctx.sessionAttribute("CART", cart);
+        ctx.sessionAttribute(SESSION_CART, cart);
         ctx.redirect("/basket");
     }
 
@@ -161,7 +163,7 @@ public class ShoppingController
         ShoppingCart cart = getOrCreateCart(ctx);
         int index = Integer.parseInt(ctx.formParam("decreaseQuantity"));
         shoppingService.removeOneFromCupcakeQuantity(cart, index);
-        ctx.sessionAttribute("CART", cart);
+        ctx.sessionAttribute(SESSION_CART, cart);
         ctx.redirect("/basket");
     }
 
@@ -169,7 +171,7 @@ public class ShoppingController
     {
         ShoppingCart cart = getOrCreateCart(ctx);
         shoppingService.clearCart(cart);
-        ctx.sessionAttribute("CART", cart);
+        ctx.sessionAttribute(SESSION_CART, cart);
         ctx.redirect("/basket");
     }
 }
