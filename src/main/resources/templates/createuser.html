@@ -17,13 +17,15 @@
         <form th:action="@{/create-user}" method="post" class="login-form">
 
             <div class="login-field">
+                <label for="email">Email</label>
                 <input class="login-input" type="email" id="email" name="email"
-                       th:value="${email}" placeholder="Email" required>
+                       th:value="${email}" placeholder="din@email.dk" required>
             </div>
 
             <div class="login-field">
+                <label for="password1">Kodeord</label>
                 <input class="login-input" type="password" id="password1" name="password1"
-                       placeholder="Kodeord" required>
+                       placeholder="⁕⁕⁕⁕⁕⁕⁕⁕" required>
                 <div class="tooltip">
                     Kodeord skal indeholde:<br>
                     • Min. 8 karakterer<br>
@@ -33,32 +35,39 @@
             </div>
 
             <div class="login-field">
+                <label for="password2">Gentag kodeord</label>
                 <input class="login-input" type="password" id="password2" name="password2"
-                       placeholder="Gentag kodeord" required>
+                       placeholder="⁕⁕⁕⁕⁕⁕⁕⁕" required>
             </div>
             <div class="login-field">
+                <label for="firstname">Fornavn</label>
                 <input class="login-input" type="text" id="firstname" name="firstName"
                        th:value="${firstName}" placeholder="Fornavn" required>
             </div>
             <div class="login-field">
+                <label for="lastname">Efternavn</label>
                 <input class="login-input" type="text" id="lastname" name="lastName"
                        th:value="${lastName}" placeholder="Efternavn" required>
             </div>
             <div class="login-field">
+                <label for="street">Gade</label>
                 <input class="login-input" type="text" id="street" name="street"
-                       th:value="${street}" placeholder="Gade" required>
+                       th:value="${street}" placeholder="Gade/Vej" required>
             </div>
             <div class="login-field">
+                <label for="zipcode">Postnummer</label>
                 <input class="login-input" type="text" id="zipcode" name="zipCode"
                        th:value="${zipCode}" placeholder="Postnummer" required>
             </div>
             <div class="login-field">
+                <label for="city">By</label>
                 <input class="login-input" type="text" id="city" name="city"
                        th:value="${city}" placeholder="By" required>
             </div>
             <div class="login-field">
+                <label for="phone">Telefon</label>
                 <input class="login-input" type="text" id="phone" name="phone"
-                       th:value="${phone}" placeholder="Telefon" required>
+                       th:value="${phone}" placeholder="+45 12 34 56 78" required>
             </div>
 
             <button type="submit">Opret Bruger</button>
