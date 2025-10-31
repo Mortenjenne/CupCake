@@ -1,0 +1,154 @@
+@startuml
+
+class User {
+}
+
+class Order {
+}
+
+class OrderLine {
+}
+
+class Cupcake {
+}
+
+class Bottom {
+}
+
+class Topping {
+}
+
+class ShoppingCart {
+  - List<OrderLine> items
+  + addItem()
+  + removeItem()
+  + calculateTotal()
+}
+
+class UserDTO {
+}
+
+class CreateUserRequestDTO {
+}
+
+interface UserService {
+}
+
+class UserServiceImpl {
+}
+
+interface OrderService {
+}
+
+class OrderServiceImpl {
+}
+
+interface CupcakeService {
+}
+
+class CupcakeServiceImpl {
+}
+
+interface ShoppingService {
+}
+
+class ShoppingServiceImpl {
+
+}
+
+class UserMapper {
+  - ConnectionPool connectionPool
+}
+
+class OrderMapper {
+  - ConnectionPool connectionPool
+}
+
+class OrderLineMapper {
+  - ConnectionPool connectionPool
+}
+
+class BottomMapper {
+  - ConnectionPool connectionPool
+}
+
+class ToppingMapper {
+  - ConnectionPool connectionPool
+}
+
+class ConnectionPool {
+}
+
+class UserController {
+  - UserService userService
+  + addRoutes()
+}
+
+class OrderController {
+  - OrderService orderService
+  + addRoutes()
+}
+
+class ShoppingController {
+  - ShoppingService shoppingService
+  + addRoutes()
+}
+
+class CupcakeController {
+  - CupcakeService cupcakeService
+  + addRoutes()
+}
+
+class AdminController {
+  - UserService userService
+  - OrderService orderService
+  + addRoutes()
+}
+
+class CheckoutController {
+  - OrderService orderService
+  - UserService userService
+  + addRoutes()
+}
+
+' Relationships - Entities
+Order "1" *-- "many" OrderLine
+OrderLine "many" --> "1" Cupcake
+Cupcake "many" --> "1" Bottom
+Cupcake "many" --> "1" Topping
+User "1" --> "many" Order
+
+' Relationships - Services and Implementations
+UserService <|.. UserServiceImpl
+OrderService <|.. OrderServiceImpl
+CupcakeService <|.. CupcakeServiceImpl
+ShoppingService <|.. ShoppingServiceImpl
+
+' Relationships - Services and Mappers
+UserServiceImpl --> UserMapper
+OrderServiceImpl --> OrderMapper
+OrderServiceImpl --> OrderLineMapper
+OrderServiceImpl --> UserMapper
+CupcakeServiceImpl --> BottomMapper
+CupcakeServiceImpl --> ToppingMapper
+ShoppingServiceImpl --> BottomMapper
+ShoppingServiceImpl --> ToppingMapper
+
+' Relationships - Mappers and ConnectionPool
+UserMapper --> ConnectionPool
+OrderMapper --> ConnectionPool
+OrderLineMapper --> ConnectionPool
+BottomMapper --> ConnectionPool
+ToppingMapper --> ConnectionPool
+
+' Relationships - Controllers and Services
+UserController --> UserService
+OrderController --> OrderService
+ShoppingController --> ShoppingService
+CupcakeController --> CupcakeService
+AdminController --> UserService
+AdminController --> OrderService
+CheckoutController --> OrderService
+CheckoutController --> UserService
+
+@enduml

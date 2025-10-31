@@ -1,0 +1,46 @@
+@startuml
+[*] --> AdminLogin : Admin visits
+
+AdminLogin --> Index : Login successful
+AdminLogin --> AdminLogin : Login failed
+
+Index --> ManageCupcakes : Select manage cupcakes
+Index --> ViewOrders : Select view orders
+Index --> ViewCustomer : Select view users
+Index --> [*] : Logout
+
+ManageCupcakes --> ManageCupcakes : View cupcake list
+ManageCupcakes --> AddCupcake : Click add new
+ManageCupcakes --> EditCupcake : Select cupcake to edit
+ManageCupcakes --> DeleteCupcake : Select cupcake to delete
+ManageCupcakes --> Index : Go back
+
+AddCupcake --> AddCupcake : Enter cupcake details
+AddCupcake --> ManageCupcakes : Save cupcake
+AddCupcake --> ManageCupcakes : Cancel
+
+EditCupcake --> EditCupcake : Modify cupcake details
+EditCupcake --> ManageCupcakes : Save changes
+EditCupcake --> ManageCupcakes : Cancel
+
+DeleteCupcake --> ManageCupcakes : Confirm delete
+DeleteCupcake --> ManageCupcakes : Cancel delete
+
+ViewOrders --> ViewOrders : Browse all orders
+ViewOrders --> ViewOrders : Delete an order
+ViewOrders --> ViewOrders : Mark order as paid
+ViewOrders --> OrderDetails : Select order
+ViewOrders --> Index : Go back
+
+OrderDetails --> OrderDetails : View order information
+OrderDetails --> ViewOrders : Go Back
+
+ViewCustomer --> ViewCustomer : Browse all customers
+ViewCustomer --> EditCustomerBalance : Select customer to update acount balance
+EditCustomerBalance --> EditCustomerBalance : Update customer balance
+EditCustomerBalance --> ViewCustomer : Go back
+ViewCustomer --> Index : Go back
+
+
+
+@enduml
