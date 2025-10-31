@@ -4,7 +4,6 @@
     <meta charset="UTF-8"/>
     <title>Olsker Cupcakes - Ordredetaljer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
     <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
 </head>
 <body>
@@ -12,40 +11,48 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <h1>Ordre detaljer</h1>
-    <h2>OrdreID: <span th:text="${id}"></span></h2>
+    <div class="orders-view">
+        <h1>Ordredetaljer</h1>
+        <h2>Ordre ID: <span th:text="${id}"></span></h2>
 
-    <div th:fragment="orderLinePostCard">
-        <div th:each="orderLine : ${orderLines}" class="order-card">
-            <div class="order-card-img">
-                <div class="cupcake-summary">
-                    <img class="bottom-img-small"
+        <div class="orders-table">
+            <h3>Produkter i ordren</h3>
+
+            <div th:each="orderLine : ${orderLines}" class="order-detail-card window-styling">
+                <div class="order-detail-cupcake">
+                    <img class="order-detail-bottom"
                          th:src="@{/images/cupcakes/bottoms/bottom_{slug}.png(slug=${orderLine.cupcake.bottom.slug})}"
                          th:attr="onerror=|this.onerror=null;this.src='@{/images/cupcakes/bottoms/bottom_placeholder.png}'|"
                          alt="bottom">
-                    <img class="topping-img-small"
+                    <img class="order-detail-topping"
                          th:src="@{/images/cupcakes/toppings/topping_{slug}.png(slug=${orderLine.cupcake.topping.slug})}"
                          th:attr="onerror=|this.onerror=null;this.src='@{/images/cupcakes/toppings/topping_placeholder.png}'|"
                          alt="topping">
                 </div>
-            </div>
-            <div class="order-card-info">
-                <p>
-                    <span th:text="${orderLine.cupcake.bottom.name}"></span> +
-                    <span th:text="${orderLine.cupcake.topping.name}"></span>
-                </p>
-                <p>Antal: <span th:text="${orderLine.quantity}"></span></p>
-                <p>Pris: <span th:text="${orderLine.orderLinePrice}"></span> kr</p>
+                <div class="order-detail-info">
+                    <p><strong>Cupcake:</strong>
+                        <span th:text="${orderLine.cupcake.bottom.name}"></span> +
+                        <span th:text="${orderLine.cupcake.topping.name}"></span>
+                    </p>
+                    <p><strong>Antal:</strong> <span th:text="${orderLine.quantity}"></span> stk.</p>
+                    <p><strong>Pris:</strong> <span th:text="${orderLine.orderLinePrice}"></span> kr.</p>
+                </div>
             </div>
         </div>
+
+        <p id="error-message" class="error"
+           th:if="${errorMessage != null}"
+           th:text="${errorMessage}">
+        </p>
+
+        <div th:if="${session.currentUser.isAdmin}" class="back-home">
+            <a href="orders.html" th:href="@{/orders}" class="checkout-button">Tilbage til ordrer</a>
+        </div>
+
+        <div th:unless="${session.currentUser.isAdmin}" class="back-home">
+            <a href="orders.html" th:href="@{/user/orders}" class="checkout-button">Tilbage til ordrer</a>
+        </div>
     </div>
-
-    <p id="error-message" class="error"
-       th:if="${errorMessage != null}"
-       th:text="${errorMessage}">
-    </p>
-
-    <a href="orders.html" th:href="@{/orders}" class="nav-link">Tilbage</a>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
