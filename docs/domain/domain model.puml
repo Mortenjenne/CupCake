@@ -35,13 +35,20 @@ quantity
 linePrice
 }
 
-class CupCakeBottom
+class Cupcake
+{
+bottom
+topping
+price
+}
+
+class CupcakeBottom
 {
 name
 price
 }
 
-class CupCakeTopping
+class CupcakeTopping
 {
 name
 price
@@ -49,7 +56,8 @@ price
 
 User "1" -- "0..*" Order : places
 Order "1" -- "1..*" OrderLine : contains
-OrderLine "*" -- "1" CupCakeBottom : uses
-OrderLine "*" -- "1" CupCakeTopping : uses
+OrderLine "1" -- "1..*" Cupcake : contains
+Cupcake "*" -- "1" CupcakeBottom : uses
+Cupcake "*" -- "1" CupcakeTopping : uses
 
 @enduml
