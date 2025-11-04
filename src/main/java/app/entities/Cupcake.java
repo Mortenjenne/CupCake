@@ -16,7 +16,6 @@ public class Cupcake
         this.bottom = bottom;
         this.topping = topping;
         this.cupcakePrice = bottom.getPrice() + topping.getPrice();
-
     }
 }
 
