@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <title>Olsker Cupcakes - Ordredetaljer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
 </head>
 <body>
 
@@ -46,11 +46,11 @@
         </p>
 
         <div th:if="${session.currentUser.isAdmin}" class="back-home">
-            <a href="orders.html" th:href="@{/orders}" class="checkout-button">Tilbage til ordrer</a>
+            <a th:href="@{/orders}" class="checkout-button">Tilbage til ordrer</a>
         </div>
 
         <div th:unless="${session.currentUser.isAdmin}" class="back-home">
-            <a href="orders.html" th:href="@{/user/orders}" class="checkout-button">Tilbage til ordrer</a>
+            <a th:href="@{/user/orders}" class="checkout-button">Tilbage til ordrer</a>
         </div>
     </div>
 </main>

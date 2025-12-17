@@ -1,5 +1,6 @@
 package app;
 
+import app.config.SessionConfig;
 import app.config.ThymeleafConfig;
 
 import app.controllers.*;
@@ -22,16 +23,14 @@ public class Main
 
     public static void main(String[] args)
     {
-        // Initializing Javalin and Jetty webserver
 
         Javalin app = Javalin.create(config ->
         {
             config.staticFiles.add("/public");
+            config.jetty.modifyServletContextHandler(handler ->  handler.setSessionHandler(SessionConfig.sessionConfig()));
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
-            config.staticFiles.add("/templates");
         }).start(7070);
 
-        // Routing
 
         UserMapper userMapper = new UserMapper(connectionPool);
         UserService userService = new UserServiceImpl(userMapper);
@@ -59,6 +58,5 @@ public class Main
         adminController.addRoutes(app);
         cupcakeController.addRoutes(app);
         checkoutController.addRoutes(app);
-
     }
 }

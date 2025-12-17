@@ -5,7 +5,7 @@
     <title>Olsker Cupcakes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <!-- Thymeleaf vil erstatte th:href; den “plain” href virker ved ren statisk visning -->
-    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}"/>
 </head>
 <body>
 
@@ -20,14 +20,8 @@
         </section>
 
         <section class="cupcake-box">
-            <img class="topping-img" src="/images/cupcakes/toppings/topping_jordbaer.png"
-                 th:src="@{/images/cupcakes/toppings/topping_jordbaer.png}"
-                 data-fallback="/images/cupcakes/toppings/topping_placeholder.png"
-                 alt="cupcake Topping"/>
-            <img class="bottom-img" src="/images/cupcakes/bottoms/bottom_chokolade.png"
-                 th:src="@{/images/cupcakes/bottoms/bottom_chokolade.png}"
-                 data-fallback="/images/cupcakes/bottoms/bottom_placeholder.png"
-                 alt="Cupcake Bottom"/>
+            <img class="topping-img" th:src="@{/images/cupcakes/toppings/topping_jordbaer.png}" data-fallback="/images/cupcakes/toppings/topping_placeholder.png" alt="cupcake Topping"/>
+            <img class="bottom-img" th:src="@{/images/cupcakes/bottoms/bottom_chokolade.png}" data-fallback="/images/cupcakes/bottoms/bottom_placeholder.png" alt="Cupcake Bottom"/>
         </section>
 
         <h4 class="title">Vælg og bestil her</h4>
@@ -74,7 +68,7 @@
             </div>
         </section>
 
-        <a class="index-basket-button" href="basket.html" th:href="@{/basket}">Gå til kurv ➡</a>
+        <a class="index-basket-button" th:href="@{/basket}">Gå til kurv ➡</a>
 
 
     </section>
@@ -83,7 +77,7 @@
 
 <div th:replace="~{fragments :: footerFragment}"></div>
 
-<script src="/public/js/cupcake-script.js" th:src="@{/js/cupcake-image-script.js}"></script>
+<script th:src="@{/js/cupcake-image-script.js}"></script>
 
 </body>
 </html>

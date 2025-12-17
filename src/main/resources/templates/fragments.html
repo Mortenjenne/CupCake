@@ -4,17 +4,15 @@
         <nav class="header-nav">
             <!-- LEFT SECTION: Logo + Links -->
             <div class="header-left">
-                <a href="index.html" th:href="@{/}" class="logo-link">
-                    <img src="/images/logo-w.svg"
-                         alt="Olsker Cupcakes Logo"
-                         th:src="@{/images/logo-w.svg}">
+                <a th:href="@{/}" class="logo-link">
+                    <img alt="Olsker Cupcakes Logo" th:src="@{/images/logo-w.svg}">
                 </a>
 
                 <!-- Admin links (conditional) -->
                 <div th:if="${session.currentUser != null and session.currentUser.isAdmin}" class="admin-links">
-                    <a href="orders.html" th:href="@{/orders}" class="nav-link">Ordre</a>
-                    <a href="customers.html" th:href="@{/customers}" class="nav-link">Kunder</a>
-                    <a href="cupcakes.html" th:href="@{/cupcakes}" class="nav-link">Cupcakes</a>
+                    <a th:href="@{/orders}" class="nav-link">Ordre</a>
+                    <a th:href="@{/customers}" class="nav-link">Kunder</a>
+                    <a th:href="@{/cupcakes}" class="nav-link">Cupcakes</a>
                 </div>
             </div>
 
@@ -22,10 +20,9 @@
             <div class="header-right">
                 <!-- Not logged in -->
                 <a th:if="${session.currentUser == null}"
-                   href="login.html"
                    th:href="@{/login}"
                    class="icon-link">
-                    <img src="/images/mypage-w.svg" alt="Login" th:src="@{/images/mypage-w.svg}">
+                    <img alt="Login" th:src="@{/images/mypage-w.svg}">
                     <span>Login</span>
                 </a>
 
@@ -33,20 +30,20 @@
                 <div th:if="${session.currentUser != null}" class="user-actions">
                     <!-- EMAIL here -->
                     <span class="username" th:text="${session.currentUser.email}"></span>
-                    <a href="mypage.html" th:href="@{/user/orders}" class="icon-link">
-                        <img src="/images/mypage-w.svg" alt="Min side" th:src="@{/images/mypage-w.svg}">
+                    <a th:href="@{/user/orders}" class="icon-link">
+                        <img alt="Min side" th:src="@{/images/mypage-w.svg}">
                         <span>Min side</span>
                     </a>
 
                     <a href="index.html" th:href="@{/logout}" class="icon-link">
-                        <img src="/images/logout-w.svg" alt="Log ud" th:src="@{/images/logout-w.svg}">
+                        <img alt="Log ud" th:src="@{/images/logout-w.svg}">
                         <span>Log ud</span>
                     </a>
                 </div>
 
                 <!-- Basket (always visible) -->
-                <a href="basket.html" th:href="@{/basket}" class="icon-link">
-                    <img src="/images/basket-w.svg" alt="Kurv" th:src="@{/images/basket-w.svg}">
+                <a th:href="@{/basket}" class="icon-link">
+                    <img alt="Kurv" th:src="@{/images/basket-w.svg}">
                     <span>Se kurv</span>
                 </a>
             </div>
@@ -83,8 +80,8 @@
         </section>
 
         <!-- RIGHT SECTION: Link -->
-        <a href="about.html" th:href="@{/about}" class="footer-about icon-link">
-            <img src="/images/cupcake-w.svg" alt="Om os" th:src="@{/images/cupcake-w.svg}">
+        <a th:href="@{/about}" class="footer-about icon-link">
+            <img alt="Om os" th:src="@{/images/cupcake-w.svg}">
             <span>Om os</span>
         </a>
     </footer>
